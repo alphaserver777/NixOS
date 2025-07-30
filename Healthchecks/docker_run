@@ -1,0 +1,16 @@
+docker run -d \
+  --name=healthchecks \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e TZ=Europe/Moscow \
+  -e SITE_ROOT=http://localhost:8000 \
+  -e SITE_NAME="My Healthchecks" \
+  -e SUPERUSER_EMAIL="admin@example.com" \
+  -e SUPERUSER_PASSWORD="YourStrongPassword" \
+  -e ALLOWED_HOSTS="localhost,127.0.0.1" \
+  -e DEBUG=True \
+  -e SECRET_KEY="a_very_secret_key_that_you_should_change" \
+  -p 8000:8000 \
+  -v /path/to/healthchecks/config:/config \
+  --restart unless-stopped \
+  lscr.io/linuxserver/healthchecks:latest
