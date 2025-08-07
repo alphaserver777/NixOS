@@ -24,6 +24,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   networking.hostName = "HomeLab1"; # Define your hostname.
   # Pick only one of the below networking options.
