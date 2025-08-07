@@ -1,0 +1,7 @@
+# Ignore Vim swap files
+*.swp
+*.swm
+*.swn
+*.swo
+*.swl
+flake.lock
