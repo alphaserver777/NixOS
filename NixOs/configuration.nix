@@ -60,7 +60,16 @@
     };
   }; 
 
+  services.xserver = {
+    enable = true;
+    desktopManager = {
+      xfce.enable = true;
+    };
+    displayManager.defaultSession = "xfce";
+  };
   
+
+  services.vmwareGuest.enable = true;
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -98,6 +107,7 @@
     wget
     mc
     git
+    open-vm-tools
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
