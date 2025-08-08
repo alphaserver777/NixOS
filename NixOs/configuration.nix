@@ -46,10 +46,13 @@
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
 
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
-
-  # Сервис OpenSSH
+  # Включаем GNOME
+  services.xserver = {
+    enable = true;
+    desktopManager.gnome.enable = true;
+    displayManager.gdm.enable = true;
+  };
+  
   services.openssh = {
     enable = true;
     ports = [ 22 ];
@@ -58,18 +61,9 @@
       PermitRootLogin = "yes";
       PasswordAuthentication = true;
     };
-  }; 
-
-  services.xserver = {
-    enable = true;
-    desktopManager = {
-      xfce.enable = true;
-    };
-    displayManager.defaultSession = "xfce";
   };
-  
 
-  services.vmwareGuest.enable = true;
+  #services.vmwareGuest.enable = true;
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -81,10 +75,10 @@
   # Enable sound.
   # services.pulseaudio.enable = true;
   # OR
-  # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
-  # };
+  services.pipewire = {
+     enable = true;
+     pulse.enable = true;
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
@@ -92,11 +86,17 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.admsys = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user and allow network management.
   #   packages = with pkgs; [
   #     tree
   #   ];
   };
+
+  # Программы, которые устанавливаются вместе с GNOME, но могут быть исключены.
+  environment.gnome.excludePackages = with pkgs; [
+    gnome-tour
+    gnome-photos
+  ];
 
   # programs.firefox.enable = true;
 
@@ -107,7 +107,7 @@
     wget
     mc
     git
-    open-vm-tools
+    #open-vm-tools
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -154,4 +154,3 @@
   system.stateVersion = "25.05"; # Did you read the comment?
 
 }
-

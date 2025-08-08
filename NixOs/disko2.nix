@@ -14,8 +14,8 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/efi";  # Важно для UEFI!
-                extraArgs = [ "-n EFI" ];  # Метка тома
+                mountpoint = "/boot";  # Важно для UEFI!
+                extraArgs = [ "-n" "EFI" ];  # Метка тома
               };
             };
 
