@@ -24,6 +24,23 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
+  fileSystems = {
+    "/".device = "/dev/sda2";
+    "/boot".device = "/dev/sda1";
+    "/home".device = "/dev/sda4";
+  };
+
+  swapDevices = [{
+    device = "/dev/sda3";
+  }];
+
+
+
+
+
+
+
+
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   networking.hostName = "HomeLab1"; # Define your hostname.
