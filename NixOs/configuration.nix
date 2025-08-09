@@ -27,6 +27,11 @@
   boot.kernelParams = [ "mem_sleep_default=deep" ];
 
 
+  # Off auto sleep
+  services.logind.extraConfig = ''
+    IdleAction=ignore
+  '';
+
   fileSystems = {
     "/".device = "/dev/sda2";
     "/boot".device = "/dev/sda1";
@@ -37,6 +42,7 @@
     device = "/dev/sda3";
   }];
 
+  # On work with flake
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   networking.hostName = "HomeLab1"; # Define your hostname.
@@ -51,6 +57,8 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.no
 
+
+  # Russian language
   i18n = {
     defaultLocale = "ru_RU.UTF-8";
     extraLocales = [
@@ -60,14 +68,11 @@
   };
 
 
-
-
   #Включаем клавиатуру на русском и англ.
   console = {
     font = "LatGrkCyr-8x16"; # поддерживает латиницу и кириллицу
     keyMap = "ru";
   };
-
 
   # Включаем GNOME
   services.xserver = {
@@ -141,10 +146,15 @@
     mc
     git
     docker-compose
+    tmux
+    amnezia-vpn   
     #open-vm-tools
   ];
 
-  # Some programs need SUID wrappers, can be configured further or are
+
+  # VPN demon
+  programs.amnezia-vpn.enable = true;
+
   # started in user sessions.
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {
