@@ -34,13 +34,6 @@
     device = "/dev/sda3";
   }];
 
-
-
-
-
-
-
-
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   networking.hostName = "HomeLab1"; # Define your hostname.
@@ -116,14 +109,18 @@
   ];
 
   # programs.firefox.enable = true;
-
-  # List packages installed in system profile.
+  
+  # Docker	  
+  virtualisation.docker.enable = true;  
+  
+  # packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     mc
     git
+    docker-compose
     #open-vm-tools
   ];
 
