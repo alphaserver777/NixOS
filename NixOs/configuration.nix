@@ -24,6 +24,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
+  boot.kernelParams = [ "mem_sleep_default=deep" ];
+
+
   fileSystems = {
     "/".device = "/dev/sda2";
     "/boot".device = "/dev/sda1";
@@ -46,22 +49,39 @@
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  # networking.proxy.no
 
-  # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  #   useXkbConfig = true; # use xkb.options in tty.
-  # };
+  i18n = {
+    defaultLocale = "ru_RU.UTF-8";
+    extraLocales = [
+      "en_US.UTF-8/UTF-8"
+      "ru_RU.UTF-8/UTF-8"
+    ];
+  };
+
+
+
+
+  #Включаем клавиатуру на русском и англ.
+  console = {
+    font = "LatGrkCyr-8x16"; # поддерживает латиницу и кириллицу
+    keyMap = "ru";
+  };
+
 
   # Включаем GNOME
   services.xserver = {
     enable = true;
     desktopManager.gnome.enable = true;
     displayManager.gdm.enable = true;
+
+  # Corrected keyboard configuration
+    xkb = {
+      layout = "us,ru";
+      options = "grp:alt_shift_toggle";
+    };
   };
+
   
   services.openssh = {
     enable = true;
