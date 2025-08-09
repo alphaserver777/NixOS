@@ -28,10 +28,17 @@
 
 
   # Off auto sleep
-  services.logind.extraConfig = ''
-    IdleAction=ignore
+  programs.dconf.enable = true;
+
+  services.xserver.desktopManager.gnome.extraGSettingsOverrides = ''
+    [org.gnome.settings-daemon.plugins.power]
+    sleep-inactive-ac-type='nothing'
+    sleep-inactive-ac-timeout=0
+    sleep-inactive-battery-type='nothing'
+    sleep-inactive-battery-timeout=0
   '';
 
+  # Work with FS
   fileSystems = {
     "/".device = "/dev/sda2";
     "/boot".device = "/dev/sda1";
