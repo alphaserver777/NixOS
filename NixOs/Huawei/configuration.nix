@@ -93,6 +93,7 @@
   neovim
   home-manager
   xclip
+  neofetch
   ];
   
   services.pulseaudio.enable = false;
