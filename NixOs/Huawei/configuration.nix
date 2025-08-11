@@ -92,6 +92,7 @@
   keepass
   neovim
   home-manager
+  xclip
   ];
   
   services.pulseaudio.enable = false;
