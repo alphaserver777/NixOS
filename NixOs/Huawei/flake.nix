@@ -15,16 +15,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-      };
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: let
     system = "x86_64-linux";
     homeStateVersion = "25.05";
-    user = "admsys";
+    user = "root";
     hosts = [
       { hostname = "Huawei"; stateVersion = "25.05"; }
     ];
@@ -60,3 +56,4 @@
     };
   };
 }
+

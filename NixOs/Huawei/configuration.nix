@@ -94,6 +94,7 @@
   home-manager
   xclip
   neofetch
+  tmux
   ];
   
   services.pulseaudio.enable = false;
