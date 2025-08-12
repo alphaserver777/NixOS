@@ -44,12 +44,10 @@
     LC_TIME = "ru_RU.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  #services.xserver.displayManager.gdm.enable = true;
+  #services.xserver.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -95,6 +93,7 @@
   xclip
   neofetch
   tmux
+  alacritty
   ];
   
   services.pulseaudio.enable = false;
@@ -103,6 +102,16 @@
 # VPN demon
   programs.amnezia-vpn.enable = true;  
   
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    };
+
+  # Настройка дисплейного менеджера (например, SDDM)
+  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
+  services.xserver.enable = true; # XServer также нужен для XWayland
+
   services.syncthing = {
     enable = true;
     user = "syncthing";  # Создайте пользователя syncthing
