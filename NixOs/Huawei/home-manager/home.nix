@@ -1,19 +1,17 @@
-{ config, pkgs, ... }:
+{ config, pkgs, ... }: {
 
-{
   home = {
-    username = "root";
-    homeDirectory = "/root";
+    username = "admsys";
+    homeDirectory = "/home/admsys";
     stateVersion = "25.05";
   };
-
   programs.bash = {
     enable = true;
     shellAliases = {
-      rebuild = "sudo nixos-rebuild switch";
+      rebuild = "sudo nixos-rebuild switch --flake ./";
     };
   };
-
+  
   programs.neovim = {
     enable = true;
     plugins = with pkgs.vimPlugins; [
@@ -22,76 +20,86 @@
       nvim-web-devicons
       which-key-nvim
       vim-fugitive
+      comment-nvim
     ];
     extraConfig = ''
-      set tabstop=2
-      set expandtab
-      set shiftwidth=2
-      set number
-      set relativenumber
-      set hlsearch
-      set incsearch
-      set clipboard=unnamedplus
+				set tabstop=2
+				set expandtab
+				set shiftwidth=2
+				set number
+				set relativenumber
+				set hlsearch
+				set incsearch
+				set clipboard=unnamedplus
     '';
   };
 
+	programs.git = {
+		enable = true;
+		userName = "crypto_mrx";
+		userEmail = "maksim.ilonov@yandex.ru";
+	};
 
-  programs.git = {
-    enable = true;
-    userName = "crypto_mrx";
-    userEmail = "maksim.ilonov@yandex.ru";
-  };
-
+  # Минимальная конфигурация Hyprland
   wayland.windowManager.hyprland = {
-  enable = true;
-  settings = {
-    # Основная управляющая клавиша (обычно Super)
-    "$mod" = "SUPER";
+    enable = true;
+    settings = {
+      # Переменные (горячие клавиши)
+      "$mainMod" = "SUPER";
 
-    # Горячие клавиши для запуска приложений
-    bind = [
-      "$mod, Q, killactive,"  # Закрыть активное окно
-      "$mod, M, exit,"        # Выйти из Hyprland
-      "$mod, T, exec, alacritty" # Запустить терминал
-    ];
+      #Клавиатура - переключение на Капс
+      input = {
+        kb_layout = "us,ru";
+        kb_options = "grp:caps_toggle";
+      };
 
-    # Разметка окон
-    layout = "master";
+      # Основные бинды
+      bind = [
+        # Запуск терминала
+        "$mainMod, T, exec, kitty"
 
-    # Настройка анимаций
-    animations = {
-      enabled = true;
-      animation = [
-        "windows,1,7,default,popin"
-        "windowsOut,1,7,default,popin"
-        "border,1,10,default"
-        "fade,1,7,default"
-        "workspaces,1,6,default"
+        # Закрыть активное окно
+        "$mainMod, Q, killactive,"
+
+        # Выход из Hyprland
+        "$mainMod, M, exit,"
+
+        # Запуск лаунчера приложений
+        "$mainMod, R, exec, wofi --show drun"
+
+        # Переключение между рабочими столами
+        "$mainMod, 1, workspace, 1"
+        "$mainMod, 2, workspace, 2"
+        "$mainMod, 3, workspace, 3"
+
+        # Громкость
+        ", XF86AudioRaiseVolume, exec, pamixer -i 5"
+        ", XF86AudioLowerVolume, exec, pamixer -d 5"
+        ", XF86AudioMute, exec, pamixer -t"
+
+        # Яркость
+        ", XF86MonBrightnessUp, exec, brightnessctl set +10%"
+        ", XF86MonBrightnessDown, exec, brightnessctl set 10%-"
+
       ];
     };
   };
-};
 
-  programs.alacritty = {
-  enable = true;
-  settings = {
-    font = {
-      size = 12.0;
-      normal = {
-        family = "FiraCode Nerd Font";
-      };
-    };
-    window = {
-      padding = {
-        x = 5;
-        y = 5;
-      };
-      dimensions = {
-        columns = 120;
-        lines = 30;
-      };
-    };
-  };
-};
+  # Обязательно установите программы, которые вы используете
+  home.packages = with pkgs; [
+    kitty # Терминал
+    wofi # Лаунчер
+    nixpkgs-fmt
+    dunst
+    libnotify
+    waybar
+    wl-clipboard
+    qbittorrent
+    wev
+    pamixer
+    brightnessctl
+  ];
+
 }
+	
 

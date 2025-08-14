@@ -56,7 +56,7 @@
   };
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  # services.printing.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -65,12 +65,13 @@
   users.users.admsys = {
     isNormalUser = true;
     description = "admsys";
+    #initialPassword = "123";
+    #hashedPassword = "$6$jvn1.QcIe2jXmbQe$9u.k5meiiEK2EUqe8zI2liZ7ECaDh0XTxz5cvVc6entReVolwzZBW9R22JzOsTlWk/h0NesBpxHjfwSYh2kqf1";
     extraGroups = [ "networkmanager" "wheel" "audio" ];
     packages = with pkgs; [
     #  thunderbird
     ];
   };
-
  
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -94,6 +95,9 @@
   neofetch
   tmux
   alacritty
+  qbittorrent
+  woeusb
+  wev
   ];
   
   services.pulseaudio.enable = false;

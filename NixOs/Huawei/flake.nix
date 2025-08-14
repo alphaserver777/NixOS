@@ -20,7 +20,7 @@
   outputs = { self, nixpkgs, home-manager, ... }@inputs: let
     system = "x86_64-linux";
     homeStateVersion = "25.05";
-    user = "root";
+    user = "admsys";
     hosts = [
       { hostname = "Huawei"; stateVersion = "25.05"; }
     ];
