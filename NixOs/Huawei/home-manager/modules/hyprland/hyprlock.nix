@@ -1,42 +1,69 @@
+
 {
   programs.hyprlock = {
     enable = true;
+
     settings = {
-      general = {
-        grace = 10;
-        hide_cursor = true;
+      # фон
+      background = {
+        path = "/home/user/Pictures/wallpapers/lockscreen.png";
+        blur_size = 8;
+        blur_passes = 3;
+        color = "rgba(30, 30, 46, 1.0)";
       };
 
-      label = {
-        text = "$TIME";
-        font_size = 96;
-        font_family = "JetBrains Mono";
-        color = "rgba(235, 219, 178, 1.0)";
-        position = "0, 600";
-        halign = "center";
-        shadow_passes = 1;
+      # аватар
+      image = {
+        path = "/home/user/Pictures/avatar.png";
+        size = 128;
+        border_color = "rgba(255, 255, 255, 1.0)";
+        border_size = 4;
+        position = "0, 80";
       };
 
-      background = [
+      # время и дата
+      label = [
         {
-          path = "screenshot";
-          blur_passes = 3;
-          blur_size = 8;
+          text = "$TIME"; # Часы
+          font_size = 64;
+          font_family = "JetBrainsMono Nerd Font";
+          color = "rgba(255, 255, 255, 1.0)";
+          position = "0, -100";
+          shadow = true;
+        }
+        {
+          text = "$TIME:%A, %d"; # Дата
+          font_size = 24;
+          font_family = "JetBrainsMono Nerd Font";
+          color = "rgba(208, 208, 208, 1.0)";
+          position = "0, -50";
         }
       ];
 
-      input-field = [
+      # поле ввода пароля
+      input-field = {
+        size = "200, 40";
+        outline_thickness = 2;
+        outline_color = "rgba(255, 255, 255, 1.0)";
+        inner_color = "rgba(0, 0, 0, 0.5)";
+        rounding = 12;
+        position = "0, 180";
+      };
+    };
+  };
+
+  # Блокировка через 60 секунд простоя
+  services.hypridle = {
+    enable = true;
+    settings = {
+      general = {
+        before_sleep_cmd = "loginctl lock-session";
+        after_sleep_cmd = "hyprctl dispatch dpms on";
+      };
+      listener = [
         {
-          size = "200, 50";
-          position = "0, -80";
-          monitor = "";
-          dots_center = true;
-          font_color = "rgb(235, 219, 178)";
-          inner_color = "rgb(40, 40, 40)";
-          outer_color = "rgb(60, 56, 54)";
-          outline_thickness = 5;
-          placeholder_text = "sussy baka";
-          shadow_passes = 1;
+          timeout = 60; # секунд
+          on-timeout = "loginctl lock-session";
         }
       ];
     };

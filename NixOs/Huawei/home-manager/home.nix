@@ -1,8 +1,7 @@
 { config, pkgs, ... }: {
 
   imports = [
-      ./modules/hyprland/default.nix
-      ./modules/wofi/default.nix
+      ./modules
       ./home-packages.nix
 
   ];
@@ -42,11 +41,6 @@
     '';
   };
 
-	programs.git = {
-		enable = true;
-		userName = "crypto_mrx";
-		userEmail = "maksim.ilonov@yandex.ru";
-	};
 
 
 }
