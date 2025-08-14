@@ -4,8 +4,17 @@
   wayland.windowManager.hyprland.settings = {
     # Основные бинды
     bind = [
+      # Запуск терминала
+      "$mainMod, T, exec, kitty"
+
+      # Закрыть активное окно
+      "$mainMod, Q, killactive,"
+
+      # Выход из Hyprland
+      "$mainMod, M, exit,"
+ 
       # Запуск лаунчера приложений
-      "$mainMod, R, exec, wofi --show drun"
+     "$mainMod, R, exec, wofi --show drun"
 
       # Переключение между рабочими столами
       "$mainMod, 1, workspace, 1"

@@ -2,7 +2,9 @@
 
   imports = [
       ./modules/hyprland/default.nix
+      ./modules/wofi/default.nix
       ./home-packages.nix
+
   ];
 
   home = {
@@ -14,6 +16,7 @@
     enable = true;
     shellAliases = {
       rebuild = "sudo nixos-rebuild switch --flake ./";
+      homebuild = "home-manager switch --flake ./";
     };
   };
   
