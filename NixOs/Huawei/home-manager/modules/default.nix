@@ -11,7 +11,7 @@
     # ./obsidian.nix
     # ./ranger.nix
     # ./starship.nix
-    # ./stylix.nix
+    ./stylix.nix
     # ./swaync
     # ./tmux.nix
     ./waybar

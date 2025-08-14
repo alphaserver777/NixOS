@@ -7,11 +7,13 @@
       # Запуск терминала
       "$mainMod, T, exec, kitty"
 
+      "$mainMod, L, exec, hyprlock"
+
       # Закрыть активное окно
-      "$mainMod, Q, killactive,"
+      "$mainMod, Q, killactive"
 
       # Выход из Hyprland
-      "$mainMod, M, exit,"
+      "$mainMod, M, exit"
  
       # Запуск лаунчера приложений
      "$mainMod, R, exec, wofi --show drun"

@@ -1,71 +1,49 @@
-
 {
-  programs.hyprlock = {
-    enable = true;
+  programs = {
+    hyprlock = {
+      enable = true;
+      settings = {
+        # Общие настройки поведения
+        general = {
+          # Скрываем курсор, чтобы не отвлекал
+          hide_cursor = true;
+        };
 
-    settings = {
-      # фон
-      background = {
-        path = "/home/user/Pictures/wallpapers/lockscreen.png";
-        blur_size = 8;
-        blur_passes = 3;
-        color = "rgba(30, 30, 46, 1.0)";
+        # Настройки фона
+        background = [
+          {
+            # Делаем скриншот текущего рабочего стола и затемняем его
+            path = "screenshot";
+            blur_passes = 4;
+            blur_size = 10;
+            contrast = 0.5;
+            brightness = 0.5;
+            vibrancy = 0.5;
+          }
+        ];
+
+        # Поле для ввода пароля
+        input-field = [
+          {
+            # Позиция поля ввода
+            position = "0, 0";
+            # Размер
+            size = "300, 60";
+            # Цвет текста (зеленый)
+            font_color = "rgb(00ff00)";
+            # Цвет внутренней части поля (темный)
+            inner_color = "rgb(1a1a1a)";
+            # Цвет границы (зеленый)
+            outer_color = "rgb(00ff00)";
+            # Толщина границы
+            outline_thickness = 2;
+            # Текст-заполнитель
+            placeholder_text = "ACCESS CODE";
+            # Анимация
+            fade_on_empty = false;
+          }
+        ];
       };
-
-      # аватар
-      image = {
-        path = "/home/user/Pictures/avatar.png";
-        size = 128;
-        border_color = "rgba(255, 255, 255, 1.0)";
-        border_size = 4;
-        position = "0, 80";
-      };
-
-      # время и дата
-      label = [
-        {
-          text = "$TIME"; # Часы
-          font_size = 64;
-          font_family = "JetBrainsMono Nerd Font";
-          color = "rgba(255, 255, 255, 1.0)";
-          position = "0, -100";
-          shadow = true;
-        }
-        {
-          text = "$TIME:%A, %d"; # Дата
-          font_size = 24;
-          font_family = "JetBrainsMono Nerd Font";
-          color = "rgba(208, 208, 208, 1.0)";
-          position = "0, -50";
-        }
-      ];
-
-      # поле ввода пароля
-      input-field = {
-        size = "200, 40";
-        outline_thickness = 2;
-        outline_color = "rgba(255, 255, 255, 1.0)";
-        inner_color = "rgba(0, 0, 0, 0.5)";
-        rounding = 12;
-        position = "0, 180";
-      };
-    };
-  };
-
-  # Блокировка через 60 секунд простоя
-  services.hypridle = {
-    enable = true;
-    settings = {
-      general = {
-        before_sleep_cmd = "loginctl lock-session";
-        after_sleep_cmd = "hyprctl dispatch dpms on";
-      };
-      listener = [
-        {
-          timeout = 60; # секунд
-          on-timeout = "loginctl lock-session";
-        }
-      ];
     };
   };
 }
