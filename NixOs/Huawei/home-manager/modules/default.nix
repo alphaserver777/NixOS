@@ -13,10 +13,10 @@
     ./starship.nix
     ./stylix.nix
     # ./swaync
-    # ./tmux.nix
+    ./tmux.nix
     ./waybar
     ./wofi
     # ./zathura.nix
-    # ./zsh.nix
+    ./zsh.nix
   ];
 }
