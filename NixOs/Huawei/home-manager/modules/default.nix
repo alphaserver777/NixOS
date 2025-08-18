@@ -16,7 +16,7 @@
     ./tmux.nix
     ./waybar
     ./wofi
-    # ./zathura.nix
+    # ./zathura.nix # PDF reader
     ./zsh.nix
   ];
 }
