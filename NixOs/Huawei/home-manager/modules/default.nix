@@ -3,11 +3,11 @@
     ./alacritty.nix
     # ./bat.nix
     # ./chromium.nix
-    # ./eza.nix
+    ./eza.nix # красивый вывод папок и файлов
     ./git.nix
     ./hyprland
     ./lazygit.nix
-    # ./neovim.nix
+    ./neovim.nix
     # ./obsidian.nix
     ./ranger.nix
     ./starship.nix
