@@ -10,9 +10,6 @@
       ./hardware-configuration.nix
     ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "Huawei"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -21,14 +18,10 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable networking
-  networking.networkmanager.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Moscow";
   
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-
   # Select internationalisation properties.
   i18n.defaultLocale = "ru_RU.UTF-8";
 
@@ -61,19 +54,6 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  programs.zsh.enable = true;
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.admsys = {
-    isNormalUser = true;
-    description = "admsys";
-    shell = pkgs.zsh;
-    #initialPassword = "123";
-    #hashedPassword = "$6$jvn1.QcIe2jXmbQe$9u.k5meiiEK2EUqe8zI2liZ7ECaDh0XTxz5cvVc6entReVolwzZBW9R22JzOsTlWk/h0NesBpxHjfwSYh2kqf1";
-    extraGroups = [ "networkmanager" "wheel" "audio" ];
-    packages = with pkgs; [
-    #  thunderbird
-    ];
-  };
  
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -101,16 +81,10 @@
   wev
   ];
   
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
 
 # VPN demon
   programs.amnezia-vpn.enable = true;  
   
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    };
 
   # Настройка дисплейного менеджера (например, SDDM)
   services.displayManager.sddm.enable = true;

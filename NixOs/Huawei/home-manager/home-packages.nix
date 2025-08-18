@@ -16,6 +16,7 @@
     wev
     pamixer
     brightnessctl
+    tree
 
 
     # # Desktop apps
@@ -34,12 +35,12 @@
     # bc
     # bottom
     # brightnessctl
-    # cliphist
+    cliphist
     # ffmpeg
     # ffmpegthumbnailer
     # fzf
     # git-graph
-    # grimblast
+    grimblast
     # htop
     # hyprpicker
     # ntfs3g
