@@ -2,11 +2,11 @@
 {
   wayland.windowManager.hyprland.settings = {
     bind = [
-      "$mainMod,       T, exec, kitty"
+      "$mainMod,       T, exec, $terminal"
       "$mainMod,       Q, killactive,"
       "$mainMod,       M, exit,"
       "$mainMod,       R, exec, wofi --show drun"
-      # "$mainMod SHIFT, R, exec, $fileManager"
+      "$mainMod SHIFT, R, exec, $fileManager"
       "$mainMod,       F, togglefloating,"
       # "$mainMod,       D, exec, $menu --show drun"
       "$mainMod,       P, pin,"
@@ -15,7 +15,7 @@
       "$mainMod,       B, exec, pkill -SIGUSR2 waybar"
       "$mainMod SHIFT, B, exec, pkill -SIGUSR1 waybar"
       "$mainMod,       L, exec, loginctl lock-session"
-      # "$mainMod,       N, exec, swaync-client -t"
+      "$mainMod,       N, exec, swaync-client -t"
       ", Print, exec, grimblast --notify --freeze copysave area"
 
       # Moving focus

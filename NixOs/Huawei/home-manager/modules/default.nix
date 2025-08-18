@@ -1,6 +1,6 @@
 {
   imports = [
-    # ./alacritty.nix
+    ./alacritty.nix
     # ./bat.nix
     # ./chromium.nix
     # ./eza.nix
@@ -9,10 +9,10 @@
     ./lazygit.nix
     # ./neovim.nix
     # ./obsidian.nix
-    # ./ranger.nix
+    ./ranger.nix
     ./starship.nix
     ./stylix.nix
-    # ./swaync
+    ./swaync
     ./tmux.nix
     ./waybar
     ./wofi

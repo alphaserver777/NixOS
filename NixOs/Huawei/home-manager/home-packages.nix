@@ -3,8 +3,6 @@
 
   home.packages = with pkgs; [
     # Packages in each category are sorted alphabetically
-
-    
     kitty # Терминал
     wofi # Лаунчер
     nixpkgs-fmt
@@ -17,6 +15,7 @@
     pamixer
     brightnessctl
     tree
+    ranger
 
 
     # # Desktop apps
