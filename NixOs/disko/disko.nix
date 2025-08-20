@@ -3,7 +3,7 @@
   disko.devices = {
     disk = {
       my-disk = {
-        device = "/dev/sda";
+        device = "/dev/sdX";
         type = "disk";
         content = {
           type = "gpt";

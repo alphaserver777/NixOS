@@ -95,60 +95,21 @@ sudo nix --experimental-features "nix-command flakes" run github:nix-community/d
 
 Начнём настройку конфигурационного файла. Сгенерировать его можно следующей командой:
 
-```
+```bash
 sudo nixos-generate-config --root /mnt
 ```
 
 ```bash
-mv /mnt/etc/nixos/hardware-configuration.nix hardware-configuration.nix 
+cp /mnt/etc/nixos/hardware-configuration.nix hardware-configuration.nix 
 
 ```
 Далее необходимо отредактировать файл любым удобным для вас редактором, например nano или vim:
 
-```
-sudo nano /mnt/etc/nixos/configuration.nix
+```bash
 sudo vim /mnt/etc/nixos/configuration.nix
 ```
 
-Файл достаточно объёмный и содержит множество примеров конфигурации системы. Сейчас мы не будем разбирать, что означает каждый из них, лишь отредактируем пару необходимых строчек.
-
-1. **Сеть** \- зададим имя хоста TestNixOS и включим автозапуск сервиса networkmanager:
-	```
-	networking.hostName = "TestNixOS"; # Define your hostname.
-	# Pick only one of the below networking options.
-	# networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-	networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
-	```
-2. **Временная зона** - зададим временную зону, в которой находимся:
-	```
-	# Set your time zone.
-	time.timeZone = "Europe/Moscow";
-	```
-3. **Пользователь** \- настроим пользователя, указав его имя, вместо стандартного alice, а также раскомментируем несколько нужных строк. Здесь некоторые указывают ещё и пароль пользователя, но из соображений безопасности так делать не рекомендуется:
-	```
-	# Define a user account. Don't forget to set a password with ‘passwd’.
-	users.users.test = {
-	  isNormalUser = true;
-	  extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-	#   packages = with pkgs; [
-	#     firefox
-	#     tree
-	#   ];
-	};
-	```
-4. **Скачивание пакетов** - шаг не обязательный, но если вам нужно, то есть возможность перечислить все требуемые пакеты для установки. NixOS загрузит их в процессе. Этот шаг мне нужен, чтобы добавить VIM:
-	```
-	# List packages installed in system profile. To search, run:
-	# $ nix search wget
-	environment.systemPackages = with pkgs; [
-	  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-	#   wget
-	];
-	```
-
-Наконец, сохраняем файл и выполним установку. Перед выполнением команды я рекомендую проверить интернет соединение или вовсе выполнить этот шаг на машине локально, т.к. в конце нас попросят указать пароль от root пользователя. Без него, как можно догадаться, в систему не попасть:
-
-```
+```bash
 sudo nixos-install
 sudo nixos-install --flake .#HomeLab1
 ```
@@ -157,4 +118,9 @@ sudo nixos-install --flake .#HomeLab1
 
 Дожидаемся конца установки системы, вводим пароль от root пользователя и перезагружаемся с помощью команды `reboot`.
 
-После завершения загрузки выполняем вход под учётной записью root, и изменяем пароль пользователю test:
+После завершения загрузки выполняем вход под учётной записью root, и изменяем пароль пользователю user:
+
+```bash
+sudo nixos-enter
+passwd user
+```
