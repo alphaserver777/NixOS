@@ -1,7 +1,7 @@
 { pkgs, ... }: {
   # Частные программы узла
   environment.systemPackages = with pkgs; [
-    chromium
+    google-chrome
     telegram-desktop
     obsidian
     syncthing
