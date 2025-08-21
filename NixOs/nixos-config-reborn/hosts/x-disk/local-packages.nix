@@ -1,5 +1,15 @@
 { pkgs, ... }: {
+  # Частные программы узла
   environment.systemPackages = with pkgs; [
+    chromium
+    telegram-desktop
+    obsidian
+    syncthing
+    amnezia-vpn
+    keepass
+    qbittorrent
+    home-manager
+    neovim
     # gcc
     # kdenlive
     # jetbrains.pycharm-professional

@@ -1,23 +1,28 @@
 { pkgs, ... }: {
   nixpkgs.config.allowUnfree = true;
 
+#Общие программы - будут установлены для всех hosts
+
   home.packages = with pkgs; [
     # Packages in each category are sorted alphabetically
-    kitty # Терминал
+    alacritty # Терминал
     wofi # Лаунчер
     nixpkgs-fmt
     dunst
     libnotify
     waybar
     wl-clipboard
-    qbittorrent
     wev
     pamixer
     brightnessctl
     tree
     ranger
-
-
+    xclip
+    neofetch
+    mc
+    woeusb
+    wev
+    
     # # Desktop apps
     # anki
     # code-cursor
