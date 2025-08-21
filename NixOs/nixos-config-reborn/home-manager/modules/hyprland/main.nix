@@ -13,7 +13,7 @@
         "XDG_SCREENSHOTS_DIR,$HOME/screens"
       ];
 
-      monitor = ",1920x1080@60,auto,1.5";
+      monitor = ",1920x1080@60,auto,1.25";
       "$mainMod" = "SUPER";
       "$terminal" = "alacritty";
       "$fileManager" = "$terminal -e sh -c 'ranger'";
@@ -56,11 +56,11 @@
       };
 
       animations = {
-        enabled = false;
+        enabled = true;
       };
 
       input = {
-        kb_layout = "us,ru,il";
+        kb_layout = "us,ru";
         kb_options = "grp:caps_toggle";
       };
 
@@ -93,12 +93,12 @@
         "move 990 60,size 900 170,pin,noinitialfocus,class:(showmethekey-gtk)"
         "noborder,nofocus,class:(showmethekey-gtk)"
 
-        "workspace 3,class:(obsidian)"
-        "workspace 3,class:(zathura)"
-        "workspace 4,class:(com.obsproject.Studio)"
-        "workspace 5,class:(telegram)"
-        "workspace 5,class:(vesktop)"
-        "workspace 6,class:(teams-for-linux)"
+        # "workspace 3,class:(obsidian)"
+        # "workspace 3,class:(zathura)"
+        # "workspace 4,class:(com.obsproject.Studio)"
+        # "workspace 5,class:(telegram)"
+        # "workspace 5,class:(vesktop)"
+        # "workspace 6,class:(teams-for-linux)"
 
         "suppressevent maximize, class:.*"
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"

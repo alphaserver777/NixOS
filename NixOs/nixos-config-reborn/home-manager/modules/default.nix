@@ -1,14 +1,14 @@
 {
   imports = [
     ./alacritty.nix
-    ./bat.nix
-    ./chromium.nix
-    ./eza.nix
+    # ./bat.nix
+    # ./chromium.nix
+    ./eza.nix # красивый вывод папок и файлов
     ./git.nix
     ./hyprland
     ./lazygit.nix
     ./neovim.nix
-    ./obsidian.nix
+    # ./obsidian.nix
     ./ranger.nix
     ./starship.nix
     ./stylix.nix
@@ -16,7 +16,7 @@
     ./tmux.nix
     ./waybar
     ./wofi
-    ./zathura.nix
+    # ./zathura.nix # PDF reader
     ./zsh.nix
   ];
 }

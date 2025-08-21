@@ -1,7 +1,10 @@
 {
-  programs.git = {
-    enable = true;
-    userName = "Andrey0189";
-    userEmail = "varnavsky06@gmail.com";
-  };
+	programs.git = {
+		enable = true;
+		userName = "crypto_mrx";
+		userEmail = "maksim.ilonov@yandex.ru";
+		extraConfig = {
+			url."git@github.com:".insteadOf = "https://github.com/";
+		};
+	};
 }

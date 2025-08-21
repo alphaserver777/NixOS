@@ -14,5 +14,6 @@
     ./timezone.nix
     ./user.nix
     ./zram.nix
+    ./amneziavpn.nix
   ];
 }

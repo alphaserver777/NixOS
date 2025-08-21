@@ -23,6 +23,7 @@
     user = "admsys";
     hosts = [
       { hostname = "srv-home"; stateVersion = "25.05"; }
+      { hostname = "x-disk"; stateVersion = "25.05"; }
     ];
 
     makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {
