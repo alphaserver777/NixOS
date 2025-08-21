@@ -124,3 +124,11 @@ sudo nixos-install --flake .#HomeLab1
 sudo nixos-enter
 passwd user
 ```
+#SSH
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "ваш_email@example.com"
+
+git remote set-url origin git@github.com:username/repository.git
+```
+
