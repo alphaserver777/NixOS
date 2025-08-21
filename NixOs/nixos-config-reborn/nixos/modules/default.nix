@@ -15,5 +15,6 @@
     ./user.nix
     ./zram.nix
     ./amneziavpn.nix
+    ./displayManager.nix
   ];
 }
