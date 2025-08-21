@@ -8,9 +8,9 @@
         builtin_box_drawing = true;
         normal = {
 	  family = "JetBrains Mono";
-          style = "Bold";
+          style = lib.mkDefault "Bold";
         };
-	size = 12.0;
+	size = lib.mkForce 10.0;
       };
     };
   };

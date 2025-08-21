@@ -1,48 +1,49 @@
 {
-  programs.hyprlock = {
-    enable = true;
-    settings = {
-      general = {
-        disable_loading_bar = true;
-        grace = 10;
-        hide_cursor = true;
-        no_fade_in = false;
+  programs = {
+    hyprlock = {
+      enable = true;
+      settings = {
+        # Общие настройки поведения
+        general = {
+          # Скрываем курсор, чтобы не отвлекал
+          hide_cursor = true;
+        };
+
+        # Настройки фона
+        background = [
+          {
+            # Делаем скриншот текущего рабочего стола и затемняем его
+            path = "screenshot";
+            blur_passes = 4;
+            blur_size = 10;
+            contrast = 0.5;
+            brightness = 0.5;
+            vibrancy = 0.5;
+          }
+        ];
+
+        # Поле для ввода пароля
+        input-field = [
+          {
+            # Позиция поля ввода
+            position = "0, 0";
+            # Размер
+            size = "300, 60";
+            # Цвет текста (зеленый)
+            font_color = "rgb(00ff00)";
+            # Цвет внутренней части поля (темный)
+            inner_color = "rgb(1a1a1a)";
+            # Цвет границы (зеленый)
+            outer_color = "rgb(00ff00)";
+            # Толщина границы
+            outline_thickness = 2;
+            # Текст-заполнитель
+            placeholder_text = "ACCESS CODE";
+            # Анимация
+            fade_on_empty = false;
+          }
+        ];
       };
-
-      label = {
-        text = "$TIME";
-        font_size = 96;
-        font_family = "JetBrains Mono";
-        color = "rgba(235, 219, 178, 1.0)";
-        position = "0, 600";
-        halign = "center";
-        walign = "center";
-
-        shadow_passes = 1;
-      };
-
-      background = [
-        {
-          path = "screenshot";
-          blur_passes = 3;
-          blur_size = 8;
-        }
-      ];
-
-      input-field = [
-        {
-          size = "200, 50";
-          position = "0, -80";
-          monitor = "";
-          dots_center = true;
-          font_color = "rgb(235, 219, 178)";
-          inner_color = "rgb(40, 40, 40)";
-          outer_color = "rgb(60, 56, 54)";
-          outline_thickness = 5;
-          placeholder_text = "sussy baka";
-          shadow_passes = 1;
-        }
-      ];
     };
   };
 }
