@@ -1,10 +1,17 @@
 { pkgs, ... }: {
+  # Частные программы узла
   environment.systemPackages = with pkgs; [
-    gcc
-    kdePackages.kdenlive
-    vim
-    git
-    mc
+    google-chrome
+    telegram-desktop
+    # obsidian
+    syncthing
+    amnezia-vpn
+    # keepass
+    # qbittorrent
+    home-manager
+    neovim
+    # gcc
+    # kdenlive
     # jetbrains.pycharm-professional
     # jre8
     # qemu

@@ -12,8 +12,5 @@
   networking.hostName = hostname;
 
   system.stateVersion = stateVersion;
- 
-  services.openssh.enable = true;
-
 }
 
