@@ -68,19 +68,19 @@ To get started with this setup, follow these steps:
 
 7. **Rebuilding**:
 
-    ```bash
-    cd nixos-config-reborn
-    git add .
-    nixos-rebuild switch --flake ./#<hostname>
-    # or nixos-install --flake ./#<hostname> if you are installing on a fresh system
-    home-manager switch
-    ```
+```bash
+cd nixos-config-reborn
+git add .
+sudo nixos-rebuild switch --flake .#<hostname>
+# or sudo nixos-install --flake .#<hostname> if you are installing on a fresh system
+home-manager switch --flake .#<your_username>
+```
 
-## 😎 Enjoy!
+#AmneziaVPN
 
-![screenshot](./screenshots/screenshot2.png)
+if err:
 
-## 🤝 Contributions
-
-Feel free to fork the repository and submit pull requests if you'd like to contribute improvements. Open issues if you encounter any problems with the config or have ideas for new features.
-
+```bash
+ps aux | grep AmneziaVPN
+sudo kill -9 <ID_process>
+```
