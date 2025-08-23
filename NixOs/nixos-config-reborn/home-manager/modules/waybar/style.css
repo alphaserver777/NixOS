@@ -1,3 +1,34 @@
+/*
+ * Catppuccin Mocha Pallete
+ *
+ * Rosewater: #f5e0dc
+ * Flamingo: #f2cdcd
+ * Pink: #f5c2e7
+ * Mauve: #cba6f7
+ * Red: #f38ba8
+ * Maroon: #eba0ac
+ * Peach: #fab387
+ * Yellow: #f9e2af
+ * Green: #a6e3a1
+ * Teal: #94e2d5
+ * Sky: #89dceb
+ * Sapphire: #74c7ec
+ * Blue: #89b4fa
+ * Lavender: #b4befe
+ * Text: #cdd6f4
+ * Subtext1: #bac2de
+ * Subtext0: #a6adc8
+ * Overlay2: #9399b2
+ * Overlay1: #7f849c
+ * Overlay0: #6c7086
+ * Surface2: #585b70
+ * Surface1: #45475a
+ * Surface0: #313244
+ * Base: #1e1e2e
+ * Mantle: #181825
+ * Crust: #11111b
+ */
+
 * {
   border: none;
   border-radius: 0px;
@@ -5,23 +36,23 @@
   font-weight: bold;
   font-size: 16px;
   min-height: 0;
-  color: #ebdbb2;
+  color: #cdd6f4;
 }
 
 window#waybar {
-  background: #1d2021;
+  background: #1e1e2e;
 }
 
 /* Workspace Buttons */
-#workspaces button label{
-  color: #ebdbb2;
+#workspaces button label {
+  color: #cdd6f4;
   padding: 0 10px;
 }
 #workspaces button.active label {
-  color: #1d2021;
+  color: #1e1e2e;
 }
 #workspaces button.active {
-  background: #d65d0e;
+  background: #f2cdcd; /* Flamingo */
 }
 
 #clock, #battery, #pulseaudio, #tray, #language, #weather {
@@ -31,42 +62,42 @@ window#waybar {
 
 #language {
   margin: 0;
-  color: #d79921;
-  border-bottom: 5px solid #d79921;
+  color: #fab387; /* Peach */
+  border-bottom: 5px solid #fab387;
 }
 
 #custom-weather {
   margin: 0;
-  color: #98971a;
-  border-bottom: 5px solid #98971a
+  color: #f9e2af; /* Yellow */
+  border-bottom: 5px solid #f9e2af;
 }
 
 #pulseaudio {
   margin: 0;
-  color: #689d6a;
-  border-bottom: 5px solid #689d6a;
+  color: #a6e3a1; /* Green */
+  border-bottom: 5px solid #a6e3a1;
 }
 
 #pulseaudio.muted {
   padding: 0 20px;
-  color: #cc241d;
-  border-bottom: 5px solid #cc241d;
+  color: #f38ba8; /* Red */
+  border-bottom: 5px solid #f38ba8;
 }
 
 #battery {
   margin: 0;
-  color: #458588;
-  border-bottom: 5px solid #458588;
+  color: #89b4fa; /* Blue */
+  border-bottom: 5px solid #89b4fa;
 }
 
 #clock {
   margin: 0;
-  color: #b16286;
-  border-bottom: 5px solid #b16286;
+  color: #b4befe; /* Lavender */
+  border-bottom: 5px solid #b4befe;
 }
 
 #tray {
   margin: 0;
-  color: #d65d0e;
-  border-bottom: 5px solid #d65d0e;
+  color: #f5e0dc; /* Rosewater */
+  border-bottom: 5px solid #f5e0dc;
 }

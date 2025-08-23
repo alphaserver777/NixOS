@@ -3,21 +3,21 @@
 
   home.packages = with pkgs; [
     dejavu_fonts
-    jetbrains-mono
-    noto-fonts
-    noto-fonts-lgc-plus
-    texlivePackages.hebrew-fonts
-    noto-fonts-emoji
-    font-awesome
-    powerline-fonts
-    powerline-symbols
-    nerd-fonts.symbols-only
+      jetbrains-mono
+      noto-fonts
+      noto-fonts-lgc-plus
+      texlivePackages.hebrew-fonts
+      noto-fonts-emoji
+      font-awesome
+      powerline-fonts
+      powerline-symbols
+      nerd-fonts.symbols-only
   ];
 
   stylix = {
     enable = true;
     polarity = "dark";
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
     targets = {
       neovim.enable = false;
@@ -69,4 +69,4 @@
       sha256 = "036gqhbf6s5ddgvfbgn6iqbzgizssyf7820m5815b2gd748jw8zc";
     };
   };
-}
+                       }

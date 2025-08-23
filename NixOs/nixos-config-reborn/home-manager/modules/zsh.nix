@@ -7,40 +7,40 @@
 
     shellAliases =
       let
-        flakeDir = "~/flake";
-      in {
-        sw = "nh os switch";
-        upd = "nh os switch --update";
-        hms = "nh home switch";
+      flakeDir = "~/flake";
+    in {
+      sw = "sudo nixos-rebuild switch --flake .#$(hostname)";
+      upd = "ip a";
+      hms = "home-manager switch --flake ~/GitOps/NixOs/nixos-config-reborn/#admsys";
 
-        pkgs = "nvim ${flakeDir}/nixos/packages.nix";
+      pkgs = "nvim ${flakeDir}/nixos/packages.nix";
 
-        r = "ranger";
-        v = "nvim";
-        se = "sudoedit";
-        microfetch = "microfetch && echo";
+      r = "ranger";
+      v = "nvim";
+      se = "sudoedit";
+      microfetch = "microfetch && echo";
 
-        gs = "git status";
-        ga = "git add";
-        gc = "git commit";
-        gp = "git push";
+      gs = "git status";
+      ga = "git add";
+      gc = "git commit";
+      gp = "git push";
 
-        ".." = "cd ..";
-      };
+      ".." = "cd ..";
+    };
 
     history.size = 10000;
     history.path = "${config.xdg.dataHome}/zsh/history";
 
     initExtra = ''
-      # Start Tmux automatically if not already running. No Tmux in TTY
+# Start Tmux automatically if not already running. No Tmux in TTY
       if [ -z "$TMUX" ] && [ -n "$DISPLAY" ]; then
         tmux attach-session -t default || tmux new-session -s default
-      fi
+          fi
 
-      # Start UWSM
-      if uwsm check may-start > /dev/null && uwsm select; then
-        exec systemd-cat -t uwsm_start uwsm start default
-      fi
-    '';
+# Start UWSM
+          if uwsm check may-start > /dev/null && uwsm select; then
+            exec systemd-cat -t uwsm_start uwsm start default
+              fi
+              '';
   };
-}
+                 }

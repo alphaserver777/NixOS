@@ -3,12 +3,12 @@
     enable = true;
     plugins = with pkgs.vimPlugins; [
       gruvbox-material
-        nerdtree
-        nvim-web-devicons
-        which-key-nvim
-        vim-fugitive
-        comment-nvim
-        vim-autoformat # Добавляем плагин для автоформатирования
+      nerdtree
+      nvim-web-devicons
+      which-key-nvim
+      vim-fugitive
+      comment-nvim
+      vim-autoformat # Добавляем плагин для автоформатирования
     ];
     extraConfig = ''
       set tabstop=2
