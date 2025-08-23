@@ -43,7 +43,7 @@
 
         "custom/weather" = {
           format = " {} ";
-          exec = "curl -s 'wttr.in/Krasnodar?format=%c%t'";
+          exec = "curl -s 'wttr.in/Krasnodar?format=%c%t&m'";
           interval = 300;
           class = "weather";
         };
