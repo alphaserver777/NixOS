@@ -2,6 +2,8 @@
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
+    zed-editor
+    btop
     telegram-desktop
     obsidian
     syncthing
