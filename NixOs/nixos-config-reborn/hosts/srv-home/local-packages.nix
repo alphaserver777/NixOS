@@ -2,6 +2,7 @@
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
+    btop
     telegram-desktop
     # obsidian
     syncthing
@@ -10,6 +11,8 @@
     # qbittorrent
     home-manager
     neovim
+    docker
+    docker-compose
     # gcc
     # kdenlive
     # jetbrains.pycharm-professional
