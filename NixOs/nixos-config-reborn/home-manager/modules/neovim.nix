@@ -1,14 +1,20 @@
 { pkgs, ... }: {
   programs.neovim = {
     enable = true;
+    extraPackages = with pkgs; [
+      lua-language-server
+        python311Packages.python-lsp-server
+        nixd
+        vimPlugins.nvim-treesitter-parsers.hyprlang
+    ];
     plugins = with pkgs.vimPlugins; [
       gruvbox-material
-      nerdtree
-      nvim-web-devicons
-      which-key-nvim
-      vim-fugitive
-      comment-nvim
-      vim-autoformat # Добавляем плагин для автоформатирования
+        nerdtree
+        nvim-web-devicons
+        which-key-nvim
+        vim-fugitive
+        comment-nvim
+        vim-autoformat # Добавляем плагин для автоформатирования
     ];
     extraConfig = ''
       set tabstop=2

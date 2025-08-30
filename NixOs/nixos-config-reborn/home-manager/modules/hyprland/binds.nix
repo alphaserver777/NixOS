@@ -5,10 +5,10 @@
       "$mainMod,       T, exec, $terminal"
         "$mainMod,       Q, killactive,"
         "$mainMod,       M, exit,"
-        "$mainMod,       R, exec, wofi --show drun"
+        "$mainMod SHIFT, M, exec, poweroff"
+        "$mainMod,       R, exec, $menu --show drun"
         "$mainMod SHIFT, R, exec, $fileManager"
         "$mainMod,       F, togglefloating,"
-# "$mainMod,       D, exec, $menu --show drun"
         "$mainMod,       P, pin,"
         "$mainMod,       J, togglesplit,"
         "$mainMod,       V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
@@ -17,7 +17,6 @@
         "$mainMod,       L, exec, loginctl lock-session"
         "$mainMod,       N, exec, swaync-client -t"
         ", Print, exec, grimblast --notify --freeze copysave area"
-        "$mainMod, Space, exec, hyprctl switchxkblayout at-translated-set-2-keyboard next"
 
 # Moving focus
         "$mainMod, left, movefocus, l"

@@ -76,8 +76,7 @@
         };
 
         "clock" = {
-          format = "{:%d.%m.%Y - %H:%M}";
-          format-alt = "{:%A, %B %d at %R}";
+          format = "{:%a %d%b %I:%M %p}";
         };
 
         "tray" = {
