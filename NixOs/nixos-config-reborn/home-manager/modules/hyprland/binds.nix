@@ -6,6 +6,7 @@
         "$mainMod,       Q, killactive,"
         "$mainMod,       M, exit,"
         "$mainMod SHIFT, M, exec, poweroff"
+        "$mainMod ALT,   M, exec, reboot"
         "$mainMod,       R, exec, $menu --show drun"
         "$mainMod SHIFT, R, exec, $fileManager"
         "$mainMod,       F, togglefloating,"
