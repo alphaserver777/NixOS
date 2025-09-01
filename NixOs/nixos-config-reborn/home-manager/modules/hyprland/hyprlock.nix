@@ -13,10 +13,12 @@
         background = [
         {
 # Устанавливаем изображение
-          path = "/home/admsys/wallpapers/otherWallpaper/gruvbox/forest_road.jpg";
+          path = "/home/admsys/GitOps/NixOs/nixos-config-reborn/wallpapers/space.png";
+
+# path = "../../../wallpapers/bsod.png";
 # Применяем эффекты
-          blur_passes = 4;
-          blur_size = 10;
+          blur_passes = 0.5;
+          blur_size = 2;
           contrast = 0.5;
           brightness = 0.5;
           vibrancy = 0.5;
@@ -29,11 +31,11 @@
         {
           monitor = "";
           text = ''cmd[update:1000] echo "$(date +'%k:%M')"'';
-          color = "rgba(235, 219, 178, 0.9)";
-          font_size = 115;
+          color = "rgba(205, 214, 244)";
+          font_size = 80;
           font_family = "Maple Mono Bold";
           shadow_passes = 3;
-          position = "0, -25";
+          position = "0, -50";
           halign = "center";
           valign = "top";
         }
@@ -41,7 +43,7 @@
         {
           monitor = "";
           text = ''cmd[update:1000] echo "- $(date +'%A, %B %d') -" '';
-          color = "rgba(235, 219, 178, 0.9)";
+          color = "rgba(205, 214, 244)";
           font_size = 18;
           font_family = "Maple Mono";
           shadow_passes = 3;
@@ -51,7 +53,6 @@
         }
         ];
 
-# Поле для ввода пароля (отдельный элемент)
         input-field = [
         {
 # Позиция поля ввода
@@ -59,13 +60,13 @@
 # Размер
           size = "300, 60";
 # Цвет текста
-          font_color = "rgb(00ff00)";
+          font_color = "rgb(205, 214, 244)"; # Catppuccin Mocha 'Text'
 # Цвет внутренней части
-          inner_color = "rgb(1a1a1a)";
+            inner_color = "rgb(49, 50, 68)"; # Catppuccin Mocha 'Surface2'
 # Цвет границы
-          outer_color = "rgb(00ff00)";
+            outer_color = "rgb(186, 187, 241)"; # Catppuccin Mocha 'Lavender'
 # Толщина границы
-          outline_thickness = 2;
+            outline_thickness = 2;
 # Текст-заполнитель
           placeholder_text = "ACCESS CODE";
 # Анимация
