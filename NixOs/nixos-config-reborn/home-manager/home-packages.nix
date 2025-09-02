@@ -71,10 +71,10 @@
 # python311
 #
 # # WM stuff
-# libsForQt5.xwaylandvideobridge
-# libnotify
-# xdg-desktop-portal-gtk
-# xdg-desktop-portal-hyprland
+      libsForQt5.xwaylandvideobridge
+      libnotify
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-hyprland
 #
 # # Other
 # bemoji
