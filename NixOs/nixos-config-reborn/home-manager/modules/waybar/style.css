@@ -84,6 +84,13 @@ window#waybar {
   border-bottom: 5px solid #f38ba8;
 }
 
+/* Стили для Wi-Fi */
+#waybar #network.wifi {
+  padding: 0 20px;
+  color: #f38ba8; /* Red */
+  border-bottom: 5px solid #f38ba8;
+}
+
 #battery {
   margin: 0;
   color: #89b4fa; /* Blue */
