@@ -5,9 +5,9 @@
     defaultUserShell = pkgs.zsh;
     users.${user} = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "networkmanager" ];
+      extraGroups = [ "wheel" "networkmanager" "syncthing"];
     };
   };
 
-  #services.getty.autologinUser = user;
-}
+#services.getty.autologinUser = user;
+                     }
