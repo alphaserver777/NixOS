@@ -1,12 +1,14 @@
 { pkgs, ... }: {
   programs.neovim = {
     enable = true;
+
     extraPackages = with pkgs; [
       lua-language-server
         python311Packages.python-lsp-server
         nixd
         vimPlugins.nvim-treesitter-parsers.hyprlang
     ];
+
     plugins = with pkgs.vimPlugins; [
       gruvbox-material
         nerdtree
@@ -14,8 +16,10 @@
         which-key-nvim
         vim-fugitive
         comment-nvim
-        vim-autoformat # Добавляем плагин для автоформатирования
+        vim-autoformat
+        flash-nvim
     ];
+
     extraConfig = ''
       set tabstop=2
       set expandtab
@@ -37,6 +41,27 @@
       nnoremap <C-j> <C-w>j
       nnoremap <C-k> <C-w>k
       nnoremap <C-l> <C-w>l
+      '';
+
+    extraLuaConfig = ''
+      -- назначаем Space как <leader>
+      vim.g.mapleader = " "
+
+      require("flash").setup({
+          jump = {
+          autojump = true,
+          },
+          modes = {
+          search = {
+          enabled = true,
+          },
+          },
+          })
+
+    -- теперь вызвать flash можно через <Space>s
+      vim.keymap.set({"n","x","o"}, "<leader>s", function()
+          require("flash").jump()
+          end, { desc = "Flash jump" })
       '';
   };
                }
