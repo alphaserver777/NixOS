@@ -9,5 +9,10 @@
     };
   };
 
-#services.getty.autologinUser = user;
+# Отключение запроса пароля для sudo
+  security.sudo.wheelNeedsPassword = false;
+
                      }
+
+#services.getty.autologinUser = user;
+
