@@ -26,6 +26,9 @@
       p7zip
       home-manager
       neovim
+      nixvim
+      jq
+
 # gcc
 # kdenlive
 # jetbrains.pycharm-professional
