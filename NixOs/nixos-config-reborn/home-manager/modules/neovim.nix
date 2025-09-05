@@ -7,25 +7,23 @@
         python311Packages.python-lsp-server
         nixd
         vimPlugins.nvim-treesitter-parsers.hyprlang
-# Добавляем fd и ripgrep для Telescope
         fd
         ripgrep
     ];
 
     plugins = with pkgs.vimPlugins; [
-# Заменяем gruvbox-material на catppuccin-nvim
       catppuccin-nvim
-        nerdtree
+        neo-tree-nvim
         nvim-web-devicons
         which-key-nvim
         vim-fugitive
         comment-nvim
         vim-autoformat
         flash-nvim
-# Добавляем Telescope
         telescope-nvim
         lualine-nvim
         bufferline-nvim
+        gitsigns-nvim
     ];
 
     extraConfig = ''
@@ -37,9 +35,6 @@
       set hlsearch
       set incsearch
       set clipboard=unnamedplus
-
-      " Горячая клавиша для переключения NerdTree
-      map <C-n> :NERDTreeToggle<CR>
 
       " Автоматическое форматирование при сохранении
       autocmd BufWritePre * Autoformat
@@ -55,42 +50,32 @@
       -- назначаем Space как <leader>
       vim.g.mapleader = " "
 
-      -- Настройка темы Catppuccin
-      require('catppuccin').setup({
+      -- Catppuccin тема
+      require("catppuccin").setup({
           flavour = "mocha",
           transparent_background = false,
           integrations = {
           alpha = true,
           cmp = true,
           gitsigns = true,
-          nvimtree = true,
           telescope = true,
           which_key = true,
-          bufferline = true, -- Добавляем интеграцию с bufferline
+          bufferline = true,
           },
           })
-
     vim.cmd.colorscheme "catppuccin"
 
+      -- Flash.nvim
       require("flash").setup({
-          jump = {
-          autojump = true,
-          },
-          modes = {
-          search = {
-          enabled = true,
-          },
-          },
+          jump = { autojump = true },
+          modes = { search = { enabled = true } },
           })
-
     vim.keymap.set({"n","x","o"}, "<leader>s", function()
         require("flash").jump()
         end, { desc = "Flash jump" })
 
-      ---
-      -- Настройка и горячие клавиши для Telescope
-      ---
-      require('telescope').setup({
+      -- Telescope
+      require("telescope").setup({
           defaults = {
           mappings = {
           i = {
@@ -100,55 +85,80 @@
           },
           },
           })
+    local builtin = require("telescope.builtin")
+      vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
+      vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Live grep" })
+      vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffers" })
+      vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Help tags" })
 
-    -- Горячие клавиши
-      local builtin = require('telescope.builtin')
-      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find files' })
-      vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live grep' })
-      vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Find buffers' })
-      vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Help tags' })
-
-      ---
-      -- Настройка lualine
-      ---
-      require('lualine').setup({
+      -- Lualine
+      require("lualine").setup({
           options = {
           icons_enabled = true,
-          theme = 'catppuccin',
+          theme = "catppuccin",
           },
           sections = {
-          lualine_a = {'mode'},
-          lualine_b = {'branch', 'diff', 'diagnostics'},
-          lualine_c = {'filename'},
-          lualine_x = {'filesize', 'filetype'},
-          lualine_y = {'progress'},
-          lualine_z = {'location'},
+          lualine_a = {"mode"},
+          lualine_b = {"branch", "diff", "diagnostics"},
+          lualine_c = {"filename"},
+          lualine_x = {"filesize", "filetype"},
+          lualine_y = {"progress"},
+          lualine_z = {"location"},
           },
-          -- tabline = {},  <-- Убрано, так как bufferline займется этим
           extensions = {},
           })
 
-    ---
-      -- Настройка bufferline
-      ---
-      require('bufferline').setup({
+    -- Bufferline
+      require("bufferline").setup({
           options = {
           numbers = "buffer_id",
-          indicator = {
-          style = 'underline'
-          },
+          indicator = { style = "underline" },
           diagnostics = "nvim_lsp",
           separator_style = "slant",
           show_buffer_close_icons = true,
           show_close_icon = false,
           }
           })
+    vim.keymap.set("n", "<Tab>", "<Cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
+      vim.keymap.set("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
+      vim.keymap.set("n", "<leader>bd", "<Cmd>BufferLineClose<CR>", { desc = "Close buffer" })
 
-    -- Горячие клавиши для bufferline
-      vim.keymap.set('n', '<Tab>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Next buffer' })
-      vim.keymap.set('n', '<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>', { desc = 'Previous buffer' })
-      vim.keymap.set('n', '<leader>bd', '<Cmd>BufferLineClose<CR>', { desc = 'Close buffer' })
+      -- Neo-tree
+      require("neo-tree").setup({
+          close_if_last_window = true,
+          filesystem = {
+          filtered_items = {
+          visible = true,
+          hide_dotfiles = false,
+          hide_gitignored = false,
+          },
+          },
+          window = {
+          position = "left",
+          width = 30,
+          },
+          })
 
-      '';
+    -- 🔑 Удобные хоткеи для переключения Neo-tree <-> редактор
+      -- Фокус в Neo-tree
+      vim.keymap.set("n", "<leader>1", function()
+          require("neo-tree.command").execute({ action = "focus" })
+          end, { desc = "Focus Neo-tree" })
+
+      -- Вернуться в редактор
+      vim.keymap.set("n", "<leader>2", "<C-w>p", { desc = "Focus editor window" })
+
+      -- Gitsigns
+      require("gitsigns").setup({
+          signs = {
+          add          = { text = "+" },
+          change       = { text = "│" },
+          delete       = { text = "_" },
+          topdelete    = { text = "‾" },
+          changedelete = { text = "~" },
+          },
+          current_line_blame = true,
+          })
+    '';
   };
                }
