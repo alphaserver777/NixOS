@@ -13,7 +13,8 @@
     ];
 
     plugins = with pkgs.vimPlugins; [
-      gruvbox-material
+# Заменяем gruvbox-material на catppuccin-nvim
+      catppuccin-nvim
         nerdtree
         nvim-web-devicons
         which-key-nvim
@@ -23,6 +24,7 @@
         flash-nvim
 # Добавляем Telescope
         telescope-nvim
+        lualine-nvim
     ];
 
     extraConfig = ''
@@ -52,6 +54,22 @@
       -- назначаем Space как <leader>
       vim.g.mapleader = " "
 
+      -- Настройка темы Catppuccin
+      require('catppuccin').setup({
+          flavour = "mocha", -- Доступные варианты: latte, frappe, macchiato, mocha
+          transparent_background = false,
+          integrations = {
+          alpha = true,
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          telescope = true,
+          which_key = true,
+          },
+          })
+
+    vim.cmd.colorscheme "catppuccin"
+
       require("flash").setup({
           jump = {
           autojump = true,
@@ -63,10 +81,9 @@
           },
           })
 
-    -- теперь вызвать flash можно через <Space>s
-      vim.keymap.set({"n","x","o"}, "<leader>s", function()
-          require("flash").jump()
-          end, { desc = "Flash jump" })
+    vim.keymap.set({"n","x","o"}, "<leader>s", function()
+        require("flash").jump()
+        end, { desc = "Flash jump" })
 
       ---
       -- Настройка и горячие клавиши для Telescope
@@ -88,6 +105,26 @@
       vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live grep' })
       vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Find buffers' })
       vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Help tags' })
-      '';
+
+      ---
+      -- Настройка lualine
+      ---
+      require('lualine').setup({
+          options = {
+          icons_enabled = true,
+          theme = 'catppuccin', -- Устанавливаем тему Catppuccin
+          },
+          sections = {
+          lualine_a = {'mode'},
+          lualine_b = {'branch', 'diff', 'diagnostics'},
+          lualine_c = {'filename'},
+          lualine_x = {'filesize', 'filetype'},
+          lualine_y = {'progress'},
+          lualine_z = {'location'},
+          },
+          tabline = {},
+          extensions = {},
+          })
+    '';
   };
                }
