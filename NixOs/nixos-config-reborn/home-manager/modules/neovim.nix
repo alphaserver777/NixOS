@@ -25,6 +25,7 @@
 # Добавляем Telescope
         telescope-nvim
         lualine-nvim
+        bufferline-nvim
     ];
 
     extraConfig = ''
@@ -56,7 +57,7 @@
 
       -- Настройка темы Catppuccin
       require('catppuccin').setup({
-          flavour = "mocha", -- Доступные варианты: latte, frappe, macchiato, mocha
+          flavour = "mocha",
           transparent_background = false,
           integrations = {
           alpha = true,
@@ -65,6 +66,7 @@
           nvimtree = true,
           telescope = true,
           which_key = true,
+          bufferline = true, -- Добавляем интеграцию с bufferline
           },
           })
 
@@ -112,7 +114,7 @@
       require('lualine').setup({
           options = {
           icons_enabled = true,
-          theme = 'catppuccin', -- Устанавливаем тему Catppuccin
+          theme = 'catppuccin',
           },
           sections = {
           lualine_a = {'mode'},
@@ -122,9 +124,31 @@
           lualine_y = {'progress'},
           lualine_z = {'location'},
           },
-          tabline = {},
+          -- tabline = {},  <-- Убрано, так как bufferline займется этим
           extensions = {},
           })
-    '';
+
+    ---
+      -- Настройка bufferline
+      ---
+      require('bufferline').setup({
+          options = {
+          numbers = "buffer_id",
+          indicator = {
+          style = 'underline'
+          },
+          diagnostics = "nvim_lsp",
+          separator_style = "slant",
+          show_buffer_close_icons = true,
+          show_close_icon = false,
+          }
+          })
+
+    -- Горячие клавиши для bufferline
+      vim.keymap.set('n', '<Tab>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Next buffer' })
+      vim.keymap.set('n', '<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>', { desc = 'Previous buffer' })
+      vim.keymap.set('n', '<leader>bd', '<Cmd>BufferLineClose<CR>', { desc = 'Close buffer' })
+
+      '';
   };
                }
