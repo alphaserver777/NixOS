@@ -61,7 +61,8 @@
 
       input = {
         kb_layout = "us,ru";
-        kb_options = "grp:caps_toggle";
+        kb_variant = ",";  # пустая строка для обеих раскладок
+          kb_options = "grp:caps_toggle";
       };
 
       gestures = {

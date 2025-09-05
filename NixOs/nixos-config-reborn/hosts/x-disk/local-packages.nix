@@ -25,6 +25,7 @@
       unzip
       home-manager
       neovim
+      jq
 # gcc
 # kdenlive
 # jetbrains.pycharm-professional

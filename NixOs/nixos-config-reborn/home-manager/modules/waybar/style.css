@@ -60,7 +60,7 @@ window#waybar {
   margin: 0 10px;
 }
 
-#language {
+#custom-keyboard-layout {
   margin: 0;
   color: #fab387; /* Peach */
   border-bottom: 5px solid #fab387;
@@ -89,6 +89,13 @@ window#waybar {
   padding: 0 20px;
   color: #f38ba8; /* Red */
   border-bottom: 5px solid #f38ba8;
+}
+
+/* Стили для проводного подключения */
+#waybar #network.ethernet {
+  padding: 0 20px;
+  color: #89b4fa; /* Красный */
+  border-bottom: 5px solid #89b4fa;
 }
 
 #battery {

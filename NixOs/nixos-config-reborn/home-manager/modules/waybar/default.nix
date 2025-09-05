@@ -9,7 +9,7 @@
         height = 30;
         modules-left = ["hyprland/workspaces"];
         modules-center = ["hyprland/window"];
-        modules-right = ["hyprland/language" "custom/weather" "pulseaudio" "network" "battery" "clock" "tray"];
+        modules-right = ["custom/keyboard-layout" "custom/weather" "pulseaudio" "network" "battery" "clock" "tray"];
 
         "hyprland/workspaces" = {
           disable-scroll = true;
@@ -34,11 +34,17 @@
           };
         };
 
-        "hyprland/language" = {
-          format-en = "🇺🇸";
-          format-ru = "🇷🇺";
-          min-length = 5;
-          tooltip = false;
+        "custom/keyboard-layout" = {
+          format = "{}";
+          interval = 1; # раз в секунду обновлять
+            exec = ''
+            layout=$(hyprctl devices -j | jq -r '.keyboards[] | select(.main == true) | .active_keymap')
+          case "$layout" in
+            *"Russian"*) echo "🇷🇺" ;;
+            *"English"*) echo "🇺🇸" ;;
+            *) echo "$layout" ;;
+            esac
+              '';
         };
 
         "custom/weather" = {
@@ -66,7 +72,8 @@
 
         "network" = {
           format-wifi = " {essid}";
-          format-ethernet = "󰈀 {ifname}";
+          format-ethernet = "󰈀";
+# format-ethernet = "󰈀 {ifname}";
           format-disconnected = "󰖪";
           tooltip-format = "IP: {ipaddr}";
         };
@@ -83,12 +90,12 @@
         };
 
         "clock" = {
-          format = "{:%a %d%b %H:%M}";
+          format = "{:%a %d:%b %H:%M}";
         };
 
         "tray" = {
           icon-size = 14;
-          spacing = 1;
+          spacing = 0;
         };
       };
     };
