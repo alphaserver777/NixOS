@@ -82,16 +82,12 @@ window#waybar {
   border-bottom: 5px solid #f38ba8;
 }
 
-/* Стили для Wi-Fi */
-#network.wifi {
-  color: #f38ba8; /* Red */
-  border-bottom: 5px solid #f38ba8;
+#custom-internet.online {
+  color: #a6e3a1; /* Зеленый */
 }
 
-/* Стили для проводного подключения */
-#network.ethernet {
-  color: #89b4fa; /* Blue */
-  border-bottom: 5px solid #89b4fa;
+#custom-internet.offline {
+  color: #f38ba8; /* Красный */
 }
 
 #battery {

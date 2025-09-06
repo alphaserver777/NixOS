@@ -9,7 +9,7 @@
         height = 30;
         modules-left = ["hyprland/workspaces"];
         modules-center = ["hyprland/window"];
-        modules-right = ["custom/keyboard-layout" "custom/weather" "pulseaudio" "network" "battery" "clock" "tray"];
+        modules-right = ["custom/keyboard-layout" "custom/weather" "pulseaudio" "custom/internet" "battery" "clock" "tray"];
 
         "hyprland/workspaces" = {
           disable-scroll = true;
@@ -70,12 +70,10 @@
           on-click = "pavucontrol";
         };
 
-        "network" = {
-          format-wifi = " {essid}";
-          format-ethernet = "󰈀";
-# format-ethernet = "󰈀 {ifname}";
-          format-disconnected = "󰖪";
-          tooltip-format = "IP: {ipaddr}";
+        "custom/internet" = {
+          exec = "/home/admsys/GitOps/NixOs/nixos-config-reborn/home-manager/modules/waybar/test.sh";
+          interval = 5;
+          json = true;  # Важный параметр!
         };
 
         "battery" = {
