@@ -26,6 +26,7 @@
         bufferline-nvim
         gitsigns-nvim
         nvim-treesitter.withAllGrammars
+        bufdelete-nvim
     ];
 
     extraConfig = ''
@@ -115,7 +116,7 @@
     -- Bufferline
       require("bufferline").setup({
           options = {
-          numbers = "buffer_id",
+          numbers = "ordinal", -- показывает порядковые номера (1,2,3...)
           indicator = { style = "underline" },
           diagnostics = "nvim_lsp",
           separator_style = "slant",
@@ -123,9 +124,25 @@
           show_close_icon = false,
           }
           })
-    vim.keymap.set("n", "<Tab>", "<Cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
+
+    -- 🔑 Быстрая навигация и закрытие буферов
+      for i = 1, 9 do
+        -- Переключение: <leader> + цифра
+          vim.keymap.set("n", "<leader>" .. i,
+              "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>",
+              { desc = "Go to buffer " .. i })
+
+    -- Закрытие: <leader>b + цифра (без выхода из Neovim)
+      vim.keymap.set("n", "<leader>b" .. i, function()
+          vim.cmd("BufferLineGoToBuffer " .. i)
+          vim.cmd("Bdelete")  -- ✅ безопасное закрытие
+          end, { desc = "Close buffer " .. i })
+      end
+
+      -- Стандартные переключения
+      vim.keymap.set("n", "<Tab>", "<Cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
       vim.keymap.set("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
-      vim.keymap.set("n", "<leader>bd", "<Cmd>BufferLineClose<CR>", { desc = "Close buffer" })
+      vim.keymap.set("n", "<leader>bd", "<Cmd>Bdelete<CR>", { desc = "Close current buffer safely" })
 
       -- Neo-tree
       require("neo-tree").setup({
