@@ -173,18 +173,19 @@
       })
 
     -- 🔑 Удобные хоткеи для Neo-tree
-      -- Переключить Neo-tree
+      -- Переключатель: <leader><Tab>
+      vim.keymap.set("n", "<leader><Tab>", function()
+          if vim.bo.filetype == "neo-tree" then
+          vim.cmd.wincmd("p") -- вернуться в предыдущий буфер/окно
+          else
+          require("neo-tree.command").execute({ action = "focus" })
+          end
+          end, { desc = "Toggle between Neo-tree and editor" })
+
+      -- Просто открыть/закрыть Neo-tree
       vim.keymap.set("n", "<leader>e", function()
           require("neo-tree.command").execute({ toggle = true })
           end, { desc = "Toggle Neo-tree" })
-
-      -- Фокус в Neo-tree
-      vim.keymap.set("n", "<leader>1", function()
-          require("neo-tree.command").execute({ action = "focus" })
-          end, { desc = "Focus Neo-tree" })
-
-      -- Вернуться в редактор
-      vim.keymap.set("n", "<leader>2", "<C-w>p", { desc = "Focus editor window" })
 
       -- Открыть Neo-tree с фокусом на текущем файле
       vim.keymap.set("n", "<leader>E", function()
