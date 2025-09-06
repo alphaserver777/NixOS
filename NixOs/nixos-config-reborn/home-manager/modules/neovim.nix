@@ -187,11 +187,6 @@
           require("neo-tree.command").execute({ toggle = true })
           end, { desc = "Toggle Neo-tree" })
 
-      -- Открыть Neo-tree с фокусом на текущем файле
-      vim.keymap.set("n", "<leader>E", function()
-          require("neo-tree.command").execute({ reveal = true })
-          end, { desc = "Reveal current file in Neo-tree" })
-
       -- Gitsigns
       require("gitsigns").setup({
           signs = {
