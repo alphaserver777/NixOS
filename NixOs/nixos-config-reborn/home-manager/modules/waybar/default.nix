@@ -73,7 +73,7 @@
         "custom/internet" = {
           exec = "/home/admsys/GitOps/NixOs/nixos-config-reborn/home-manager/modules/waybar/test.sh";
           interval = 5;
-          json = true;  # Важный параметр!
+          return-type = "json";
         };
 
         "battery" = {
