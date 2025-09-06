@@ -151,7 +151,8 @@
           position = "left",
           width = 30,
           mappings = {
-          ["<space>"] = "none",  -- Отключаем стандартное пространство
+          ["<space>"] = "none", -- отключаем стандартное действие пробела
+          ["<CR>"] = "open",    -- Enter = открыть файл
           },
           },
           filesystem = {
@@ -160,14 +161,26 @@
           hide_dotfiles = false,
           hide_gitignored = false,
           },
-          follow_current_file = {
-          enabled = true,
-          },
+          follow_current_file = { enabled = true },
           hijack_netrw_behavior = "open_default",
           },
           buffers = {
-            follow_current_file = {
-              enabled = true,
+          follow_current_file = { enabled = true },
+          },
+          event_handlers = {
+            {
+              event = "file_opened",
+              handler = function(_)
+                -- Закрывать Neo-tree при открытии файла (чтобы редактор был на весь экран)
+                require("neo-tree.command").execute({ action = "close" })
+                end
+            },
+            {
+              event = "file_hovered",
+              handler = function(file)
+                -- Автоматически показывать предпросмотр файла при наведении
+                require("neo-tree.sources.common.preview").preview(file)
+                end
             },
           },
       })
