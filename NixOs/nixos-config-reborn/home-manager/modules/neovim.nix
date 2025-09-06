@@ -9,6 +9,7 @@
         vimPlugins.nvim-treesitter-parsers.hyprlang
         fd
         ripgrep
+        tree-sitter
     ];
 
     plugins = with pkgs.vimPlugins; [
@@ -24,6 +25,7 @@
         lualine-nvim
         bufferline-nvim
         gitsigns-nvim
+        nvim-treesitter.withAllGrammars
     ];
 
     extraConfig = ''
@@ -50,7 +52,7 @@
       -- назначаем Space как <leader>
       vim.g.mapleader = " "
 
-      -- Catppuccin тема
+      -- Catppuccin тема (убираем neo_tree из интеграций)
       require("catppuccin").setup({
           flavour = "mocha",
           transparent_background = false,
@@ -61,6 +63,8 @@
           telescope = true,
           which_key = true,
           bufferline = true,
+          -- Убираем neo_tree, так как его нет в этой версии
+          -- neo_tree = true,
           },
           })
     vim.cmd.colorscheme "catppuccin"
@@ -95,7 +99,7 @@
       require("lualine").setup({
           options = {
           icons_enabled = true,
-          theme = "catppuccin",
+          theme = "auto",  -- Меняем на auto вместо catppuccin
           },
           sections = {
           lualine_a = {"mode"},
@@ -105,7 +109,7 @@
           lualine_y = {"progress"},
           lualine_z = {"location"},
           },
-          extensions = {},
+          extensions = {"neo-tree"},
           })
 
     -- Bufferline
@@ -126,20 +130,37 @@
       -- Neo-tree
       require("neo-tree").setup({
           close_if_last_window = true,
+          window = {
+          position = "left",
+          width = 30,
+          mappings = {
+          ["<space>"] = "none",  -- Отключаем стандартное пространство
+          },
+          },
           filesystem = {
           filtered_items = {
           visible = true,
           hide_dotfiles = false,
           hide_gitignored = false,
           },
+          follow_current_file = {
+          enabled = true,
           },
-          window = {
-          position = "left",
-          width = 30,
+          hijack_netrw_behavior = "open_default",
           },
-          })
+          buffers = {
+            follow_current_file = {
+              enabled = true,
+            },
+          },
+      })
 
-    -- 🔑 Удобные хоткеи для переключения Neo-tree <-> редактор
+    -- 🔑 Удобные хоткеи для Neo-tree
+      -- Переключить Neo-tree
+      vim.keymap.set("n", "<leader>e", function()
+          require("neo-tree.command").execute({ toggle = true })
+          end, { desc = "Toggle Neo-tree" })
+
       -- Фокус в Neo-tree
       vim.keymap.set("n", "<leader>1", function()
           require("neo-tree.command").execute({ action = "focus" })
@@ -147,6 +168,11 @@
 
       -- Вернуться в редактор
       vim.keymap.set("n", "<leader>2", "<C-w>p", { desc = "Focus editor window" })
+
+      -- Открыть Neo-tree с фокусом на текущем файле
+      vim.keymap.set("n", "<leader>E", function()
+          require("neo-tree.command").execute({ reveal = true })
+          end, { desc = "Reveal current file in Neo-tree" })
 
       -- Gitsigns
       require("gitsigns").setup({
@@ -158,6 +184,17 @@
           changedelete = { text = "~" },
           },
           current_line_blame = true,
+          })
+
+    -- Автоматически открывать Neo-tree при запуске Neovim
+      vim.api.nvim_create_autocmd("UIEnter", {
+          callback = function()
+          -- Ждем немного чтобы все плагины загрузились
+          vim.defer_fn(function()
+              require("neo-tree.command").execute({ action = "show" })
+              end, 100)
+          end,
+          once = true,
           })
     '';
   };

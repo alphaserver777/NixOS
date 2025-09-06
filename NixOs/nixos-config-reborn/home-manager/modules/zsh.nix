@@ -9,7 +9,7 @@
       let
       flakeDir = "~/flake";
     in {
-      sw = "sudo nixos-rebuild switch --flake .#$(hostname)";
+      nrs = "sudo nixos-rebuild switch --flake .#$(hostname)";
       upd = "ip a";
       hms = "home-manager switch --flake ~/GitOps/NixOs/nixos-config-reborn/#admsys";
 
