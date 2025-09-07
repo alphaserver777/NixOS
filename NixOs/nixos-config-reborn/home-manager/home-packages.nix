@@ -60,7 +60,6 @@
 # unzip
 # w3m
 # wget
-# wl-clipboard
 # wtype
 # yt-dlp
 # zip

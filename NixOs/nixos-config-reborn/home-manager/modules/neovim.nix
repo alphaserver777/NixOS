@@ -211,8 +211,10 @@
           },
           current_line_blame = true,
           })
+    vim.keymap.set('n', ']g', require('gitsigns').next_hunk, { desc = 'Go to next git hunk' })
+      vim.keymap.set('n', '[g', require('gitsigns').prev_hunk, { desc = 'Go to previous git hunk' })
 
-    -- Автоматически открывать Neo-tree при запуске Neovim
+      -- Автоматически открывать Neo-tree при запуске Neovim
       vim.api.nvim_create_autocmd("UIEnter", {
           callback = function()
           -- Ждем немного чтобы все плагины загрузились
