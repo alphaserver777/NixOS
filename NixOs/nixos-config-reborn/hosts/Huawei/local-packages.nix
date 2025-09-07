@@ -11,6 +11,7 @@
       qbittorrent
       imv #pic
       mpv #video
+      anydesk
 
 #CLI
       btop
@@ -26,7 +27,6 @@
       p7zip
       home-manager
       neovim
-      nixvim
       jq
 
 # gcc

@@ -4,30 +4,30 @@ Welcome to my redesigned NixOS configuration built for efficiency and aesthetics
 
 ![screenshot](./screenshots/screenshot1.png)
 
-You can still find my old configuration [here](https://github.com/Andrey0189/nixos-config)
+    You can still find my old configuration [here](https://github.com/Andrey0189/nixos-config)
 
 ## ✨ Features
 
-- 🖥️ **Multiple Hosts Support**: Easy to configure for different hosts.
-- 🎨 **Gruvbox Theme**: A perfect blend of vibrant and subtle colors.
-- 🪟 **Hyprland + Waybar**: 10/10 window compositor on Wayland.
-- 🏠 **Home Manager Integration**: lots of stuff configured.
-- 🧇 **Tmux**: with my own hotkeys.
-- 🌟 **Zsh + starship**: Efficient shell setup with lots of aliases.
+    - 🖥️ **Multiple Hosts Support**: Easy to configure for different hosts.
+    - 🎨 **Gruvbox Theme**: A perfect blend of vibrant and subtle colors.
+    - 🪟 **Hyprland + Waybar**: 10/10 window compositor on Wayland.
+    - 🏠 **Home Manager Integration**: lots of stuff configured.
+    - 🧇 **Tmux**: with my own hotkeys.
+    - 🌟 **Zsh + starship**: Efficient shell setup with lots of aliases.
 
 ## 🚀 Installation
 
-To get started with this setup, follow these steps:
+    To get started with this setup, follow these steps:
 
-1. **Install NixOS**: If you haven't already installed NixOS, follow the [NixOS Installation Guide](https://nixos.org/manual/nixos/stable/#sec-installation) for detailed instructions.
-2. **Clone the Repository**:
+    1. **Install NixOS**: If you haven't already installed NixOS, follow the [NixOS Installation Guide](https://nixos.org/manual/nixos/stable/#sec-installation) for detailed instructions.
+    2. **Clone the Repository**:
 
-	```bash
+    ```bash
     git clone https://github.com/Andrey0189/nixos-config-reborn
     cd nixos-config-reborn
     ```
 
-3. **Copy one of the hosts configuration to set up your own**:
+    3. **Copy one of the hosts configuration to set up your own**:
 
     ```bash
     cd hosts
@@ -35,52 +35,55 @@ To get started with this setup, follow these steps:
     cd <your_hostname>
     ```
 
-4. **Put your `hardware-configuration.nix` file there**:
+    4. **Put your `hardware-configuration.nix` file there**:
 
     ```bash
     cp /etc/nixos/hardware-configuration.nix ./
     ```
 
-5. **Edit `hosts/<your_hostname>/local-packages.nix` and `nixos/packages.nix` files if needed**:
+    5. **Edit `hosts/<your_hostname>/local-packages.nix` and `nixos/packages.nix` files if needed**:
 
     ```bash
     vim local-packages.nix
     vim ../../nixos/packages.nix
     ```
 
-6. **Finally, edit the `flake.nix` file**:
+    6. **Finally, edit the `flake.nix` file**:
 
     ```diff
     ...
-      outputs = { self, nixpkgs, home-manager, ... }@inputs: let
-        system = "x86_64-linux";
+    outputs = { self, nixpkgs, home-manager, ... }@inputs: let
+    system = "x86_64-linux";
     --  homeStateVersion = "24.11";
     ++  homeStateVersion = "<your_home_manager_state_version>";
     --  user = "amper";
     ++  user = "<your_username>";
-        hosts = [
-    --    { hostname = "slim3"; stateVersion = "24.05"; }
-    --    { hostname = "330-15ARR"; stateVersion = "24.11"; }
-    ++    { hostname = "<your_hostname>"; stateVersion = "<your_state_version>"; }
-        ];
+    hosts = [
+        --    { hostname = "slim3"; stateVersion = "24.05"; }
+        --    { hostname = "330-15ARR"; stateVersion = "24.11"; }
+        ++    { hostname = "<your_hostname>"; stateVersion = "<your_state_version>"; }
+    ];
     ...
     ```
 
-7. **Rebuilding**:
+    7. **Rebuilding**:
 
-```bash
-cd nixos-config-reborn
-git add .
-sudo nixos-rebuild switch --flake .#<hostname>
+    ```bash
+    cd nixos-config-reborn
+    git add .
+    sudo nixos-rebuild switch --flake .#<hostname>
 # or sudo nixos-install --flake .#<hostname> if you are installing on a fresh system
-home-manager switch --flake .#<your_username>
-```
+    home-manager switch --flake .#<your_username>
+    ```
+    ```bash
+    nix-shell -p git
+    ```
 
 #AmneziaVPN
 
-if err:
+    if err:
 
-```bash
-ps aux | grep AmneziaVPN
-sudo kill -9 <ID_process>
-```
+    ```bash
+    ps aux | grep AmneziaVPN
+    sudo kill -9 <ID_process>
+    ```
