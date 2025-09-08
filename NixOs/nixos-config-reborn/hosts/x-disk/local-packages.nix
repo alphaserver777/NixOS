@@ -2,7 +2,6 @@
 # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
-      zed-editor
       telegram-desktop
       obsidian
       syncthing
@@ -11,6 +10,18 @@
       qbittorrent
       imv #pic
       mpv #video
+      wpsoffice
+
+# For Develop
+      vscode
+      gemini-cli
+      google-cloud-sdk
+      docker
+      docker-compose
+
+# File manager
+#thunar
+      pcmanfm
 
 #CLI
       btop
@@ -26,7 +37,7 @@
       home-manager
       neovim
       jq
-# gcc
+      gcc
 # kdenlive
 # jetbrains.pycharm-professional
 # jre8
