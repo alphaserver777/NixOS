@@ -51,11 +51,6 @@
       " Автоматическое форматирование при сохранении
       autocmd BufWritePre * Autoformat
 
-      " Переключение между окнами без плагина
-      nnoremap <C-h> <C-w>h
-      nnoremap <C-j> <C-w>j
-      nnoremap <C-k> <C-w>k
-      nnoremap <C-l> <C-w>l
       '';
 
     extraLuaConfig = ''
@@ -150,7 +145,19 @@
       vim.keymap.set("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
       vim.keymap.set("n", "<leader>bd", "<Cmd>Bdelete<CR>", { desc = "Close current buffer safely" })
 
-      -- Neo-tree
+      -- 🔑 Сохранение
+      vim.keymap.set("n", "<leader>w", "<Cmd>w<CR>", { desc = "Save file" })
+      vim.keymap.set("n", "<leader>W", "<Cmd>wa<CR>", { desc = "Save all files" })
+
+      -- 🔑 Сохранить и закрыть буфер
+      vim.keymap.set("n", "<leader>q", "<Cmd>w<bar>Bdelete<CR>", { desc = "Save & close buffer" })
+      vim.keymap.set("n", "<leader>Q", "<Cmd>wa<bar>qa<CR>", { desc = "Save all & quit Neovim" })
+
+      -- 🔑 Быстро закрыть без сохранения
+      vim.keymap.set("n", "<leader>qq", "<Cmd>q!<CR>", { desc = "Force quit buffer" })
+
+
+      -- Neo-tree (без автозакрытия при открытии файла)
       require("neo-tree").setup({
           close_if_last_window = true,
           window = {
