@@ -8,6 +8,19 @@
     terminal = "screen-256color";
     extraConfig = ''
       set -as terminal-features ",alacritty*:RGB"
+      set-option -g focus-events on   # ✅ фикс для Neovim autoread
+
+# Автоматически переименовывать окна по активной программе
+      set -g automatic-rename on
+      set -g automatic-rename-format "#{b:pane_current_command}"
+
+# Формат кнопок для окон
+      setw -g window-status-format "#[fg=white,bg=colour237] #{?window_index,#{window_index}:,}#{b:pane_current_command} #[default]"
+      setw -g window-status-current-format "#[fg=black,bg=green,bold] #{?window_index,#{window_index}:,}#{b:pane_current_command} #[default]"
+
+# Между кнопками чуть больше места
+      set -g window-status-separator " "
+
       bind -n M-r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
       bind C-p previous-window
       bind C-n next-window

@@ -12,6 +12,9 @@
         tree-sitter
     ];
 
+# фиксим устаревший pynvim
+    extraPython3Packages = ps: with ps; [ pynvim ];
+
     plugins = with pkgs.vimPlugins; [
       catppuccin-nvim
         neo-tree-nvim
@@ -25,9 +28,15 @@
         lualine-nvim
         bufferline-nvim
         gitsigns-nvim
-        nvim-treesitter.withAllGrammars
         bufdelete-nvim
-    ];
+
+# только нужные treesitter-парсеры
+        (nvim-treesitter.withPlugins (p: [
+                                      p.go
+                                      p.python
+                                      p.nix
+        ]))
+        ];
 
     extraConfig = ''
       set tabstop=2
@@ -50,10 +59,9 @@
       '';
 
     extraLuaConfig = ''
-      -- назначаем Space как <leader>
       vim.g.mapleader = " "
 
-      -- Catppuccin тема (убираем neo_tree из интеграций)
+      -- Catppuccin тема
       require("catppuccin").setup({
           flavour = "mocha",
           transparent_background = false,
@@ -64,8 +72,6 @@
           telescope = true,
           which_key = true,
           bufferline = true,
-          -- Убираем neo_tree, так как его нет в этой версии
-          -- neo_tree = true,
           },
           })
     vim.cmd.colorscheme "catppuccin"
@@ -100,7 +106,7 @@
       require("lualine").setup({
           options = {
           icons_enabled = true,
-          theme = "auto",  -- Меняем на auto вместо catppuccin
+          theme = "auto",
           },
           sections = {
           lualine_a = {"mode"},
