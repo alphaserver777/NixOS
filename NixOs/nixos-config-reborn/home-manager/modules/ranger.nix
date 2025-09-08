@@ -9,7 +9,6 @@
       ec = "compress";
       ex = "extract";
 
-      b = "fzm";
     };
 
     settings = {
@@ -17,6 +16,7 @@
       preview_images_method = "ueberzug";
       draw_borders = true;
       w3m_delay = 0;
+      show_hidden = true; # Добавляем эту строку
     };
 
     extraConfig = ''
