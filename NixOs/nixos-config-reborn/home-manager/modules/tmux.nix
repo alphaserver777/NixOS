@@ -21,6 +21,17 @@
 # Между кнопками чуть больше места
       set -g window-status-separator " "
 
+# --- VI-режим и копирование ---
+# Настройки для полноценного Vi-режима в режиме копирования
+      bind-key -T copy-mode-vi 'v' send-keys -X begin-selection
+      bind-key -T copy-mode-vi 'V' send-keys -X select-line
+      bind-key -T copy-mode-vi 'C-v' send-keys -X rectangle-toggle
+      bind-key -T copy-mode-vi 'y' send-keys -X copy-pipe-and-cancel # Работает с tmux-yank
+
+# Индикатор режима в строке состояния (справа)
+      set -g status-right "#[fg=black,bg=#{?pane_in_mode,yellow,green}] #{?pane_in_mode, COPY , NORMAL } #[default]| %a %d-%m-%Y | %H:%M "
+# --- Конец секции VI ---
+
       bind -n M-r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
       bind C-p previous-window
       bind C-n next-window
@@ -58,10 +69,11 @@
       '';
     plugins = with pkgs; [
       tmuxPlugins.catppuccin
-      {
-        plugin = tmuxPlugins.resurrect;
-        extraConfig = "set -g @resurrect-strategy-nvim 'session'";
-      }
+        tmuxPlugins.yank # Для копирования в системный буфер обмена
+        {
+          plugin = tmuxPlugins.resurrect;
+          extraConfig = "set -g @resurrect-strategy-nvim 'session'";
+        }
     {
       plugin = tmuxPlugins.continuum;
       extraConfig = ''
