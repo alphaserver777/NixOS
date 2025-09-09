@@ -72,13 +72,20 @@
         tmuxPlugins.yank # Для копирования в системный буфер обмена
         {
           plugin = tmuxPlugins.resurrect;
-          extraConfig = "set -g @resurrect-strategy-nvim 'session'";
+          extraConfig = ''
+            set -g @resurrect-strategy-nvim 'session'
+            set -g @resurrect-save "C-s"
+            set -g @resurrect-restore "C-r"
+            set -g @resurrect-processes ':all:'
+          '';
         }
     {
       plugin = tmuxPlugins.continuum;
       extraConfig = ''
         set -g @continuum-restore 'on'
-        set -g @continuum-save-interval '15' # minutes
+        set -g @continuum-save-interval '5' # minutes
+        set -g @continuum-save-msg 'Tmux environment saved!'
+        set -g @continuum-restore-msg 'Tmux environment restored!'
         '';
     }
     ];
