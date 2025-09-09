@@ -7,19 +7,12 @@
     configDir = "/var/lib/syncthing/.config/syncthing";
   };
 
-  users.users.syncthing = {
-    isSystemUser = true;
-    group = "syncthing";
-    createHome = true;
-    home = "/var/lib/syncthing";
-  };
-
-  systemd.tmpfiles.rules = [
-# Синтаксис: <тип> <путь> <права> <владелец> <группа> <возраст> <аргумент>
-    "d /var/lib/syncthing 775 syncthing syncthing -"
-  ];
-
 # journalctl -u syncthing
 # systemctl status syncthing
-
+# Этот скрипт запускается после старта службы syncthing,
+# чтобы установить правильные права доступа к каталогу данных.
+# Syncthing при запуске сбрасывает права на 700, поэтому это необходимо.
+  systemd.services.syncthing.postStart = ''
+    /run/current-system/sw/bin/chmod -R 775 /var/lib/syncthing
+    '';
 }
