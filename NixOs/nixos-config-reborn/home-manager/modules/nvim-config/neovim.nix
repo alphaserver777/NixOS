@@ -18,6 +18,7 @@
     extraPython3Packages = ps: with ps; [pynvim];
 
     plugins = with pkgs.vimPlugins; [
+      alpha-nvim
       catppuccin-nvim
       neo-tree-nvim
       nvim-web-devicons

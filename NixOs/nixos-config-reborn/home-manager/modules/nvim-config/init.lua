@@ -186,13 +186,34 @@ require("gitsigns").setup({
 vim.keymap.set('n', ']g', require('gitsigns').next_hunk, { desc = 'Go to next git hunk' })
 vim.keymap.set('n', '[g', require('gitsigns').prev_hunk, { desc = 'Go to previous git hunk' })
 
--- Автоматически открывать Neo-tree при запуске Neovim
-vim.api.nvim_create_autocmd("UIEnter", {
-    callback = function()
-    -- Ждем немного чтобы все плагины загрузились
-    vim.defer_fn(function()
-        require("neo-tree.command").execute({ action = "show" })
-        end, 100)
-    end,
-    once = true,
-    })
+-- Alpha: Dashboard / Стартовая страница
+pcall(function()
+    local alpha = require("alpha")
+    local dashboard = require("alpha.themes.dashboard")
+
+    -- Заголовок - ASCII Art
+    dashboard.section.header.val = {
+        "███╗   ██╗ ██████╗ ██╗  ██╗ █████╗ ██╗   ██╗",
+        "████╗  ██║██╔═══██╗██║  ██║██╔══██╗╚██╗ ██╔╝",
+        "██╔██╗ ██║██║   ██║███████║███████║ ╚████╔╝ ",
+        "██║╚██╗██║██║   ██║██╔══██║██╔══██║  ╚██╔╝  ",
+        "██║ ╚████║╚██████╔╝██║  ██║██║  ██║   ██║   ",
+        "╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ",
+    }
+
+    -- Кнопки
+    dashboard.section.buttons.val = {
+        dashboard.button("f", "󰈔  Find file",      ":Telescope find_files<CR>"),
+        dashboard.button("g", "󰊄  Find word",      ":Telescope live_grep<CR>"),
+        dashboard.button("r", "󰋚  Recent files",   ":Telescope oldfiles<CR>"),
+        dashboard.button("b", "󰓩  Buffers",        ":Telescope buffers<CR>"),
+        dashboard.button("n", "󰏫  New file",       ":enew<CR>"),
+        dashboard.button("q", "󰅚  Quit",           ":qa<CR>"),
+    }
+
+    -- Футер
+    dashboard.section.footer.val = require("alpha.fortune")()
+
+    -- Применяем тему
+    alpha.setup(dashboard.opts)
+end)
