@@ -4,6 +4,7 @@
 # ./bat.nix
 # ./chromium.nix
       ./eza.nix # красивый вывод папок и файлов
+      ./fzf.nix
       ./git.nix
       ./lazygit.nix
 # ./obsidian.nix
@@ -13,6 +14,7 @@
       ./tmux.nix
       ./zathura.nix # PDF reader
       ./zsh.nix
+      ./zoxide.nix
       ./hyprland
       ./swaync
       ./nvim-config
