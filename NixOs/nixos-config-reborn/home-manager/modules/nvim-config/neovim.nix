@@ -43,7 +43,7 @@
 
   # Подключаем конфигурацию как обычные dotfiles
   home.file.".config/nvim" = {
-    source = ./nvim-config;
+    source = ./.;
     recursive = true;
   };
 }
