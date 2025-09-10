@@ -1,7 +1,12 @@
 { pkgs, ... }: {
 # Частные программы узла
   environment.systemPackages = with pkgs; [
-    google-chrome
+    (google-chrome.override {
+      commandLineArgs = [
+        "--enable-features=UseOzonePlatform,WaylandWindowDecorations"
+        "--ozone-platform=wayland"
+      ];
+    })
       btop
       telegram-desktop
 # obsidian
