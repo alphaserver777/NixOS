@@ -4,14 +4,12 @@
   programs.ranger = {
     enable = true;
     mappings = {
+      "/" = "console search_content";
       "." = "fzf_select";
       e = "edit";
-
       E = "shell viewnior %f";
-
       ec = "compress";
       ex = "extract";
-
     };
 
     settings = {
@@ -19,12 +17,13 @@
       preview_images_method = "ueberzug";
       draw_borders = true;
       w3m_delay = 0;
-      show_hidden = true; # Добавляем эту строку
+      show_hidden = true;
+      column_ratios = "1,2,2";
     };
 
     extraConfig = ''
       default_linemode devicons2
-      '';
+    '';
 
     plugins = [
     {
@@ -54,33 +53,7 @@
     ];
   };
 
-  home.file.".config/ranger/commands.py".text = ''
-from ranger.api.commands import Command
-import subprocess
-import os.path
-
-class fzf_select(Command):
-    """
-    :fzf_select
-
-    Find a file using fzf.
-    With a prefix argument select only directories.
-    See: https://github.com/junegunn/fzf/wiki/Examples#ranger
-    """
-    def execute(self):
-        if self.quantifier:
-            # match only directories
-            command="find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune -o -type d -print 2> /dev/null | sed 1d | cut -b3- | ${pkgs.fzf}/bin/fzf +m"
-        else:
-            # match files and directories
-            command="find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune -o -print 2> /dev/null | sed 1d | cut -b3- | ${pkgs.fzf}/bin/fzf +m"
-        fzf = self.fm.execute_command(command, universal_newlines=True, stdout=subprocess.PIPE)
-        stdout, stderr = fzf.communicate()
-        if fzf.returncode == 0:
-            fzf_file = os.path.abspath(stdout.rstrip())
-            if os.path.isdir(fzf_file):
-                self.fm.cd(fzf_file)
-            else:
-                self.fm.select_file(fzf_file)
-  '';
+  home.file.".config/ranger/commands.py".source = (pkgs.replaceVars ./commands.py {
+    FZF_PATH = "${pkgs.fzf}/bin/fzf";
+  });
 }
