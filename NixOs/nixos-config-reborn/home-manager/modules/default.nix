@@ -20,6 +20,6 @@
       ./nvim-config
       ./waybar
       ./wofi
-
-  ];
+      ./ranger
+      ];
 }
