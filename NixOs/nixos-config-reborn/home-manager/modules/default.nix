@@ -8,7 +8,6 @@
       ./git.nix
       ./lazygit.nix
 # ./obsidian.nix
-      ./ranger.nix
       ./starship.nix
       ./stylix.nix
       ./tmux.nix
