@@ -11,7 +11,7 @@
         spacing = 10;
         modules-left = ["hyprland/workspaces"];
         modules-center = ["hyprland/window"];
-        modules-right = [ "tray" "idle_inhibitor" "backlight" "pulseaudio" "battery" "disk" "memory" "cpu" "temperature" "custom/keyboard-layout" "custom/internet" "clock" ];
+        modules-right = [ "tray" "idle_inhibitor" "custom/keyboard-layout" "custom/internet" "backlight" "pulseaudio" "battery" "disk" "memory" "cpu" "temperature" "clock" ];
 
         "hyprland/workspaces" = {
           disable-scroll = true;
@@ -70,8 +70,8 @@
         "idle_inhibitor" = {
           format = "{icon}";
           format-icons = {
-            activated = " ";
-            deactivated = " ";
+            activated = "";
+            deactivated = "";
           };
         };
 
@@ -120,28 +120,36 @@
 
         "disk" = {
           interval = 30;
-          format = " {percentage_used}%";
+          format = " {percentage_used}%";
           "tooltip-format" = "{used} used out of {total} on \"{path}\" ({percentage_used}%)";
+          "warning" = 80;
+          "critical" = 95;
         };
 
         "memory" = {
           interval = 10;
           format = " {used}";
           "tooltip-format" = "{used}GiB used of {total}GiB ({percentage}%)";
+          "warning" = 70;
+          "critical" = 90;
         };
 
         "cpu" = {
           interval = 10;
           format = " {usage}%";
+          "warning" = 70;
+          "critical" = 90;
         };
 
         "temperature" = {
           interval = 10;
+          "warning-temperature" = 60;
+          "critical-temperature" = 80;
         };
 
         "clock" = {
           interval = 1;
-          format = "{:%H:%M:%S}";
+          format = "{:%a %d:%b %H:%M}";
         };
 
         "tray" = {
