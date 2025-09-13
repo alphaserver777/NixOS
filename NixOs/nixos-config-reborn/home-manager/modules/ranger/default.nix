@@ -1,14 +1,15 @@
+{ pkgs, ... }:
+
 {
   programs.ranger = {
     enable = true;
     mappings = {
+      "/" = "console search_content";
+      "." = "fzf_select";
       e = "edit";
-
       E = "shell viewnior %f";
-
       ec = "compress";
       ex = "extract";
-
     };
 
     settings = {
@@ -16,12 +17,13 @@
       preview_images_method = "ueberzug";
       draw_borders = true;
       w3m_delay = 0;
-      show_hidden = true; # Добавляем эту строку
+      show_hidden = true;
+      column_ratios = "1,2,2";
     };
 
     extraConfig = ''
       default_linemode devicons2
-      '';
+    '';
 
     plugins = [
     {
@@ -51,5 +53,7 @@
     ];
   };
 
-# home.file.".config/ranger/commands.py".text = "from plugins.ranger_udisk_menu.mounter import mount";
+  home.file.".config/ranger/commands.py".source = (pkgs.replaceVars ./commands.py {
+    FZF_PATH = "${pkgs.fzf}/bin/fzf";
+  });
 }

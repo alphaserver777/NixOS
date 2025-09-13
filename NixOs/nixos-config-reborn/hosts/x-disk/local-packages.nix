@@ -20,7 +20,6 @@
       docker-compose
 
 # File manager
-#thunar
       pcmanfm
 
 #CLI

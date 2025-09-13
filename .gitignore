@@ -5,4 +5,3 @@
 *.swo
 *.swl
 flake.lock
-NixOs/Huawei/hardware-configuration.nix

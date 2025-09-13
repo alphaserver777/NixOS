@@ -4,19 +4,21 @@
 # ./bat.nix
 # ./chromium.nix
       ./eza.nix # красивый вывод папок и файлов
+      ./fzf.nix
       ./git.nix
-      ./hyprland
       ./lazygit.nix
-      ./neovim.nix
 # ./obsidian.nix
-      ./ranger.nix
       ./starship.nix
       ./stylix.nix
-      ./swaync
       ./tmux.nix
-      ./waybar
-      ./wofi
       ./zathura.nix # PDF reader
       ./zsh.nix
-  ];
+      ./zoxide.nix
+      ./hyprland
+      ./swaync
+      ./nvim-config
+      ./waybar
+      ./wofi
+      ./ranger
+      ];
 }

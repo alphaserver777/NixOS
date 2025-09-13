@@ -12,6 +12,17 @@
       imv #pic
       mpv #video
       anydesk
+      thunderbird
+
+# For Develop
+      vscode
+      gemini-cli
+      google-cloud-sdk
+      docker
+      docker-compose
+
+# File manager
+      pcmanfm
 
 #CLI
       btop
