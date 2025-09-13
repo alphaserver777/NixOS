@@ -6,10 +6,12 @@
       mainBar = {
         layer = "top";
         position = "top";
-        height = 30;
+        height = 10;
+        margin = "5";
+        spacing = 10;
         modules-left = ["hyprland/workspaces"];
         modules-center = ["hyprland/window"];
-        modules-right = ["custom/keyboard-layout" "custom/weather" "pulseaudio" "custom/internet" "battery" "clock" "tray"];
+        modules-right = [ "tray" "idle_inhibitor" "backlight" "pulseaudio" "battery" "disk" "memory" "cpu" "temperature" "custom/keyboard-layout" "custom/internet" "clock" ];
 
         "hyprland/workspaces" = {
           disable-scroll = true;
@@ -34,6 +36,17 @@
           };
         };
 
+        "hyprland/window" = {
+          icon = true;
+          "icon-size" = 22;
+          rewrite = {
+            "(.*) — Mozilla Firefox" = "$1 - ";
+            "(.*) - Visual Studio Code" = "$1 -  ";
+            "(.*) - Discord" = "$1 -  ";
+            "^$" = "";
+          };
+        };
+
         "custom/keyboard-layout" = {
           format = "{}";
           interval = 1; # раз в секунду обновлять
@@ -47,27 +60,42 @@
               '';
         };
 
-        "custom/weather" = {
-          format = " {} ";
-          exec = "curl -s 'wttr.in/Krasnodar?format=%c%t&m'";
-          interval = 300;
-          class = "weather";
+# "custom/weather" = {
+#   format = " {} ";
+#   exec = "curl -s 'wttr.in/Krasnodar?format=%c%t&m'";
+#   interval = 300;
+#   class = "weather";
+# };
+
+        "idle_inhibitor" = {
+          format = "{icon}";
+          format-icons = {
+            activated = " ";
+            deactivated = " ";
+          };
+        };
+
+        "backlight" = {
+          interval = 2;
+          format = " {percent}%";
+          "on-scroll-up" = "brightnessctl set +4";
+          "on-scroll-down" = "brightnessctl set 4-";
         };
 
         "pulseaudio" = {
           format = "{icon} {volume}%";
           format-bluetooth = "{icon} {volume}% ";
-          format-muted = "";
+          format-muted = " ";
+          on-click = "amixer sset Master toggle";
           format-icons = {
-            "headphones" = "";
-            "handsfree" = "";
-            "headset" = "";
-            "phone" = "";
-            "portable" = "";
-            "car" = "";
-            "default" = ["" ""];
+            headphones = "";
+            handsfree = "";
+            headset = "";
+            phone = "";
+            portable = "";
+            car = "";
+            default = ["" "" "" "" ""];
           };
-          on-click = "pavucontrol";
         };
 
         "custom/internet" = {
@@ -81,14 +109,39 @@
             warning = 30;
             critical = 1;
           };
-          format = "{icon} {capacity}%";
+          interval = 10;
+          format = "{icon}{capacity}%";
           format-charging = " {capacity}%";
           format-alt = "{time} {icon}";
           format-icons = ["" "" "" "" ""];
+          tooltip = true;
+          "tooltip-format" = "{timeTo}";
+        };
+
+        "disk" = {
+          interval = 30;
+          format = " {percentage_used}%";
+          "tooltip-format" = "{used} used out of {total} on \"{path}\" ({percentage_used}%)";
+        };
+
+        "memory" = {
+          interval = 10;
+          format = " {used}";
+          "tooltip-format" = "{used}GiB used of {total}GiB ({percentage}%)";
+        };
+
+        "cpu" = {
+          interval = 10;
+          format = " {usage}%";
+        };
+
+        "temperature" = {
+          interval = 10;
         };
 
         "clock" = {
-          format = "{:%a %d:%b %H:%M}";
+          interval = 1;
+          format = "{:%H:%M:%S}";
         };
 
         "tray" = {
