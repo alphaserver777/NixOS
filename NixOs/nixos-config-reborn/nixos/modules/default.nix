@@ -17,5 +17,6 @@
       ./amneziavpn.nix
       ./displayManager.nix
       ./syncthing.nix
+      ./docker.nix
   ];
 }
