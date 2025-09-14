@@ -12,7 +12,8 @@
       imv #pic
       mpv #video
       anydesk
-      thunderbird
+      wpsoffice
+
 
 # For Develop
       vscode

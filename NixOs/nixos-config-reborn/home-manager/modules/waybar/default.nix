@@ -9,9 +9,9 @@
         height = 10;
         margin = "5";
         spacing = 10;
-        modules-left = ["hyprland/workspaces"];
+        modules-left = ["hyprland/workspaces" "disk" "memory" "cpu" "temperature" "battery" "custom/internet"];
         modules-center = ["hyprland/window"];
-        modules-right = [ "tray" "idle_inhibitor" "custom/keyboard-layout" "custom/internet" "backlight" "pulseaudio" "battery" "disk" "memory" "cpu" "temperature" "clock" ];
+        modules-right = [ "tray" "idle_inhibitor" "custom/keyboard-layout" "backlight" "pulseaudio" "clock" ];
 
         "hyprland/workspaces" = {
           disable-scroll = true;
@@ -32,7 +32,7 @@
             "magic" = "";
           };
           persistent-workspaces = {
-            "*" = 9;
+            "*" = 8;
           };
         };
 
@@ -78,8 +78,8 @@
         "backlight" = {
           interval = 2;
           format = " {percent}%";
-          "on-scroll-up" = "brightnessctl set +4";
-          "on-scroll-down" = "brightnessctl set 4-";
+          "on-click" = "brightnessctl set 10%+";
+          "on-click-right" = "brightnessctl set 10%-";
         };
 
         "pulseaudio" = {
@@ -110,7 +110,7 @@
             critical = 1;
           };
           interval = 10;
-          format = "{icon}{capacity}%";
+          format = "{icon} {capacity}%";
           format-charging = " {capacity}%";
           format-alt = "{time} {icon}";
           format-icons = ["" "" "" "" ""];
