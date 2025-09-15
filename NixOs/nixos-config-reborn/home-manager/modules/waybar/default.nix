@@ -99,7 +99,7 @@
         };
 
         "custom/internet" = {
-          exec = "/home/admsys/GitOps/NixOs/nixos-config-reborn/home-manager/modules/waybar/test.sh";
+          exec = "/home/admsys/GitOps/NixOs/nixos-config-reborn/home-manager/modules/waybar/check_internet.sh";
           interval = 5;
           return-type = "json";
         };
@@ -107,8 +107,18 @@
         "battery" = {
           states = {
             warning = 30;
-            critical = 1;
+            critical = 15;
           };
+          on-update = ''
+            if [[ "$status" == "Discharging" && $capacity -le 20 ]]; then
+              if [ ! -f /tmp/low_battery_notified ]; then
+                notify-send -u critical "Low Battery" "Battery level is at ''${capacity}%!"
+                  touch /tmp/low_battery_notified
+                  fi
+                  elif [[ "$status" == "Charging" || $capacity -gt 20 ]]; then
+                  rm -f /tmp/low_battery_notified
+                  fi
+                  '';
           interval = 10;
           format = "{icon} {capacity}%";
           format-charging = " {capacity}%";
