@@ -19,32 +19,33 @@
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: let
     system = "x86_64-linux";
-    homeStateVersion = "25.05";
-    user = "admsys";
-    hosts = [
-      { hostname = "Huawei"; stateVersion = "25.05"; }
-      { hostname = "srv-home"; stateVersion = "25.05"; }
-      { hostname = "x-disk"; stateVersion = "25.05"; }
-    ];
+  homeStateVersion = "25.05";
+  user = "admsys";
+  hosts = [
+  { hostname = "Huawei"; stateVersion = "25.05"; }
+  { hostname = "srv-home"; stateVersion = "25.05"; }
+  { hostname = "x-disk"; stateVersion = "25.05"; }
+  { hostname = "main"; stateVersion = "25.05"; }
+  ];
 
-    makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {
-      system = system;
-      specialArgs = {
-        inherit inputs stateVersion hostname user;
-      };
-
-      modules = [
-        ./hosts/${hostname}/configuration.nix
-      ];
+  makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {
+    system = system;
+    specialArgs = {
+      inherit inputs stateVersion hostname user;
     };
+
+    modules = [
+      ./hosts/${hostname}/configuration.nix
+    ];
+  };
 
   in {
     nixosConfigurations = nixpkgs.lib.foldl' (configs: host:
-      configs // {
+        configs // {
         "${host.hostname}" = makeSystem {
-          inherit (host) hostname stateVersion;
+        inherit (host) hostname stateVersion;
         };
-      }) {} hosts;
+        }) {} hosts;
 
     homeConfigurations.${user} = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.${system};
