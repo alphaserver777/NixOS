@@ -14,6 +14,7 @@
       anydesk
       wpsoffice
       drawio
+      pavucontrol
 
 
 # For Develop
