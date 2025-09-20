@@ -13,6 +13,7 @@
       mpv #video
       anydesk
       wpsoffice
+      drawio
 
 
 # For Develop
