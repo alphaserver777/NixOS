@@ -13,7 +13,7 @@
         background = [
         {
 # Устанавливаем изображение
-          path = "/home/admsys/GitOps/NixOs/nixos-config-reborn/wallpapers/space.png";
+          path = toString ../../../wallpapers/space.png;
 
 # path = "../../../wallpapers/bsod.png";
 # Применяем эффекты

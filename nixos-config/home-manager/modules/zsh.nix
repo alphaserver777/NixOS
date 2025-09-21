@@ -11,7 +11,7 @@
     in {
       nrs = "sudo nixos-rebuild switch --flake .#$(hostname)";
       upd = "ip a";
-      hms = "home-manager switch --flake ~/GitOps/NixOs/nixos-config-reborn/#admsys";
+      hms = "home-manager switch --flake ~Nixos/nixos-config/#admsys";
 
       pkgs = "nvim ${flakeDir}/nixos/packages.nix";
 
@@ -31,7 +31,7 @@
     history.size = 10000;
     history.path = "${config.xdg.dataHome}/zsh/history";
 
-    initExtra = ''
+    initContent = ''
 # Start Tmux automatically if not already running. No Tmux in TTY
       if [ -z "$TMUX" ] && [ -n "$DISPLAY" ]; then
         tmux attach-session -t default || tmux new-session -s default

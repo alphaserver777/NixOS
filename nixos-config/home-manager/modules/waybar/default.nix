@@ -99,7 +99,7 @@
         };
 
         "custom/internet" = {
-          exec = "/home/admsys/GitOps/NixOs/nixos-config-reborn/home-manager/modules/waybar/check_internet.sh";
+          exec = ./check_internet.sh;
           interval = 5;
           return-type = "json";
         };
