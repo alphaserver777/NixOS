@@ -5,7 +5,7 @@
     defaultUserShell = pkgs.zsh;
     users.${user} = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "networkmanager" "syncthing" "docker" "audio" "video" ];
+      extraGroups = [ "wheel" "networkmanager" "syncthing" "docker" "audio" "video" "kvm" ];
     };
   };
 
