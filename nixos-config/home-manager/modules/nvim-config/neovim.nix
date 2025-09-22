@@ -1,5 +1,5 @@
-{
-  pkgs, ...
+{ pkgs
+, ...
 }: {
   programs.neovim = {
     enable = true;
@@ -15,7 +15,7 @@
     ];
 
     # фиксим устаревший pynvim
-    extraPython3Packages = ps: with ps; [pynvim];
+    extraPython3Packages = ps: with ps; [ pynvim ];
 
     plugins = with pkgs.vimPlugins; [
       alpha-nvim

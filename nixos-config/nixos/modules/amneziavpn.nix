@@ -1,3 +1,3 @@
 {
-  programs.amnezia-vpn.enable = true;  
+  programs.amnezia-vpn.enable = true;
 }

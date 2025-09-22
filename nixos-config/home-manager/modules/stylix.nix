@@ -3,15 +3,15 @@
 
   home.packages = with pkgs; [
     dejavu_fonts
-      jetbrains-mono
-      noto-fonts
-      noto-fonts-lgc-plus
-      texlivePackages.hebrew-fonts
-      noto-fonts-emoji
-      font-awesome
-      powerline-fonts
-      powerline-symbols
-      nerd-fonts.symbols-only
+    jetbrains-mono
+    noto-fonts
+    noto-fonts-lgc-plus
+    texlivePackages.hebrew-fonts
+    noto-fonts-emoji
+    font-awesome
+    powerline-fonts
+    powerline-symbols
+    nerd-fonts.symbols-only
   ];
 
   stylix = {
@@ -65,9 +65,9 @@
     };
 
     image = ../../wallpapers/space.png;
-# image = pkgs.fetchurl {
-#   url = "https://codeberg.org/lunik1/nixos-logo-gruvbox-wallpaper/raw/branch/master/png/gruvbox-dark-rainbow.png";
-#   sha256 = "036gqhbf6s5ddgvfbgn6iqbzgizssyf7820m5815b2gd748jw8zc";
-# };
+    # image = pkgs.fetchurl {
+    #   url = "https://codeberg.org/lunik1/nixos-logo-gruvbox-wallpaper/raw/branch/master/png/gruvbox-dark-rainbow.png";
+    #   sha256 = "036gqhbf6s5ddgvfbgn6iqbzgizssyf7820m5815b2gd748jw8zc";
+    # };
   };
-                       }
+}

@@ -8,10 +8,11 @@
     shellAliases =
       let
       flakeDir = "~/flake";
-    in {
+    in
+    {
       nrs = "sudo nixos-rebuild switch --flake .#$(hostname)";
       upd = "ip a";
-      hms = "home-manager switch --flake ~Nixos/nixos-config/#admsys";
+      hms = "home-manager switch --flake ~/Nixos/nixos-config/#admsys";
 
       pkgs = "nvim ${flakeDir}/nixos/packages.nix";
 

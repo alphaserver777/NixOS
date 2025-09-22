@@ -4,13 +4,13 @@
     systemd.enable = true;
     settings = {
       env = [
-# Hint Electron apps to use Wayland
+        # Hint Electron apps to use Wayland
         "NIXOS_OZONE_WL,1"
-          "XDG_CURRENT_DESKTOP,Hyprland"
-          "XDG_SESSION_TYPE,wayland"
-          "XDG_SESSION_DESKTOP,Hyprland"
-          "QT_QPA_PLATFORM,wayland"
-          "XDG_SCREENSHOTS_DIR,$HOME/screens"
+        "XDG_CURRENT_DESKTOP,Hyprland"
+        "XDG_SESSION_TYPE,wayland"
+        "XDG_SESSION_DESKTOP,Hyprland"
+        "QT_QPA_PLATFORM,wayland"
+        "XDG_SCREENSHOTS_DIR,$HOME/screens"
       ];
 
       monitor = ",1920x1080@60,auto,1.25";
@@ -21,8 +21,8 @@
 
       exec-once = [
         "waybar"
-          "wl-paste --type text --watch cliphist store"
-          "wl-paste --type image --watch cliphist store"
+        "wl-paste --type text --watch cliphist store"
+        "wl-paste --type image --watch cliphist store"
       ];
 
       general = {
@@ -68,8 +68,8 @@
 
       input = {
         kb_layout = "us,ru";
-        kb_variant = ",";  # пустая строка для обеих раскладок
-          kb_options = "grp:caps_toggle";
+        kb_variant = ","; # пустая строка для обеих раскладок
+        kb_options = "grp:caps_toggle";
       };
 
       gestures = {
@@ -97,29 +97,29 @@
       windowrulev2 = [
         "bordersize 0, floating:0, onworkspace:w[t1]"
 
-          "float,class:(mpv)|(imv)|(showmethekey-gtk)"
-          "move 990 60,size 900 170,pin,noinitialfocus,class:(showmethekey-gtk)"
-# "noborder,nofocus,class:(showmethekey-gtk)"
-          "workspace 1,class:(google-chrome)"
-          "workspace 2,class:(Alacritty)"
-          "workspace 3,class:(obsidian)"
-          "workspace 3,class:(zathura)"
-          "workspace 5,class:(org.telegram.desktop)"
+        "float,class:(mpv)|(imv)|(showmethekey-gtk)"
+        "move 990 60,size 900 170,pin,noinitialfocus,class:(showmethekey-gtk)"
+        # "noborder,nofocus,class:(showmethekey-gtk)"
+        "workspace 1,class:(google-chrome)"
+        "workspace 2,class:(Alacritty)"
+        "workspace 3,class:(obsidian)"
+        "workspace 3,class:(zathura)"
+        "workspace 5,class:(org.telegram.desktop)"
 
-          "suppressevent maximize, class:.*"
-          "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+        "suppressevent maximize, class:.*"
+        "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
 
-          "opacity 0.0 override, class:^(xwaylandvideobridge)$"
-          "noanim, class:^(xwaylandvideobridge)$"
-          "noinitialfocus, class:^(xwaylandvideobridge)$"
-          "maxsize 1 1, class:^(xwaylandvideobridge)$"
-          "noblur, class:^(xwaylandvideobridge)$"
-          "nofocus, class:^(xwaylandvideobridge)$"
-          ];
+        "opacity 0.0 override, class:^(xwaylandvideobridge)$"
+        "noanim, class:^(xwaylandvideobridge)$"
+        "noinitialfocus, class:^(xwaylandvideobridge)$"
+        "maxsize 1 1, class:^(xwaylandvideobridge)$"
+        "noblur, class:^(xwaylandvideobridge)$"
+        "nofocus, class:^(xwaylandvideobridge)$"
+      ];
 
       workspace = [
         "w[tv1], gapsout:0, gapsin:0"
-          "f[1], gapsout:0, gapsin:0"
+        "f[1], gapsout:0, gapsin:0"
       ];
     };
   };

@@ -1,4 +1,4 @@
-{config, pkgs, lib, ... }: {
+{ config, pkgs, lib, ... }: {
   programs.alacritty = {
     enable = true;
     settings = {
@@ -7,10 +7,10 @@
       font = {
         builtin_box_drawing = true;
         normal = {
-	  family = "JetBrains Mono";
+          family = "JetBrains Mono";
           style = lib.mkDefault "Bold";
         };
-	size = lib.mkForce 10.0;
+        size = lib.mkForce 10.0;
       };
     };
   };

@@ -9,8 +9,8 @@
         height = 10;
         margin = "5";
         spacing = 10;
-        modules-left = ["hyprland/workspaces" "disk" "memory" "cpu" "temperature" "battery" "custom/internet"];
-        modules-center = ["hyprland/window"];
+        modules-left = [ "hyprland/workspaces" "disk" "memory" "cpu" "temperature" "battery" "custom/internet" ];
+        modules-center = [ "hyprland/window" ];
         modules-right = [ "tray" "idle_inhibitor" "custom/keyboard-layout" "backlight" "pulseaudio" "clock" ];
 
         "hyprland/workspaces" = {
@@ -50,22 +50,22 @@
         "custom/keyboard-layout" = {
           format = "{}";
           interval = 1; # раз в секунду обновлять
-            exec = ''
-            layout=$(hyprctl devices -j | jq -r '.keyboards[] | select(.main == true) | .active_keymap')
-          case "$layout" in
-            *"Russian"*) echo "🇷🇺" ;;
-            *"English"*) echo "🇺🇸" ;;
-            *) echo "$layout" ;;
-            esac
-              '';
+          exec = ''
+              layout=$(hyprctl devices -j | jq -r '.keyboards[] | select(.main == true) | .active_keymap')
+            case "$layout" in
+              *"Russian"*) echo "🇷🇺" ;;
+              *"English"*) echo "🇺🇸" ;;
+              *) echo "$layout" ;;
+              esac
+          '';
         };
 
-# "custom/weather" = {
-#   format = " {} ";
-#   exec = "curl -s 'wttr.in/Krasnodar?format=%c%t&m'";
-#   interval = 300;
-#   class = "weather";
-# };
+        # "custom/weather" = {
+        #   format = " {} ";
+        #   exec = "curl -s 'wttr.in/Krasnodar?format=%c%t&m'";
+        #   interval = 300;
+        #   class = "weather";
+        # };
 
         "idle_inhibitor" = {
           format = "{icon}";
@@ -94,7 +94,7 @@
             phone = "";
             portable = "";
             car = "";
-            default = ["" "" "" "" ""];
+            default = [ "" "" "" "" "" ];
           };
         };
 
@@ -118,12 +118,12 @@
                   elif [[ "$status" == "Charging" || $capacity -gt 20 ]]; then
                   rm -f /tmp/low_battery_notified
                   fi
-                  '';
+          '';
           interval = 10;
           format = "{icon} {capacity}%";
           format-charging = " {capacity}%";
           format-alt = "{time} {icon}";
-          format-icons = ["" "" "" "" ""];
+          format-icons = [ "" "" "" "" "" ];
           tooltip = true;
           "tooltip-format" = "{timeTo}";
         };

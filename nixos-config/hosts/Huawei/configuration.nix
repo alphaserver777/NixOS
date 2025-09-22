@@ -15,7 +15,7 @@
 
   system.stateVersion = stateVersion;
 
-    systemd.services.fix-sound-essx8336 = {
+  systemd.services.fix-sound-essx8336 = {
     description = "Set ALSA mixer controls for sof-essx8336";
     after = [ "sound.target" ];
     wantedBy = [ "multi-user.target" ];

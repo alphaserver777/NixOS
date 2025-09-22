@@ -1,7 +1,7 @@
 { homeStateVersion, user, ... }: {
   imports = [
     ./modules
-      ./home-packages.nix
+    ./home-packages.nix
   ];
 
   home = {
@@ -9,8 +9,9 @@
     homeDirectory = "/home/${user}";
     stateVersion = homeStateVersion;
 
-    sessionVariables = { # Переменная для работы Gemini-cli
+    sessionVariables = {
+      # Переменная для работы Gemini-cli
       GOOGLE_CLOUD_PROJECT = "nixos-ai-001";
     };
   };
-                                 }
+}
