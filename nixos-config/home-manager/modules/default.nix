@@ -8,6 +8,7 @@
       ./git.nix
       ./lazygit.nix
 # ./obsidian.nix
+      ./sshAgent.nix
       ./starship.nix
       ./stylix.nix
       ./tmux.nix
