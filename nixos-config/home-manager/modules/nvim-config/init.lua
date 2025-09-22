@@ -30,6 +30,10 @@ require("catppuccin").setup({
     })
 vim.cmd.colorscheme "catppuccin"
 
+-- Align autoformat with nixpkgs-fmt so on-save formatter matches CLI tooling
+vim.g.formatdef_nixpkgs_fmt = '"nixpkgs-fmt"'
+vim.g.formatters_nix = { "nixpkgs_fmt" }
+
 -- Flash.nvim
 require("flash").setup({
     jump = { autojump = true },

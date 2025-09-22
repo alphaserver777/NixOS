@@ -1,53 +1,52 @@
 { pkgs, ... }: {
-# Частные программы узла
+  # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
-      zed-editor
-      telegram-desktop
-      obsidian
-      syncthing
-      amnezia-vpn
-      keepassxc
-      qbittorrent
-      imv #pic
-      mpv #video
-      anydesk
-      wpsoffice
-      drawio
-      pavucontrol
+    vscode
+    telegram-desktop
+    obsidian
+    syncthing
+    amnezia-vpn
+    keepassxc
+    qbittorrent
+    imv #pic
+    mpv #video
+    anydesk
+    wpsoffice
+    drawio
+    pavucontrol
 
 
-# For Develop
-      vscode
-      gemini-cli
-      google-cloud-sdk
-      docker
-      docker-compose
+    # For Develop
+    gemini-cli
+    google-cloud-sdk
+    docker
+    docker-compose
 
-# File manager
-      pcmanfm
+    # File manager
+    pcmanfm
 
-#CLI
-      btop
-      fzf # fast file search
-      git-graph # visual for git
-      ntfs3g # driver for NTFS
-      ripgrep # fast text search
-      udisks # for USB
-      ueberzugpp # pic in terminal
-      w3m # web-browser in terminal
-      zip
-      unzip
-      p7zip
-      home-manager
-      neovim
-      jq
+    #CLI
+    btop
+    fzf # fast file search
+    git-graph # visual for git
+    ntfs3g # driver for NTFS
+    ripgrep # fast text search
+    udisks # for USB
+    ueberzugpp # pic in terminal
+    w3m # web-browser in terminal
+    zip
+    unzip
+    p7zip
+    home-manager
+    neovim
+    jq
 
-# gcc
-# kdenlive
-# jetbrains.pycharm-professional
-# jre8
-# qemu
-# quickemu
-      ];
-               }
+    # gcc
+    # kdenlive
+    # jetbrains.pycharm-professional
+    # jre8
+    # qemu
+    # quickemu
+  ];
+}

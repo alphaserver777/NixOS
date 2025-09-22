@@ -1,4 +1,4 @@
-{ pkgs, user, ... }: {
+{ lib, pkgs, user, ... }: {
   programs.zsh.enable = true;
 
   users = {
@@ -9,10 +9,9 @@
     };
   };
 
-# Отключение запроса пароля для sudo
-  security.sudo.wheelNeedsPassword = false;
+  # Отключение запроса пароля для sudo
+  security.sudo.wheelNeedsPassword = lib.mkDefault false;
 
-                     }
+}
 
 #services.getty.autologinUser = user;
-
