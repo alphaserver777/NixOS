@@ -2,7 +2,6 @@
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
-    vscode
     telegram-desktop
     obsidian
     syncthing
@@ -22,6 +21,7 @@
     google-cloud-sdk
     docker
     docker-compose
+    vscode
 
     # File manager
     pcmanfm
@@ -36,6 +36,7 @@
     ueberzugpp # pic in terminal
     w3m # web-browser in terminal
     zip
+    rar
     unzip
     p7zip
     home-manager
