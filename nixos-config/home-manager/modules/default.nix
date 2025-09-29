@@ -7,8 +7,9 @@
       ./eza.nix # красивый вывод папок и файлов
       ./fzf.nix
       ./git.nix
-      ./lazygit.nix
+    ./lazygit.nix
 # ./obsidian.nix
+      ./google-chrome.nix
       ./sshAgent.nix
       ./starship.nix
       ./stylix.nix

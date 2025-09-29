@@ -16,6 +16,7 @@
     ./user.nix
     ./zram.nix
     ./amneziavpn.nix
+    ./power.nix
     ./displayManager.nix
     ./syncthing.nix
     ./docker.nix

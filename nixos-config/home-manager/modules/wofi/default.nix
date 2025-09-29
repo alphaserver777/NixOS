@@ -10,4 +10,11 @@
   };
 
   home.file.".config/wofi/style.css".source = ./style.css;
+
+  xdg.desktopEntries."google-chrome-wayland" = {
+    name = "Google Chrome (Wayland)";
+    exec = "google-chrome-stable --ozone-platform=wayland --disable-gpu";
+    terminal = false;
+    icon = "google-chrome";
+  };
 }
