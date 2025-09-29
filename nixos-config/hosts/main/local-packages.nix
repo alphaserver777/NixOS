@@ -12,6 +12,7 @@
       mpv #video
 #      wpsoffice
       git
+      anydesk
 
 # For Develop
       vscode

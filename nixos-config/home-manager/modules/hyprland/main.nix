@@ -1,4 +1,4 @@
-{
+{ lib, hostname, ... }: {
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
@@ -13,7 +13,10 @@
           "XDG_SCREENSHOTS_DIR,$HOME/screens"
       ];
 
-      monitor = ",1920x1080@60,auto,1.25";
+      monitor = if hostname == "main" then [
+        "HDMI-A-1,1920x1080@144.00Hz,0x0,1.25"
+                "DVI-D-1,1920x1080@60.00Hz,1536x0,1.25"
+      ] else ",1920x1080@60,auto,1.25";
       "$mainMod" = "SUPER";
       "$terminal" = "alacritty";
       "$fileManager" = "$terminal -e sh -c 'ranger'";

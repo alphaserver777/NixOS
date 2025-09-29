@@ -47,15 +47,19 @@
         };
         }) {} hosts;
 
-    homeConfigurations.${user} = home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages.${system};
-      extraSpecialArgs = {
-        inherit inputs homeStateVersion user;
-      };
+    homeConfigurations = nixpkgs.lib.foldl' (configs: host:
+      configs // {
+        "${user}@${host.hostname}" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.${system};
+          extraSpecialArgs = {
+            inherit inputs homeStateVersion user;
+            hostname = host.hostname;
+          };
 
-      modules = [
-        ./home-manager/home.nix
-      ];
-    };
+          modules = [
+            ./home-manager/home.nix
+          ];
+        };
+      }) {} hosts;
   };
 }
