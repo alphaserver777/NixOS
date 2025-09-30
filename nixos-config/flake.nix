@@ -17,46 +17,49 @@
 
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      homeStateVersion = "25.05";
-      user = "admsys";
-      hosts = {
-        Huawei.stateVersion = "25.05";
-        "srv-home".stateVersion = "25.05";
-        "x-disk".stateVersion = "25.05";
-        main.stateVersion = "25.05";
-      };
+  outputs = { self, nixpkgs, home-manager, ... }@inputs: let
+    system = "x86_64-linux";
+  homeStateVersion = "25.05";
+  user = "admsys";
+  hosts = [
+  { hostname = "Huawei"; stateVersion = "25.05"; }
+  { hostname = "srv-home"; stateVersion = "25.05"; }
+  { hostname = "x-disk"; stateVersion = "25.05"; }
+  { hostname = "main"; stateVersion = "25.05"; }
+  ];
 
-      makeSystem = hostname: hostCfg: nixpkgs.lib.nixosSystem {
-        system = system;
-        specialArgs = {
-          inherit inputs user;
-          hostname = hostname;
-          stateVersion = hostCfg.stateVersion;
-        };
-
-        modules = [
-          ./hosts/${hostname}/configuration.nix
-        ];
-      };
-
-    in
-    {
-      nixosConfigurations = nixpkgs.lib.mapAttrs makeSystem hosts;
-
-      formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
-
-      homeConfigurations.${user} = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
-        extraSpecialArgs = {
-          inherit inputs homeStateVersion user;
-        };
-
-        modules = [
-          ./home-manager/home.nix
-        ];
-      };
+  makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {
+    system = system;
+    specialArgs = {
+      inherit inputs stateVersion hostname user;
     };
+
+    modules = [
+      ./hosts/${hostname}/configuration.nix
+    ];
+  };
+
+  in {
+    nixosConfigurations = nixpkgs.lib.foldl' (configs: host:
+        configs // {
+        "${host.hostname}" = makeSystem {
+        inherit (host) hostname stateVersion;
+        };
+        }) {} hosts;
+
+    homeConfigurations = nixpkgs.lib.foldl' (configs: host:
+      configs // {
+        "${user}@${host.hostname}" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.${system};
+          extraSpecialArgs = {
+            inherit inputs homeStateVersion user;
+            hostname = host.hostname;
+          };
+
+          modules = [
+            ./home-manager/home.nix
+          ];
+        };
+      }) {} hosts;
+  };
 }

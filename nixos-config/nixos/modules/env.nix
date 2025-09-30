@@ -5,6 +5,9 @@
     TERMINAL = "alacritty";
     EDITOR = "nvim";
     XDG_BIN_HOME = "$HOME/.local/bin";
-    PATH = lib.concatStringsSep ":" [ XDG_BIN_HOME "$PATH" ];
+    NIXOS_OZONE_WL = "1";
+    PATH = [
+      "${XDG_BIN_HOME}"
+    ];
   };
 }

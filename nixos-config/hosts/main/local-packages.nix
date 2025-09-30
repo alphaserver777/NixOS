@@ -2,16 +2,17 @@
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
-    telegram-desktop
-    obsidian
-    syncthing
-    amnezia-vpn
-    keepassxc
-    qbittorrent
-    imv #pic
-    mpv #video
-    #      wpsoffice
-    git
+      telegram-desktop
+      obsidian
+      syncthing
+      amnezia-vpn
+      keepassxc
+      qbittorrent
+      imv #pic
+      mpv #video
+#      wpsoffice
+      git
+      anydesk
 
     # For Develop
     vscode
