@@ -40,7 +40,7 @@
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8
-    # qemu
+    qemu
     # quickemu
   ];
 }

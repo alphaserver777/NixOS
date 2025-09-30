@@ -12,5 +12,18 @@
   networking.hostName = hostname;
 
   system.stateVersion = stateVersion;
-}
 
+  services.samba = {
+    enable = true;
+    settings = {
+      public = {
+        path = "/home/admsys/Obsidian";
+        browseable = "yes";
+        "read only" = "no";
+        "create mask" = "0664";
+        "directory mask" = "0775";
+        "valid users" = "admsys";
+      };
+    };
+  };
+}
