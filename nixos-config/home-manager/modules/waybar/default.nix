@@ -85,8 +85,10 @@
         "pulseaudio" = {
           format = "{icon} {volume}%";
           format-bluetooth = "{icon} {volume}% ";
-          format-muted = " ";
-          on-click = "amixer sset Master toggle";
+          format-muted = "";
+          on-click = "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+";
+          on-click-right = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
+          on-click-middle = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
           format-icons = {
             headphones = "";
             handsfree = "";

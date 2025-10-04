@@ -10,6 +10,7 @@
     ./lazygit.nix
 # ./obsidian.nix
       ./google-chrome.nix
+      ./pcmanfm.nix
       ./sshAgent.nix
       ./starship.nix
       ./stylix.nix

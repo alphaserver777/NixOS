@@ -12,6 +12,7 @@
       "$mainMod,       F, togglefloating,"
       "$mainMod,       P, pin,"
       "$mainMod,       J, togglesplit,"
+      "$mainMod,     Tab, hyprexpo:expo, toggle"
       "$mainMod,       V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
       "$mainMod,       B, exec, pkill -SIGUSR2 waybar"
       "$mainMod SHIFT, B, exec, pkill -SIGUSR1 waybar"

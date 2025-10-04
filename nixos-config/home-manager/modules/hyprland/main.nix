@@ -1,5 +1,6 @@
-{ lib, hostname, ... }: {
+{ lib, pkgs, hostname, ... }: {
   wayland.windowManager.hyprland = {
+    plugins = [ pkgs.hyprlandPlugins.hyprexpo ];
     enable = true;
     systemd.enable = true;
     settings = {
@@ -19,7 +20,7 @@
       ] else ",1920x1080@60,auto,1.25";
       "$mainMod" = "SUPER";
       "$terminal" = "alacritty";
-      "$fileManager" = "$terminal -e sh -c 'ranger'";
+      "$fileManager" = "file-reveal";
       "$menu" = "wofi";
 
       exec-once = [
@@ -107,7 +108,7 @@
         "workspace 2,class:(Alacritty)"
         "workspace 3,class:(obsidian)"
         "workspace 3,class:(zathura)"
-        "workspace 4,class:(vscode)"
+        "workspace 4,class:^(code(-oss)?|code-url-handler|vscode|VSCodium|Code)$"
         "workspace 5,class:(org.telegram.desktop)"
         "workspace 6,class:(qemu)"
 
