@@ -9,6 +9,7 @@
       "$mainMod ALT,   M, exec, reboot"
       "$mainMod,       R, exec, $menu --show drun"
       "$mainMod SHIFT, R, exec, $fileManager"
+      "$mainMod,       E, exec, pcmanfm"
       "$mainMod,       F, togglefloating,"
       "$mainMod,       P, pin,"
       "$mainMod,       J, togglesplit,"
