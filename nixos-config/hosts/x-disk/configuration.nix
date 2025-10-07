@@ -15,6 +15,7 @@
 
   services.samba = {
     enable = true;
+    openFirewall = true;
     settings = {
       public = {
         path = "/home/admsys";
