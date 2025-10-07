@@ -123,3 +123,57 @@ sudo smbpasswd -a admsys
 4.  В окне ввода учетных данных введите:
     *   **Имя пользователя:** `admsys`
     *   **Пароль:** пароль, который вы задали на Шаге 2.
+
+---
+
+# Инструкция по установке Ubuntu Server 24.04
+
+Этот раздел содержит инструкции по установке и запуску виртуальной машины Ubuntu Server 24.04.
+
+## 1. Первоначальная установка
+
+### Шаг 1: Создание виртуального диска
+
+Создается файл-образ, который будет служить жестким диском для ВМ.
+
+```bash
+qemu-img create -f qcow2 /home/admsys/vms/ubuntu-server.qcow2 20G
+```
+
+### Шаг 2: Запуск установки с ISO-образа
+
+Эта команда запускает ВМ, загружая ее с установочного ISO-образа Ubuntu Server.
+
+```bash
+qemu-system-x86_64 \
+    -enable-kvm \
+    -M q35 \
+    -m 4G \
+    -cpu host \
+    -smp 4 \
+    -hda /home/admsys/vms/ubuntu-server.qcow2 \
+    -cdrom /home/admsys/Downloads/ubuntu-24.04.3-live-server-amd64.iso \
+    -boot d \
+    -device usb-ehci \
+    -device usb-tablet \
+    --display gtk,gl=on
+```
+
+В появившемся окне следуйте стандартной процедуре установки Ubuntu Server.
+
+## 2. Запуск ВМ (после установки)
+
+Для запуска уже установленной системы используйте следующую команду. Обратите внимание, что опции `-cdrom` и `-boot d` убраны.
+
+```bash
+qemu-system-x86_64 \
+    -enable-kvm \
+    -M q35 \
+    -m 4G \
+    -cpu host \
+    -smp 4 \
+    -hda /home/admsys/vms/ubuntu-server.qcow2 \
+    -device usb-ehci \
+    -device usb-tablet \
+    --display gtk,gl=on
+```

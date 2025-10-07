@@ -17,7 +17,7 @@
     enable = true;
     settings = {
       public = {
-        path = "/home/admsys/Obsidian";
+        path = "/home/admsys";
         browseable = "yes";
         "read only" = "no";
         "create mask" = "0664";
@@ -26,4 +26,14 @@
       };
     };
   };
+
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      package = pkgs.qemu_kvm;
+      swtpm.enable = true;
+    };
+  };
+
+  programs.virt-manager.enable = true;
 }
