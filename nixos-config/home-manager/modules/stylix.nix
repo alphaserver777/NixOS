@@ -25,10 +25,6 @@
       wofi.enable = false;
       hyprland.enable = false;
       hyprlock.enable = false;
-      firefox = {
-        enable = true;
-        profileNames = [ "admsys" ];
-      };
     };
 
     cursor = {
