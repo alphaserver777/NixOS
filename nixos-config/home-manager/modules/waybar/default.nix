@@ -107,20 +107,6 @@
         };
 
         "battery" = {
-          states = {
-            warning = 30;
-            critical = 15;
-          };
-          on-update = ''
-            if [[ "$status" == "Discharging" && $capacity -le 20 ]]; then
-              if [ ! -f /tmp/low_battery_notified ]; then
-                notify-send -u critical "Low Battery" "Battery level is at ''${capacity}%!"
-                  touch /tmp/low_battery_notified
-                  fi
-                  elif [[ "$status" == "Charging" || $capacity -gt 20 ]]; then
-                  rm -f /tmp/low_battery_notified
-                  fi
-          '';
           interval = 10;
           format = "{icon} {capacity}%";
           format-charging = " {capacity}%";
@@ -128,6 +114,47 @@
           format-icons = [ "" "" "" "" "" ];
           tooltip = true;
           "tooltip-format" = "{timeTo}";
+          states = {
+            good = 80;
+            medium = 60;
+            low = 40;
+            warning = 30;
+            critical = 20;
+            emergency = 10;
+          };
+          on-update = ''
+            cache_dir="/tmp/waybar-battery"
+            mkdir -p "$cache_dir"
+            capacity="''${capacity%.*}"
+            if [[ "$status" == "Discharging" ]]; then
+              for level in 30 20 10; do
+                flag="$cache_dir/$level"
+                if (( capacity <= level )) && [[ ! -f "$flag" ]]; then
+                  case $level in
+                    30)
+                      urgency=normal
+                      title="Battery low"
+                      ;;
+                    20)
+                      urgency=critical
+                      title="Battery very low"
+                      ;;
+                    10)
+                      urgency=critical
+                      title="Battery critically low"
+                      ;;
+                  esac
+                  notify-send -u "$urgency" "$title" "Battery level is at ''${capacity}%"
+                  touch "$flag"
+                fi
+                if (( capacity > level )) && [[ -f "$flag" ]]; then
+                  rm -f "$flag"
+                fi
+              done
+            else
+              rm -f "$cache_dir/10" "$cache_dir/20" "$cache_dir/30"
+            fi
+          '';
         };
 
         "disk" = {

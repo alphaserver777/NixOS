@@ -2,6 +2,9 @@
   wayland.windowManager.hyprland = {
     plugins = [ pkgs.hyprlandPlugins.hyprexpo ];
     enable = true;
+    extraConfig = ''
+      plugin = ${pkgs.hyprlandPlugins.hyprexpo}/lib/libhyprexpo.so
+    '';
     systemd.enable = true;
     settings = {
       env = [

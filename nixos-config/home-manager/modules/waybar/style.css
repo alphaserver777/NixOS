@@ -61,8 +61,37 @@ margin-left: -1px;
   }
 
   #battery {
+    color: #a6e3a1; /* Green */
+    transition: color 0.3s ease;
+  }
+  #battery.good {
+    color: #a6e3a1; /* Green */
+  }
+  #battery.medium {
     color: #f9e2af; /* Yellow */
   }
+  #battery.low {
+    color: #f8bd96; /* Orange */
+  }
+  #battery.warning {
+    color: #f49888; /* Orange-Red */
+  }
+  #battery.critical {
+    color: #f38ba8; /* Red */
+  }
+  #battery.emergency {
+    color: #f44747; /* Bright Red */
+    animation: blink 1s step-start infinite;
+  }
+  #battery.charging {
+    color: #89dceb; /* Aqua when charging */
+  }
+
+@keyframes blink {
+  50% {
+    color: rgba(244, 71, 71, 0.35);
+  }
+}
 
   #memory {
     color: #f5c2e7; /* Pink */
