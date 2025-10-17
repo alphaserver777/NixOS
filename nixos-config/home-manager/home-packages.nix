@@ -22,6 +22,7 @@
     mc
     woeusb
     ntfs3g # для работы с флешкой
+    gnupg
 
     # # Desktop apps
     # anki

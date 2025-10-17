@@ -17,6 +17,7 @@
     ./zathura.nix # PDF reader
     ./zsh.nix
     ./zoxide.nix
+    ./gpg.nix
     ./hyprland
     ./swaync
     ./nvim-config
