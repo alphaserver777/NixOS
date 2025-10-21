@@ -2,17 +2,17 @@
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
-      telegram-desktop
-      obsidian
-      syncthing
-      amnezia-vpn
-      keepassxc
-      qbittorrent
-      imv #pic
-      mpv #video
-#      wpsoffice
-      git
-      anydesk
+    telegram-desktop
+    obsidian
+    syncthing
+    amnezia-vpn
+    keepassxc
+    qbittorrent
+    imv #pic
+    mpv #video
+    #      wpsoffice
+    git
+    anydesk
 
     # For Develop
     vscode
@@ -42,7 +42,7 @@
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8
-    # qemu
+    qemu
     # quickemu
   ];
 }

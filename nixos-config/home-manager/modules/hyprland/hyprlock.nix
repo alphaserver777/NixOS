@@ -17,8 +17,8 @@
 
             # path = "../../../wallpapers/bsod.png";
             # Применяем эффекты
-            blur_passes = 0.5;
-            blur_size = 2;
+            blur_passes = 0;
+            blur_size = 0;
             contrast = 0.5;
             brightness = 0.5;
             vibrancy = 0.5;
@@ -31,7 +31,7 @@
           {
             monitor = "";
             text = ''cmd[update:1000] echo "$(date +'%k:%M')"'';
-            color = "rgba(205, 214, 244)";
+            color = "rgb(205, 214, 244)";
             font_size = 80;
             font_family = "Maple Mono Bold";
             shadow_passes = 3;
@@ -43,7 +43,7 @@
           {
             monitor = "";
             text = ''cmd[update:1000] echo "- $(date +'%A, %B %d') -" '';
-            color = "rgba(205, 214, 244)";
+            color = "rgb(205, 214, 244)";
             font_size = 18;
             font_family = "Maple Mono";
             shadow_passes = 3;
