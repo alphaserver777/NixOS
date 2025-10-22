@@ -130,6 +130,8 @@ passwd user
 ssh-keygen -t rsa -b 4096 -C "ваш_email@example.com"
 
 git remote set-url origin git@github.com:username/repository.git
+
+ssh-add ~/<key> # Добавление ключа в кэш, чтобы его не спрашивали в течении сессии
 ```
 -----
 
