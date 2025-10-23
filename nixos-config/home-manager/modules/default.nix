@@ -7,6 +7,7 @@
     ./fzf.nix
     ./git.nix
     ./lazygit.nix
+    ./atuin.nix
     # ./obsidian.nix
     ./google-chrome.nix
     ./pcmanfm.nix

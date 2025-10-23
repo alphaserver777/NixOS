@@ -22,21 +22,34 @@
     # File manager
     pcmanfm
 
-    #CLI
+    # --- CLI ---
+    # System Monitoring
     btop
+
+    # File Search & Manipulation
+    duf
+    fd
     fzf # fast file search
-    git-graph # visual for git
-    ntfs3g # driver for NTFS
     ripgrep # fast text search
+
+    # Development & Text Editing
+    gcc
+    git-graph # visual for git
+    jq
+    neovim
+
+    # System & Hardware
+    home-manager
+    ntfs3g # driver for NTFS
     udisks # for USB
+
+    # Web & Terminal
     ueberzugpp # pic in terminal
     w3m # web-browser in terminal
+
+    # Archiving
     zip
     unzip
-    home-manager
-    neovim
-    jq
-    gcc
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8
