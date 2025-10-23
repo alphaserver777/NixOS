@@ -14,7 +14,6 @@
 
     # For Develop
     vscode
-    gemini-cli
     google-cloud-sdk
     docker
     docker-compose
@@ -55,5 +54,9 @@
     # jre8
     qemu
     # quickemu
+
+    # A
+    gemini-cli
+
   ];
 }
