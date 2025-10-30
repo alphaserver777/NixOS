@@ -20,5 +20,6 @@
     ./displayManager.nix
     ./syncthing.nix
     ./docker.nix
+    ./udisks.nix
   ];
 }
