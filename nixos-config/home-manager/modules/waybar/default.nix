@@ -18,7 +18,7 @@
           show-special = true;
           special-visible-only = true;
           all-outputs = false;
-          format = "{icon}";
+          format = "{id}{icon}";
           format-icons = {
             "1" = "";
             "2" = "";
