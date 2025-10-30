@@ -13,7 +13,8 @@
       "$mainMod,       F, togglefloating,"
       "$mainMod,       P, pin,"
       "$mainMod,       J, togglesplit,"
-      "$mainMod,     Tab, hyprexpo:expo, toggle"
+      # Стабилизируем раскладку Expo: сначала переходим на WS1, затем открываем Expo
+      "$mainMod,     Tab, exec, sh -lc 'hyprctl dispatch workspace 1; sleep 0.05; hyprctl dispatch hyprexpo:expo toggle'"
       "$mainMod,       V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
       "$mainMod,       B, exec, pkill -SIGUSR2 waybar"
       "$mainMod SHIFT, B, exec, pkill -SIGUSR1 waybar"
@@ -49,7 +50,6 @@
       "$mainMod, 7, workspace, 7"
       "$mainMod, 8, workspace, 8"
       "$mainMod, 9, workspace, 9"
-      "$mainMod, 0, workspace, 10"
 
       # Moving windows to workspaces
       "$mainMod SHIFT, 1, movetoworkspacesilent, 1"
@@ -61,7 +61,6 @@
       "$mainMod SHIFT, 7, movetoworkspacesilent, 7"
       "$mainMod SHIFT, 8, movetoworkspacesilent, 8"
       "$mainMod SHIFT, 9, movetoworkspacesilent, 9"
-      "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
 
       # Scratchpad
       "$mainMod,       S, togglespecialworkspace,  magic"
