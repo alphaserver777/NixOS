@@ -10,13 +10,24 @@
     qbittorrent
     imv #pic
     mpv #video
-    wpsoffice
+    pavucontrol
+
+    # Office Suites
+    libreoffice
 
     # For Develop
     vscode
     google-cloud-sdk
     docker
     docker-compose
+    postman
+    python3
+
+    # Pentest
+    nmap
+    smbmap
+    metasploit
+    traceroute
 
     # File manager
     pcmanfm
@@ -38,6 +49,7 @@
     neovim
 
     # System & Hardware
+    alsa-utils # for alsamixer
     home-manager
     ntfs3g # driver for NTFS
     udisks # for USB
