@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   # Частные программы узла
   environment.systemPackages = with pkgs; [
+    google-chrome
     btop
     telegram-desktop
     # obsidian
