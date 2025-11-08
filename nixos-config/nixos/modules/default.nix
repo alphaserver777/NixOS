@@ -21,5 +21,6 @@
     ./syncthing.nix
     ./docker.nix
     ./udisks.nix
+    ./virtualbox.nix
   ];
 }
