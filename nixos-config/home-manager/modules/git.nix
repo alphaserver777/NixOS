@@ -8,6 +8,7 @@
       url."git@gitflic.ru:".insteadOf = "https://gitflic.ru/";
       url."git@gitlab.com:".insteadOf = "https://gitlab.com/";
       fetch.prune = true;
+      init.defaultBranch = "main";
     };
   };
 }
