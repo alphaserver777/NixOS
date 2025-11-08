@@ -22,6 +22,7 @@
     docker
     docker-compose
     vscode
+    termius
 
     # File manager
     pcmanfm
