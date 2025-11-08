@@ -36,7 +36,7 @@
     ueberzugpp # pic in terminal
     w3m # web-browser in terminal
     zip
-    rar
+    unrar
     unzip
     p7zip
     home-manager
