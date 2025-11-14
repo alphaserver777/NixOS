@@ -61,6 +61,7 @@
     # Archiving
     zip
     unzip
+    p7zip
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8
