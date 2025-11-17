@@ -7,6 +7,11 @@
     ../../nixos/modules
   ];
 
+  # Disable WiFi power saving to prevent intermittent connection drops
+  boot.extraModprobeConfig = ''
+    options iwlwifi power_save=0
+  '';
+
   environment.systemPackages = [ pkgs.home-manager ];
 
   networking.hostName = hostname;
