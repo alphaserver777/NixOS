@@ -129,10 +129,24 @@
         "nofocus, class:^(xwaylandvideobridge)$"
       ];
 
-      workspace = [
-        "w[tv1], gapsout:0, gapsin:0"
-        "f[1], gapsout:0, gapsin:0"
-      ];
+      workspace =
+        if hostname == "main" then [
+          "monitor:HDMI-A-1,1"
+          "monitor:HDMI-A-1,2"
+          "monitor:HDMI-A-1,3"
+          "monitor:HDMI-A-1,4"
+          "monitor:HDMI-A-1,5"
+          "monitor:DVI-D-1,6"
+          "monitor:DVI-D-1,7"
+          "monitor:DVI-D-1,8"
+          "monitor:DVI-D-1,9"
+          "monitor:DVI-D-1,10"
+          "w[tv1], gapsout:0, gapsin:0"
+          "f[1], gapsout:0, gapsin:0"
+        ] else [
+          "w[tv1], gapsout:0, gapsin:0"
+          "f[1], gapsout:0, gapsin:0"
+        ];
     };
   };
 }
