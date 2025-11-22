@@ -11,7 +11,7 @@
   hardware.enableAllFirmware = true;
 
   # Disable WiFi power saving to prevent intermittent connection drops
-  networking.wireless.powerManagement = false;
+  boot.extraModprobeConfig = "options iwlwifi power_save=0";
 
   environment.systemPackages = [ pkgs.home-manager ];
 
