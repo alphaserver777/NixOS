@@ -25,6 +25,12 @@
     neovim
     docker
     docker-compose
+
+    #network
+    speedtest-cli
+    iperf3
+    mtr
+    wavemon
     # gcc
     # kdenlive
     # jetbrains.pycharm-professional
