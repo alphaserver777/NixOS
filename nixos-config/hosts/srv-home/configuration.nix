@@ -7,10 +7,11 @@
     ../../nixos/modules
   ];
 
+  # Ensure all firmware is available, especially for WiFi.
+  hardware.enableAllFirmware = true;
+
   # Disable WiFi power saving to prevent intermittent connection drops
-  boot.extraModprobeConfig = ''
-    options iwlwifi power_save=0
-  '';
+  networking.wireless.powerManagement = false;
 
   environment.systemPackages = [ pkgs.home-manager ];
 
