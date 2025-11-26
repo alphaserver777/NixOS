@@ -13,8 +13,10 @@
   # Disable WiFi power saving to prevent intermittent connection drops
   boot.extraModprobeConfig = "options iwlwifi power_save=0";
 
-  # Wait for the WiFi device to be ready before attempting to connect.
-  networking.networkmanager.wait-for-device-timeout = 30;
+  # Add a delay before NetworkManager starts to allow the WiFi device to initialize.
+  systemd.services.NetworkManager.preStart = ''
+    ${pkgs.coreutils}/bin/sleep 10
+  '';
 
   environment.systemPackages = [ pkgs.home-manager ];
 
