@@ -23,5 +23,14 @@
   networking.hostName = hostname;
 
   system.stateVersion = stateVersion;
+
+  # Mount the /dev/sdb1 partition at /mnt/DATA
+  # For more stability, it's recommended to use the partition's UUID.
+  # You can find the UUID by running: sudo blkid /dev/sdb1
+  fileSystems."/mnt/DATA" = {
+    device = "/dev/sdb1";
+    fsType = "auto";
+    options = [ "defaults" ];
+  };
 }
 
