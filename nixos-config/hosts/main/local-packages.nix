@@ -10,7 +10,12 @@
     qbittorrent
     imv #pic
     mpv #video
-    #      wpsoffice
+
+    # Office
+    xournalpp
+    openboard
+
+    wpsoffice
     git
     anydesk
 

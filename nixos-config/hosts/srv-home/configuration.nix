@@ -10,8 +10,8 @@
   # Ensure all firmware is available, especially for WiFi.
   hardware.enableAllFirmware = true;
 
-  # Disable WiFi power saving to prevent intermittent connection drops
-  boot.extraModprobeConfig = "options iwlwifi power_save=0";
+  # Disable WiFi power saving and other problematic features to prevent intermittent connection drops
+  boot.extraModprobeConfig = "options iwlwifi power_save=0 11n_disable=8 swcrypto=1";
 
   # Add a delay before NetworkManager starts to allow the WiFi device to initialize.
   systemd.services.NetworkManager.preStart = ''
