@@ -24,13 +24,11 @@
 
   system.stateVersion = stateVersion;
 
-  # Mount the /dev/sdb1 partition at /mnt/DATA
-  # For more stability, it's recommended to use the partition's UUID.
-  # You can find the UUID by running: sudo blkid /dev/sdb1
+  # Mount the DATA partition at /mnt/DATA using its stable UUID
   fileSystems."/mnt/DATA" = {
-    device = "/dev/sdb1";
-    fsType = "auto";
-    options = [ "defaults" ];
+    device = "/dev/disk/by-uuid/92A816A5A81687BD";
+    fsType = "ntfs";
+    options = [ "rw" "defaults" ];
   };
 }
 
