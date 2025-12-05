@@ -35,9 +35,9 @@
   services.power-profiles-daemon.enable = false;
   services.tlp = {
     enable = true;
-    extraConfig = ''
-      SOUND_POWER_SAVE_ON_BAT=0
-      SOUND_POWER_SAVE_ON_AC=0
-    '';
+    settings = {
+      SOUND_POWER_SAVE_ON_BAT = 0;
+      SOUND_POWER_SAVE_ON_AC = 0;
+    };
   };
 }

@@ -16,7 +16,7 @@
     options rtw88_pci disable_aspm=1
   '';
   boot.kernelParams = [ "pcie_aspm=off" ];
-  networking.networkmanager.wifi.powersave = "2";
+  networking.networkmanager.wifi.powersave = false;
 
   # Add a delay before NetworkManager starts to allow the WiFi device to initialize.
   systemd.services.NetworkManager.preStart = ''
