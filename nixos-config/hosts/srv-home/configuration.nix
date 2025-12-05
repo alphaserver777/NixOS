@@ -11,7 +11,12 @@
   hardware.enableAllFirmware = true;
 
   # Disable WiFi power saving and other problematic features to prevent intermittent connection drops
-  boot.extraModprobeConfig = "options iwlwifi power_save=0 11n_disable=8 swcrypto=1";
+  boot.extraModprobeConfig = ''
+    options iwlwifi power_save=0 11n_disable=8 swcrypto=1
+    options rtw88_pci disable_aspm=1
+  '';
+  boot.kernelParams = [ "pcie_aspm=off" ];
+  networking.networkmanager.wifi.powersave = "2";
 
   # Add a delay before NetworkManager starts to allow the WiFi device to initialize.
   systemd.services.NetworkManager.preStart = ''
@@ -31,4 +36,3 @@
     options = [ "rw" "defaults" ];
   };
 }
-
