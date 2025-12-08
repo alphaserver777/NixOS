@@ -10,9 +10,13 @@
     qbittorrent
     imv #pic
     mpv #video
-    #      wpsoffice
     git
     anydesk
+    pavucontrol
+
+    # Office Suites
+    libreoffice
+    drawio
 
     # For Develop
     vscode
@@ -35,6 +39,7 @@
     w3m # web-browser in terminal
     zip
     unzip
+    p7zip
     home-manager
     neovim
     jq
@@ -42,7 +47,7 @@
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8
-    qemu
+    # qemu
     # quickemu
   ];
 }

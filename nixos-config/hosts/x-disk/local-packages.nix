@@ -3,6 +3,7 @@
   environment.systemPackages = with pkgs; [
     google-chrome
     telegram-desktop
+    qtox
     obsidian
     syncthing
     amnezia-vpn
@@ -11,9 +12,11 @@
     imv #pic
     mpv #video
     pavucontrol
+    anydesk
 
     # Office Suites
     libreoffice
+    drawio
 
     # For Develop
     vscode
@@ -38,6 +41,7 @@
 
     # File Search & Manipulation
     duf
+    ncdu # disk usage analyzer
     fd
     fzf # fast file search
     ripgrep # fast text search
@@ -59,16 +63,17 @@
     w3m # web-browser in terminal
 
     # Archiving
+    file-roller # визуальный архиватор
     zip
     unzip
     p7zip
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8
-    qemu
+    # qemu
     # quickemu
 
-    # A
+    # AI
     gemini-cli
 
   ];
