@@ -6,7 +6,7 @@
       mainBar = {
         layer = "top";
         position = "top";
-        height = 10;
+        height = 30;
         margin = "5";
         spacing = 10;
         modules-left = [ "hyprland/workspaces" "disk" "memory" "cpu" "temperature" "battery" "custom/internet" ];

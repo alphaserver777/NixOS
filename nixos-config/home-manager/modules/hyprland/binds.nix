@@ -9,7 +9,7 @@
       "$mainMod ALT,   M, exec, reboot"
       "$mainMod,       R, exec, $menu --show drun"
       "$mainMod SHIFT, R, exec, $fileManager"
-      "$mainMod,       E, exec, pcmanfm"
+      "$mainMod,       E, exec, nemo"
       "$mainMod,       G, exec, google-chrome-stable --ozone-platform=wayland --disable-gpu"
       "$mainMod,       C, exec, telegram-desktop"
       "$mainMod,       A, exec, amneziavpn"
@@ -23,6 +23,7 @@
       "$mainMod,       L, exec, loginctl lock-session"
       "$mainMod,       N, exec, swaync-client -t"
       ", Print, exec, grimblast --notify --freeze copysave area"
+      "$mainMod,       F12, exec, grimblast --notify --freeze copysave area"
 
       # Moving focus
       "$mainMod, left, movefocus, l"
