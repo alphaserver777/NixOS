@@ -34,6 +34,8 @@
 
     # File manager
     pcmanfm
+    nemo
+    gvfs
 
     # --- CLI ---
     # System Monitoring
@@ -56,7 +58,7 @@
     alsa-utils # for alsamixer
     home-manager
     ntfs3g # driver for NTFS
-    udisks # for USB
+    udisks2 # for USB and auto-mounting
 
     # Web & Terminal
     ueberzugpp # pic in terminal
