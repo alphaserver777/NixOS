@@ -3,6 +3,7 @@
   environment.systemPackages = with pkgs; [
     google-chrome
     telegram-desktop
+    qtox
     obsidian
     syncthing
     amnezia-vpn
@@ -11,9 +12,11 @@
     imv #pic
     mpv #video
     pavucontrol
+    anydesk
 
     # Office Suites
     libreoffice
+    drawio
 
     # For Develop
     vscode
@@ -31,6 +34,8 @@
 
     # File manager
     pcmanfm
+    nemo
+    gvfs
 
     # --- CLI ---
     # System Monitoring
@@ -38,6 +43,7 @@
 
     # File Search & Manipulation
     duf
+    ncdu # disk usage analyzer
     fd
     fzf # fast file search
     ripgrep # fast text search
@@ -52,23 +58,24 @@
     alsa-utils # for alsamixer
     home-manager
     ntfs3g # driver for NTFS
-    udisks # for USB
+    udisks2 # for USB and auto-mounting
 
     # Web & Terminal
     ueberzugpp # pic in terminal
     w3m # web-browser in terminal
 
     # Archiving
+    file-roller # визуальный архиватор
     zip
     unzip
     p7zip
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8
-    qemu
+    # qemu
     # quickemu
 
-    # A
+    # AI
     gemini-cli
 
   ];
