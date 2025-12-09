@@ -11,7 +11,7 @@
         spacing = 10;
         modules-left = [ "hyprland/workspaces" "disk" "memory" "cpu" "temperature" "battery" "custom/internet" ];
         modules-center = [ "hyprland/window" ];
-        modules-right = [ "tray" "idle_inhibitor" "custom/keyboard-layout" "backlight" "pulseaudio" "clock" ];
+        modules-right = [ "tray" "idle_inhibitor" "custom/keyboard-layout" "backlight" "pulseaudio" "pulseaudio#mic" "clock" ];
 
         "hyprland/workspaces" = {
           disable-scroll = true;
@@ -98,6 +98,14 @@
             car = "";
             default = [ "" "" "" "" "" ];
           };
+        };
+
+        "pulseaudio#mic" = {
+          format = "{format_source}";
+          format-source = "";
+          format-source-muted = "";
+          on-click = "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+          tooltip = false;
         };
 
         "custom/internet" = {

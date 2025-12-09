@@ -10,12 +10,6 @@
     qbittorrent
     imv #pic
     mpv #video
-
-    # Office
-    xournalpp
-    openboard
-
-    wpsoffice
     git
     anydesk
     pavucontrol
@@ -23,6 +17,8 @@
     # Office Suites
     libreoffice
     drawio
+    xournalpp
+    openboard
 
     # For Develop
     vscode
@@ -32,7 +28,7 @@
     docker-compose
 
     # File manager
-    pcmanfm
+    nemo
 
     #CLI
     btop

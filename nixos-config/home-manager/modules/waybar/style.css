@@ -137,6 +137,14 @@ margin-left: -1px;
     color: #89b4fa; /* Blue */
   }
 
+  #pulseaudio-mic {
+    color: #cba6f7; /* Mauve */
+  }
+
+  #pulseaudio-mic.source-muted {
+    color: #f38ba8; /* Red */
+  }
+
   #custom-internet.online {
     color: #a6e3a1; /* Green */
   }
