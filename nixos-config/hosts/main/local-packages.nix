@@ -1,8 +1,14 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+
+let
+  lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
+in
+{
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
     telegram-desktop
+    obs-studio
     obsidian
     syncthing
     amnezia-vpn
@@ -26,9 +32,15 @@
     google-cloud-sdk
     docker
     docker-compose
+    neovim
+    jq
+    gcc
+    dbeaver-bin
+    sqlite
 
     # File manager
     nemo
+    sshfs
 
     #CLI
     btop
@@ -36,16 +48,22 @@
     git-graph # visual for git
     ntfs3g # driver for NTFS
     ripgrep # fast text search
+    lazyssh-client
     udisks # for USB
     ueberzugpp # pic in terminal
     w3m # web-browser in terminal
-    zip
-    unzip
+
+    # Archiving
+    file-roller # визуальный архиватор
+    unrar
     p7zip
+
+    # System & Hardware
+    alsa-utils # for alsamixer
     home-manager
-    neovim
-    jq
-    gcc
+    ntfs3g # driver for NTFS
+    udisks2 # for USB and auto-mounting
+
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8

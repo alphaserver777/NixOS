@@ -20,6 +20,7 @@
           all-outputs = false;
           format = "{id}{icon}";
           format-icons = {
+            "0" = "";
             "1" = "";
             "2" = "";
             "3" = "";
@@ -28,7 +29,8 @@
             "6" = "";
             "7" = "";
             "8" = "";
-            "9" = "";
+            "9" = "";
+            "default" = "";
             "magic" = "";
           };
           persistent-workspaces = {
