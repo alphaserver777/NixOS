@@ -11,7 +11,6 @@
     imv #pic
     mpv #video
     anydesk
-    wpsoffice
     drawio
     pavucontrol
 
@@ -33,6 +32,7 @@
     git-graph # visual for git
     ntfs3g # driver for NTFS
     ripgrep # fast text search
+    tailscale
     udisks # for USB
     ueberzugpp # pic in terminal
     w3m # web-browser in terminal
