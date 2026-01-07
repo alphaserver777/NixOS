@@ -17,7 +17,7 @@
           disable-scroll = true;
           show-special = true;
           special-visible-only = true;
-          all-outputs = false;
+          all-outputs = true;
           format = "{id}{icon}";
           format-icons = {
             "0" = "";
@@ -34,7 +34,8 @@
             "magic" = "";
           };
           persistent-workspaces = {
-            "*" = 8;
+            "HDMI-A-1" = [ 1 2 3 4 5 6 7 8 9 ];
+            "DVI-D-1" = [ 1 2 3 4 5 6 7 8 9 ];
           };
         };
 

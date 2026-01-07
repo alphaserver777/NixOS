@@ -82,6 +82,11 @@
         kb_options = "grp:caps_toggle";
       };
 
+      device = [{
+        name = "wacom-bamboo-one-s-pen";
+        output = "HDMI-A-1";
+      }];
+
       gestures = {
         workspace_swipe = true;
         workspace_swipe_invert = false;
