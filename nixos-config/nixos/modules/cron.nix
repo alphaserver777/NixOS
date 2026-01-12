@@ -1,10 +1,10 @@
-{ pkgs, user, lib, hostname, ... }:
+{ pkgs, user, lib, hostname, secrets, ... }:
 
 {
   services.cron = lib.mkIf (hostname == "x-disk") {
     enable = true;
-    systemCronJobs = [
-      "* * * * * ${user} ${pkgs.curl}/bin/curl --max-time 15 -fsS https://pingwin.work/api/v1/task/eef077c9-0d80-4f05-9ce0-fc3db5b9247e/handle > /home/${user}/pingwin-curl.log 2>&1"
+    systemCronJobs = lib.optionals (secrets ? pingwin-cron-url) [
+      "* * * * * ${user} ${pkgs.curl}/bin/curl --max-time 15 -fsS ${secrets.pingwin-cron-url} > /home/${user}/pingwin-curl.log 2>&1"
     ];
   };
 }

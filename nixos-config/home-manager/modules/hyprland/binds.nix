@@ -4,7 +4,7 @@
     bind = [
       "$mainMod,       T, exec, $terminal"
       "$mainMod,       Q, killactive,"
-      "$mainMod,       M, exit,"
+      "$mainMod CTRL,  M, exit,"
       "$mainMod SHIFT, M, exec, poweroff"
       "$mainMod ALT,   M, exec, reboot"
       "$mainMod,       R, exec, $menu --show drun"
@@ -12,7 +12,7 @@
       "$mainMod,       E, exec, nemo"
       "$mainMod,       G, exec, google-chrome-stable --ozone-platform=wayland --disable-gpu"
       "$mainMod,       C, exec, telegram-desktop"
-      "$mainMod,       A, exec, amneziavpn"
+      "$mainMod,       A, exec, amnezia-vpn"
       "$mainMod,       F, togglefloating,"
       "$mainMod,       P, pin,"
       "$mainMod,       J, togglesplit,"
@@ -53,6 +53,7 @@
       "$mainMod, 7, workspace, 7"
       "$mainMod, 8, workspace, 8"
       "$mainMod, 9, workspace, 9"
+      "$mainMod, 0, workspace, 10"
 
       # Moving windows to workspaces
       "$mainMod SHIFT, 1, movetoworkspacesilent, 1"
@@ -64,6 +65,7 @@
       "$mainMod SHIFT, 7, movetoworkspacesilent, 7"
       "$mainMod SHIFT, 8, movetoworkspacesilent, 8"
       "$mainMod SHIFT, 9, movetoworkspacesilent, 9"
+      "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
 
       # Scratchpad
       "$mainMod,       S, togglespecialworkspace,  magic"

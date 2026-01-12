@@ -1,0 +1,5 @@
+# Nix build results
+result*
+
+# Local secrets
+secrets.nix

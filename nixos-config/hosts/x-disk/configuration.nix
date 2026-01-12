@@ -1,4 +1,4 @@
-{ pkgs, stateVersion, hostname, ... }:
+{ pkgs, stateVersion, hostname, user, ... }:
 
 {
   imports = [
@@ -41,5 +41,4 @@
         }
     });
   '';
-
 }

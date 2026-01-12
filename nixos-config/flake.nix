@@ -15,10 +15,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-  };
+    };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: let
     system = "x86_64-linux";
+    secretsPathEnv = builtins.getEnv "NIXOS_SECRETS_PATH";
+    secretsPath =
+      if secretsPathEnv != "" then secretsPathEnv
+      else if builtins.pathExists ./secrets.nix then ./secrets.nix
+      else null;
+    secrets = if secretsPath == null then {} else import secretsPath;
   homeStateVersion = "25.05";
   user = "admsys";
   hosts = [
@@ -31,7 +37,7 @@
   makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {
     system = system;
     specialArgs = {
-      inherit inputs stateVersion hostname user;
+      inherit inputs stateVersion hostname user secrets;
     };
 
     modules = [

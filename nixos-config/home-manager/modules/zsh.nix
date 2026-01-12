@@ -11,9 +11,9 @@
     in
     {
       nrs = "sudo nixos-rebuild switch --flake .#$(hostname)";
+      nrsx = "sudo env NIXOS_SECRETS_PATH=/home/admsys/Nixos/nixos-config/secrets.nix nixos-rebuild switch --flake /home/admsys/Nixos/nixos-config#$(hostname) --impure";
       upd = "ip a";
       hms = "home-manager switch --flake ~/Nixos/nixos-config/#admsys";
-
       pkgs = "nvim ${flakeDir}/nixos/packages.nix";
 
       r = "ranger";
