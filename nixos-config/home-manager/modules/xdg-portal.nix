@@ -21,5 +21,6 @@ in
     flameshot-wayland
     pkgs.grim
     pkgs.slurp
+    pkgs.swappy
   ];
 }

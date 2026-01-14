@@ -22,7 +22,7 @@
       "$mainMod SHIFT, B, exec, pkill -SIGUSR1 waybar"
       "$mainMod,       L, exec, loginctl lock-session"
       "$mainMod,       N, exec, swaync-client -t"
-      "$mainMod,       F12, exec, env QT_SCALE_FACTOR=1 flameshot gui"
+      "$mainMod,       F12, exec, sh ${../../scripts/screenshot.sh}"
 
       # Moving focus
       "$mainMod, left, movefocus, l"
