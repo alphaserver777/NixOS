@@ -7,11 +7,10 @@ TMP_FILE=$(mktemp /tmp/screenshot-XXXXXX.png)
 grim -g "$(slurp -d)" "$TMP_FILE"
 
 # Проверяем, был ли сделан скриншот (файл не пустой)
-# Это нужно на случай, если пользователь нажал Esc для отмены
 if [ -s "$TMP_FILE" ]; then
-    # Если файл не пустой, открываем его в ksnip
-    ksnip "$TMP_FILE"
-else
-    # Если файл пустой (выбор был отменен), просто удаляем его
-    rm "$TMP_FILE"
+    # Открываем swappy и ждем его закрытия
+    swappy -f "$TMP_FILE"
 fi
+
+# Удаляем временный файл после закрытия swappy или в случае отмены
+rm "$TMP_FILE"

@@ -9,7 +9,6 @@
     amnezia-vpn
     keepassxc
     qbittorrent
-    ksnip # screenshot tool
     imv #pic
     mpv #video
     pavucontrol
