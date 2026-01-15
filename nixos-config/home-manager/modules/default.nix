@@ -1,6 +1,5 @@
 {
   imports = [
-    ./xdg-portal.nix
     ./alacritty.nix
     # ./bat.nix
     # ./chromium.nix
