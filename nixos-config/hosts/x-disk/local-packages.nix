@@ -6,13 +6,11 @@
     qtox
     obsidian
     syncthing
-    amnezia-vpn
     keepassxc
     qbittorrent
     imv #pic
     mpv #video
     pavucontrol
-    anydesk
 
     # Office Suites
     libreoffice
@@ -40,6 +38,7 @@
     # --- CLI ---
     # System Monitoring
     btop
+    openpomodoro-cli # pomodoro timer
 
     # File Search & Manipulation
     duf
