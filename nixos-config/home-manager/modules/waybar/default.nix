@@ -54,7 +54,11 @@
           format = "{}";
           interval = 1; # раз в секунду обновлять
           exec = ''
-              layout=$(hyprctl devices -j | jq -r '.keyboards[] | select(.main == true) | .active_keymap')
+              layout=$(timeout 1s hyprctl devices -j 2>/dev/null | jq -r '.keyboards[] | select(.main == true) | .active_keymap' 2>/dev/null)
+              if [ -z "$layout" ] || [ "$layout" = "null" ]; then
+                echo "??"
+                exit 0
+              fi
             case "$layout" in
               *"Russian"*) echo "🇷🇺" ;;
               *"English"*) echo "🇺🇸" ;;
@@ -105,8 +109,9 @@
 
         "pulseaudio#mic" = {
           format = "{format_source}";
-          format-source = "";
-          format-source-muted = "";
+          format-source = "<span foreground=\"#a6e3a1\"></span>";
+          format-source-muted = "<span foreground=\"#f38ba8\"></span>";
+          markup = "pango";
           on-click = "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
           tooltip = false;
         };

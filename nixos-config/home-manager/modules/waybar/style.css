@@ -144,6 +144,9 @@ margin-left: -1px;
   #pulseaudio-mic.source-muted {
     color: #f38ba8; /* Red */
   }
+  #pulseaudio-mic.muted {
+    color: #f38ba8; /* Red */
+  }
 
   #custom-internet.online {
     color: #a6e3a1; /* Green */

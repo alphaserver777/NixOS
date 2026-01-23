@@ -9,7 +9,7 @@ LAST_STATE_FILE=/tmp/waybar_internet_last_state
 
 LAST_STATE=$(cat $LAST_STATE_FILE)
 
-if ping -c 1 -W 1 8.8.8.8 >/dev/null 2>&1; then
+if timeout 2s ping -c 1 -W 1 8.8.8.8 >/dev/null 2>&1; then
   # Online
   echo 0 > $OFFLINE_COUNTER_FILE
   if [ "$LAST_STATE" = "offline" ]; then
