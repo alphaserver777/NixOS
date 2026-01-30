@@ -40,6 +40,8 @@
     # --- CLI ---
     # System Monitoring
     btop
+    smartmontools # for smartctl
+    sysstat # for iostat
 
     # File Search & Manipulation
     duf
