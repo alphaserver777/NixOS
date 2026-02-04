@@ -37,6 +37,7 @@ in
     gcc
     dbeaver-bin
     sqlite
+    python3
 
     # File manager
     nemo
