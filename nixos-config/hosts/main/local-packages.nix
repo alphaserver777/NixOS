@@ -50,6 +50,7 @@ in
     ntfs3g # driver for NTFS
     ripgrep # fast text search
     lazyssh-client
+    lazysql
     udisks # for USB
     ueberzugpp # pic in terminal
     w3m # web-browser in terminal
