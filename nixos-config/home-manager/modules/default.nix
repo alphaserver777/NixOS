@@ -6,10 +6,13 @@
     ./eza.nix # красивый вывод папок и файлов
     ./fzf.nix
     ./git.nix
+    ./google-chrome.nix
+    ./google-drive.nix
+    ./gpg.nix
+    ./hyprland
     ./lazygit.nix
     ./atuin.nix
     # ./obsidian.nix
-    ./google-chrome.nix
     ./pcmanfm.nix
     ./sshAgent.nix
     ./starship.nix
@@ -18,8 +21,6 @@
     ./zathura.nix # PDF reader
     ./zsh.nix
     ./zoxide.nix
-    ./gpg.nix
-    ./hyprland
     ./swaync
     ./nvim-config
     ./waybar

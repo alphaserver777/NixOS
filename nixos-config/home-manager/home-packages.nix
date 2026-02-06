@@ -9,6 +9,7 @@
     wofi # Лаунчер
     nixpkgs-fmt
     dunst
+    dnsutils # nslookup
     libnotify
     waybar
     wl-clipboard
@@ -17,6 +18,7 @@
     brightnessctl
     tree
     ranger
+    rclone
     xclip
     neofetch
     mc
