@@ -10,6 +10,9 @@
     keepassxc
     qbittorrent
     imv #pic
+    grim
+    slurp
+    ksnip
     mpv #video
     pavucontrol
     anydesk

@@ -23,7 +23,7 @@
       "$mainMod,       L, exec, loginctl lock-session"
       "$mainMod,       N, exec, swaync-client -t"
       ", Print, exec, grimblast --notify --freeze copysave area"
-      "$mainMod,       F12, exec, grimblast --notify --freeze copysave area"
+      "$mainMod,       F12, exec, GRIMBLAST_EDITOR=ksnip grimblast --notify --freeze edit area"
 
       # Moving focus
       "$mainMod, left, movefocus, l"
