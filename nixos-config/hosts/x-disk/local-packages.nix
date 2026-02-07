@@ -6,7 +6,6 @@
     qtox
     obsidian
     syncthing
-    amnezia-vpn
     keepassxc
     qbittorrent
     imv #pic
@@ -15,7 +14,6 @@
     ksnip
     mpv #video
     pavucontrol
-    anydesk
 
     # Office Suites
     libreoffice

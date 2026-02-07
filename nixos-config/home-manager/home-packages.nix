@@ -13,6 +13,12 @@
     libnotify
     waybar
     wl-clipboard
+
+    # Screenshot
+    grim
+    slurp
+    swappy
+
     wev
     pamixer
     brightnessctl

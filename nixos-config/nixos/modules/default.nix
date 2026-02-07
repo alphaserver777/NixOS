@@ -23,6 +23,6 @@
     ./docker.nix
     ./udisks.nix
     ./virtualbox.nix
-    ./tailscale.nix
+    # ./tailscale.nix
   ];
 }
