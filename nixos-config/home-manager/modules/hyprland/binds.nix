@@ -23,7 +23,7 @@
       "$mainMod,       L, exec, loginctl lock-session"
       "$mainMod,       N, exec, swaync-client -t"
       ", Print, exec, grimblast --notify --freeze copysave area"
-      "$mainMod,       F12, exec, GRIMBLAST_EDITOR=ksnip grimblast --notify --freeze edit area"
+      ''$mainMod,       F12, exec, sh -c 'QT_QPA_PLATFORM=wayland flameshot gui --raw | wl-copy' ''
 
       # Moving focus
       "$mainMod, left, movefocus, l"

@@ -20,6 +20,7 @@
     # Office Suites
     libreoffice
     drawio
+    flameshot
 
     # For Develop
     vscode
