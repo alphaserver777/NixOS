@@ -1,4 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+let
+  lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
+in
+{
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
@@ -27,6 +31,8 @@
     docker-compose
     postman
     python3
+    lazyssh-client
+
 
     # Pentest
     nmap
