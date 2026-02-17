@@ -4,6 +4,7 @@
     # ./bat.nix
     # ./chromium.nix
     ./eza.nix # красивый вывод папок и файлов
+    ./flameshot.nix
     ./fzf.nix
     ./git.nix
     ./google-chrome.nix
