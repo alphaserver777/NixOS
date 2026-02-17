@@ -70,6 +70,71 @@ sudo nixos-rebuild switch --flake .#$(hostname)
     1.  Создайте новый `.nix` файл в каталоге `nixos/` или `home-manager/modules/`.
     2.  Импортируйте новый модуль в соответствующий файл `configuration.nix` или `home.nix`.
 
+## Централизованный сбор важных логов (x-disk -> Germany)
+
+Ниже описана настроенная схема пересылки важных событий с хоста `x-disk` на удалённый VDS `Germany` с помощью `rsyslog`.
+
+### Что было сделано
+
+1. На `x-disk` добавлен отдельный модуль пересылки:
+- `nixos-config/nixos/modules/rsyslog-forwarding.nix`
+
+2. Модуль подключен в общий список системных модулей:
+- `nixos-config/nixos/modules/default.nix`
+
+3. В `rsyslog-forwarding.nix` добавлено условие применения только для `x-disk`:
+- `config = lib.mkIf (hostname == "x-disk") { ... }`
+
+4. На удалённом сервере `Germany` включён приём remote syslog по TCP `514` и запись в отдельные файлы:
+- `/var/log/important/remote-auth.log`
+- `/var/log/important/remote-kernel.log`
+- `/var/log/important/remote-critical.log`
+
+### Какие события пересылаются
+
+С `x-disk` пересылаются только важные события:
+
+1. `auth`/`authpriv` уровня warning и выше (например, ошибки SSH/sudo/pam).
+2. `kern` уровня warning и выше.
+3. Глобальные `critical/alert/emergency` (severity `<= 2`).
+
+Используется `omfwd` с TCP и очередями (`linkedList`) + бесконечный retry (`action.resumeRetryCount="-1"`), чтобы не терять сообщения при кратковременных сетевых сбоях.
+
+### Зачем это нужно
+
+1. Логи не теряются при проблемах на локальной машине: важные события уходят на отдельный удалённый сервер.
+2. Проще расследовать инциденты: есть централизованная точка с критичными событиями.
+3. Меньше шума: отправляются только события высокого приоритета, а не весь поток журналов.
+4. Конфигурация декларативна: пересылка описана в NixOS-модуле и воспроизводится через `nixos-rebuild`.
+
+### Как применить
+
+Из каталога с flake:
+
+```bash
+cd /home/admsys/Nixos/nixos-config
+sudo nixos-rebuild switch --flake .#$(hostname)
+home-manager switch --flake .#admsys@x-disk
+```
+
+### Как проверить
+
+На `x-disk`:
+
+```bash
+logger -p authpriv.err "XDISK_FORWARD_TEST auth"
+logger -p daemon.crit "XDISK_FORWARD_TEST crit"
+```
+
+На `Germany`:
+
+```bash
+tail -n 50 /var/log/important/remote-auth.log
+tail -n 50 /var/log/important/remote-critical.log
+```
+
+Если всё настроено корректно, тестовые сообщения с `x-disk` появятся в соответствующих `remote-*.log` на `Germany`.
+
 ## Лицензия
 
     Этот проект лицензирован в соответствии с условиями, указанными в файле `LICENSE`.

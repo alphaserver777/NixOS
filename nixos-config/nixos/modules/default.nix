@@ -13,6 +13,7 @@
     ./nh.nix
     ./nix.nix
     ./ssh.nix
+    ./rsyslog-forwarding.nix
     ./timezone.nix
     ./user.nix
     ./zram.nix
