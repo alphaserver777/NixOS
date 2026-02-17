@@ -57,6 +57,7 @@ in
     fd
     fzf # fast file search
     ripgrep # fast text search
+    lnav
 
     # Development & Text Editing
     gcc
