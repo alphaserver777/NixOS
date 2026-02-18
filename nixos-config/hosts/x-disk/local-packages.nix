@@ -30,8 +30,10 @@ in
     docker
     docker-compose
     postman
+    beekeeper-studio
     python3
     lazyssh-client
+    sshfs
 
 
     # Pentest

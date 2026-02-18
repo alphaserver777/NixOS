@@ -11,6 +11,10 @@
 
   networking.hostName = hostname;
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "beekeeper-studio-5.1.5"
+  ];
+
   system.stateVersion = stateVersion;
 
   services.samba = {
