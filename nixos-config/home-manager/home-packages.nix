@@ -25,6 +25,7 @@
     tree
     ranger
     rclone
+    sops #encrypted in nixos
     xclip
     neofetch
     mc

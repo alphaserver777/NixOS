@@ -10,6 +10,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     stylix = {
       url = "github:danth/stylix/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -17,7 +22,7 @@
 
     };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: let
+  outputs = { self, nixpkgs, home-manager, sops-nix, ... }@inputs: let
     system = "x86_64-linux";
     secretsPathEnv = builtins.getEnv "NIXOS_SECRETS_PATH";
     secretsPath =
@@ -58,11 +63,12 @@
         "${user}@${host.hostname}" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${system};
           extraSpecialArgs = {
-            inherit inputs homeStateVersion user;
+            inherit inputs homeStateVersion user secrets;
             hostname = host.hostname;
           };
 
           modules = [
+            sops-nix.homeManagerModules.sops
             ./home-manager/home.nix
           ];
         };
