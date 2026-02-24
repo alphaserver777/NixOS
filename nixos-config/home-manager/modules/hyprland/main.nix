@@ -110,6 +110,10 @@
       };
 
       windowrulev2 = [
+        "float,class:^(flameshot)$"
+        "pin,class:^(flameshot)$"
+        "noborder,class:^(flameshot)$"
+
         "bordersize 0, floating:0, onworkspace:w[t1]"
 
         "float,class:(mpv)|(imv)|(showmethekey-gtk)"
