@@ -10,7 +10,6 @@
     qbittorrent
     imv #pic
     mpv #video
-    anydesk
     drawio
     pavucontrol
 
