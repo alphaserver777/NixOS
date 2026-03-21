@@ -21,7 +21,9 @@
 
     wev
     pamixer
+    playerctl
     brightnessctl
+    btop
     tree
     ranger
     rclone
@@ -60,7 +62,6 @@
     # ntfs3g
     # mediainfo
     # microfetch
-    # playerctl
     # ripgrep
     # showmethekey
     # silicon

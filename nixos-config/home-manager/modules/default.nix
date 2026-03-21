@@ -11,6 +11,7 @@
     ./google-drive.nix
     ./gpg.nix
     ./hyprland
+    ./hyprpanel.nix
     ./lazygit.nix
     ./atuin.nix
     # ./obsidian.nix
