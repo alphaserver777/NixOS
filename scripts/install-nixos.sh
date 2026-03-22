@@ -224,6 +224,7 @@ sync_repo_to_target() {
 
   if command -v rsync >/dev/null 2>&1; then
     rsync -a --delete \
+      --exclude '.git' \
       --exclude '.direnv' \
       --exclude 'result' \
       --exclude '.devenv' \
@@ -232,6 +233,7 @@ sync_repo_to_target() {
     rm -rf "$target_repo"
     mkdir -p "$target_repo"
     cp -a "${REPO_ROOT}/." "$target_repo/"
+    rm -rf "${target_repo}/.git"
   fi
 }
 
@@ -254,7 +256,7 @@ preflight_evaluate_host() {
   local host="$2"
 
   print_section "Проверка flake перед установкой"
-  nix "${NIX_FLAKE_ARGS[@]}" eval "${flake_ref}#nixosConfigurations.${host}.config.system.build.toplevel.drvPath" >/dev/null
+  nix "${NIX_FLAKE_ARGS[@]}" eval --no-write-lock-file "${flake_ref}#nixosConfigurations.${host}.config.system.build.toplevel.drvPath" >/dev/null
 }
 
 main() {
@@ -359,9 +361,9 @@ main() {
   if [[ -n "$secrets_path" ]]; then
     [[ -f "$secrets_path" ]] || die "Файл secrets.nix не найден: ${secrets_path}"
     env NIXOS_SECRETS_PATH="$secrets_path" \
-      nixos-install --root "$MOUNT_ROOT" --flake "${target_repo}/nixos-config#${selected_host}" --impure
+      nixos-install --root "$MOUNT_ROOT" --flake "${target_repo}/nixos-config#${selected_host}" --impure --no-write-lock-file
   else
-    nixos-install --root "$MOUNT_ROOT" --flake "${target_repo}/nixos-config#${selected_host}"
+    nixos-install --root "$MOUNT_ROOT" --flake "${target_repo}/nixos-config#${selected_host}" --no-write-lock-file
   fi
 
   print_section "Готово"
