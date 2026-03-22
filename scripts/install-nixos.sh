@@ -12,6 +12,7 @@ MOUNT_ROOT="/mnt"
 TMP_DISKO=""
 NIX_FLAKE_ARGS=(--extra-experimental-features "nix-command flakes")
 RUN_PREFLIGHT="${RUN_PREFLIGHT:-0}"
+RESUME_MODE=0
 
 STATE_VERSION_DEFAULT="25.05"
 
@@ -23,6 +24,19 @@ blue() { printf '\033[1;34m%s\033[0m\n' "$*"; }
 die() {
   red "Ошибка: $*"
   exit 1
+}
+
+usage() {
+  cat <<'EOF'
+Usage:
+  install-nixos.sh [--resume] [--preflight]
+
+Options:
+  --resume     Продолжить установку без повторного запуска disko.
+               Ожидается, что /mnt и /mnt/boot уже смонтированы.
+  --preflight  Включить дополнительный nix eval перед nixos-install.
+  -h, --help   Показать эту справку.
+EOF
 }
 
 need_cmd() {
@@ -274,8 +288,35 @@ preflight_evaluate_host() {
   nix "${NIX_FLAKE_ARGS[@]}" eval --no-write-lock-file "${flake_ref}#nixosConfigurations.${host}.config.system.build.toplevel.drvPath" >/dev/null
 }
 
+require_resume_mounts() {
+  mountpoint -q "$MOUNT_ROOT" || die "В режиме --resume ожидается смонтированный ${MOUNT_ROOT}"
+  mountpoint -q "${MOUNT_ROOT}/boot" || die "В режиме --resume ожидается смонтированный ${MOUNT_ROOT}/boot"
+}
+
+parse_args() {
+  while (($# > 0)); do
+    case "$1" in
+      --resume)
+        RESUME_MODE=1
+        ;;
+      --preflight)
+        RUN_PREFLIGHT=1
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      *)
+        die "Неизвестный аргумент: $1"
+        ;;
+    esac
+    shift
+  done
+}
+
 main() {
   trap cleanup EXIT
+  parse_args "$@"
   [[ "${EUID}" -eq 0 ]] || die "Скрипт нужно запускать от root."
 
   need_cmd awk
@@ -293,6 +334,10 @@ main() {
   echo "Репозиторий: ${REPO_ROOT}"
   check_network
   print_storage_summary
+  if (( RESUME_MODE == 1 )); then
+    echo "Режим: resume"
+    require_resume_mounts
+  fi
 
   print_section "Выбор host"
   mapfile -t existing_hosts < <(discover_hosts)
@@ -325,10 +370,12 @@ main() {
     green "Создан новый host: ${selected_host}"
   fi
 
-  print_section "Выбор диска"
-  local target_disk
-  target_disk="$(choose_disk)"
-  echo "Выбран диск: ${target_disk}"
+  local target_disk="(resume: не используется)"
+  if (( RESUME_MODE == 0 )); then
+    print_section "Выбор диска"
+    target_disk="$(choose_disk)"
+    echo "Выбран диск: ${target_disk}"
+  fi
 
   local target_repo_parent
   target_repo_parent="$TARGET_REPO_PARENT_DEFAULT"
@@ -351,14 +398,18 @@ main() {
     echo "Secrets: не используются"
   fi
 
-  confirm "Продолжить? Диск ${target_disk} будет полностью очищен." || die "Операция отменена."
+  if (( RESUME_MODE == 0 )); then
+    confirm "Продолжить? Диск ${target_disk} будет полностью очищен." || die "Операция отменена."
 
-  TMP_DISKO="$(mktemp /tmp/disko.XXXXXX.nix)"
-  render_disko_config "$target_disk" "$TMP_DISKO"
+    TMP_DISKO="$(mktemp /tmp/disko.XXXXXX.nix)"
+    render_disko_config "$target_disk" "$TMP_DISKO"
 
-  print_section "Разметка диска через disko"
-  cleanup_live_store
-  nix "${NIX_FLAKE_ARGS[@]}" run github:nix-community/disko -- --mode disko "$TMP_DISKO"
+    print_section "Разметка диска через disko"
+    cleanup_live_store
+    nix "${NIX_FLAKE_ARGS[@]}" run github:nix-community/disko -- --mode disko "$TMP_DISKO"
+  else
+    confirm "Продолжить в режиме --resume без повторной разметки?" || die "Операция отменена."
+  fi
 
   print_section "Генерация hardware-configuration.nix"
   nixos-generate-config --root "$MOUNT_ROOT"
