@@ -9,6 +9,7 @@ DISKO_TEMPLATE="${REPO_ROOT}/disko/disko.nix"
 TARGET_REPO_PARENT_DEFAULT="/mnt/etc"
 TARGET_REPO_NAME="nixos"
 MOUNT_ROOT="/mnt"
+TMP_DISKO=""
 
 STATE_VERSION_DEFAULT="25.05"
 
@@ -241,7 +242,22 @@ check_network() {
   fi
 }
 
+cleanup() {
+  if [[ -n "${TMP_DISKO:-}" && -f "${TMP_DISKO:-}" ]]; then
+    rm -f "$TMP_DISKO"
+  fi
+}
+
+preflight_evaluate_host() {
+  local flake_ref="$1"
+  local host="$2"
+
+  print_section "Проверка flake перед установкой"
+  nix eval "${flake_ref}#nixosConfigurations.${host}.config.system.build.toplevel.drvPath" >/dev/null
+}
+
 main() {
+  trap cleanup EXIT
   [[ "${EUID}" -eq 0 ]] || die "Скрипт нужно запускать от root."
 
   need_cmd awk
@@ -318,14 +334,12 @@ main() {
 
   confirm "Продолжить? Диск ${target_disk} будет полностью очищен." || die "Операция отменена."
 
-  local tmp_disko
-  tmp_disko="$(mktemp /tmp/disko.XXXXXX.nix)"
-  trap 'rm -f "$tmp_disko"' EXIT
-  render_disko_config "$target_disk" "$tmp_disko"
+  TMP_DISKO="$(mktemp /tmp/disko.XXXXXX.nix)"
+  render_disko_config "$target_disk" "$TMP_DISKO"
 
   print_section "Разметка диска через disko"
   nix --experimental-features "nix-command flakes" \
-    run github:nix-community/disko -- --mode disko "$tmp_disko"
+    run github:nix-community/disko -- --mode disko "$TMP_DISKO"
 
   print_section "Генерация hardware-configuration.nix"
   nixos-generate-config --root "$MOUNT_ROOT"
@@ -338,6 +352,8 @@ main() {
 
   local target_repo
   target_repo="${target_repo_parent}/${TARGET_REPO_NAME}"
+
+  preflight_evaluate_host "${target_repo}/nixos-config" "$selected_host"
 
   print_section "Установка NixOS"
   if [[ -n "$secrets_path" ]]; then
