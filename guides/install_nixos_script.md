@@ -17,6 +17,7 @@ sudo ./scripts/install-nixos.sh
 - кладёт его в `nixos-config/hosts/<hostname>/hardware-configuration.nix`
 - копирует весь репозиторий в установленную систему в `/mnt/etc/nixos`
 - запускает `nixos-install --flake /mnt/etc/nixos/nixos-config#<hostname>`
+- перед тяжёлыми шагами чистит временный `nix`-store live ISO, чтобы не упираться в маленький overlay `/nix/store`
 
 Что нужно заранее:
 
@@ -30,5 +31,6 @@ sudo ./scripts/install-nixos.sh
 - не настраивает пароль пользователя после установки
 - не коммитит изменения в git
 - не создаёт сложную схему разметки кроме шаблона из `disko/disko.nix`
+- по умолчанию не делает отдельный `nix eval` preflight, чтобы не тратить место в live ISO; включить можно через `RUN_PREFLIGHT=1`
 
 Для нестандартной разметки сначала поменяйте `disko/disko.nix`, потом запускайте скрипт.

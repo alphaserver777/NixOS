@@ -11,6 +11,7 @@ TARGET_REPO_NAME="nixos"
 MOUNT_ROOT="/mnt"
 TMP_DISKO=""
 NIX_FLAKE_ARGS=(--extra-experimental-features "nix-command flakes")
+RUN_PREFLIGHT="${RUN_PREFLIGHT:-0}"
 
 STATE_VERSION_DEFAULT="25.05"
 
@@ -226,14 +227,18 @@ sync_repo_to_target() {
     rsync -a --delete \
       --exclude '.git' \
       --exclude '.direnv' \
+      --exclude '.vscode' \
       --exclude 'result' \
       --exclude '.devenv' \
+      --exclude 'VM' \
       "${REPO_ROOT}/" "${target_repo}/"
   else
     rm -rf "$target_repo"
     mkdir -p "$target_repo"
     cp -a "${REPO_ROOT}/." "$target_repo/"
     rm -rf "${target_repo}/.git"
+    rm -rf "${target_repo}/VM"
+    rm -rf "${target_repo}/.vscode"
   fi
 }
 
@@ -249,6 +254,16 @@ cleanup() {
   if [[ -n "${TMP_DISKO:-}" && -f "${TMP_DISKO:-}" ]]; then
     rm -f "$TMP_DISKO"
   fi
+}
+
+cleanup_live_store() {
+  print_section "Очистка временного nix-store live ISO"
+  nix-collect-garbage -d >/dev/null 2>&1 || true
+}
+
+print_storage_summary() {
+  print_section "Проверка свободного места"
+  df -h /nix/store /nix/.rw-store "$MOUNT_ROOT" 2>/dev/null || true
 }
 
 preflight_evaluate_host() {
@@ -277,6 +292,7 @@ main() {
   print_section "Проверка окружения"
   echo "Репозиторий: ${REPO_ROOT}"
   check_network
+  print_storage_summary
 
   print_section "Выбор host"
   mapfile -t existing_hosts < <(discover_hosts)
@@ -341,6 +357,7 @@ main() {
   render_disko_config "$target_disk" "$TMP_DISKO"
 
   print_section "Разметка диска через disko"
+  cleanup_live_store
   nix "${NIX_FLAKE_ARGS[@]}" run github:nix-community/disko -- --mode disko "$TMP_DISKO"
 
   print_section "Генерация hardware-configuration.nix"
@@ -355,9 +372,14 @@ main() {
   local target_repo
   target_repo="${target_repo_parent}/${TARGET_REPO_NAME}"
 
-  preflight_evaluate_host "${target_repo}/nixos-config" "$selected_host"
+  if [[ "$RUN_PREFLIGHT" == "1" ]]; then
+    cleanup_live_store
+    preflight_evaluate_host "${target_repo}/nixos-config" "$selected_host"
+  fi
 
   print_section "Установка NixOS"
+  cleanup_live_store
+  print_storage_summary
   if [[ -n "$secrets_path" ]]; then
     [[ -f "$secrets_path" ]] || die "Файл secrets.nix не найден: ${secrets_path}"
     env NIXOS_SECRETS_PATH="$secrets_path" \
