@@ -72,8 +72,8 @@ confirm() {
 }
 
 print_section() {
-  printf '\n'
-  blue "== $* =="
+  printf '\n' >&2
+  blue "== $* ==" >&2
 }
 
 discover_hosts() {
@@ -90,16 +90,16 @@ choose_from_list() {
     die "Список вариантов пуст."
   fi
 
-  echo "${prompt_text}"
+  echo "${prompt_text}" >&2
   local i=1
   for option in "${options[@]}"; do
-    printf '  %d - %s\n' "$i" "$option"
+    printf '  %d - %s\n' "$i" "$option" >&2
     ((i++))
   done
 
   while true; do
-    read -r -p "Введите номер варианта: " index
-    [[ "$index" =~ ^[0-9]+$ ]] || { echo "Нужен номер."; continue; }
+    read -r -p "Введите номер варианта: " index >&2
+    [[ "$index" =~ ^[0-9]+$ ]] || { echo "Нужен номер." >&2; continue; }
     if (( index >= 1 && index <= ${#options[@]} )); then
       printf '%s' "${options[index-1]}"
       return 0
@@ -111,20 +111,20 @@ choose_disk() {
   mapfile -t DISKS < <(lsblk -dpno NAME,SIZE,MODEL,TYPE | awk '$4 == "disk" {print}')
   ((${#DISKS[@]} > 0)) || die "Не найдено ни одного диска."
 
-  echo "Доступные диски:"
+  echo "Доступные диски:" >&2
   local i=1
   local disk_names=()
   local row=""
   for row in "${DISKS[@]}"; do
-    printf '  %d - %s\n' "$i" "$row"
+    printf '  %d - %s\n' "$i" "$row" >&2
     disk_names+=("$(awk '{print $1}' <<<"$row")")
     ((i++))
   done
 
   local choice=""
   while true; do
-    read -r -p "Введите номер диска: " choice
-    [[ "$choice" =~ ^[0-9]+$ ]] || { echo "Нужен номер."; continue; }
+    read -r -p "Введите номер диска: " choice >&2
+    [[ "$choice" =~ ^[0-9]+$ ]] || { echo "Нужен номер." >&2; continue; }
     if (( choice >= 1 && choice <= ${#disk_names[@]} )); then
       printf '%s' "${disk_names[choice-1]}"
       return 0
