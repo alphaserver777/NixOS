@@ -13,6 +13,8 @@ TMP_DISKO=""
 NIX_FLAKE_ARGS=(--extra-experimental-features "nix-command flakes")
 RUN_PREFLIGHT="${RUN_PREFLIGHT:-0}"
 RESUME_MODE=0
+LOG_DIR_DEFAULT="/tmp/nixos-install-logs"
+LOG_FILE=""
 
 STATE_VERSION_DEFAULT="25.05"
 
@@ -37,6 +39,10 @@ Options:
   --preflight  Включить дополнительный nix eval перед nixos-install.
   -h, --help   Показать эту справку.
 EOF
+}
+
+timestamp() {
+  date '+%Y-%m-%d %H:%M:%S'
 }
 
 need_cmd() {
@@ -91,6 +97,17 @@ confirm() {
 print_section() {
   printf '\n' >&2
   blue "== $* ==" >&2
+}
+
+setup_logging() {
+  mkdir -p "$LOG_DIR_DEFAULT"
+  LOG_FILE="${LOG_DIR_DEFAULT}/install-$(date +%Y%m%d-%H%M%S).log"
+  touch "$LOG_FILE"
+
+  exec > >(tee -a "$LOG_FILE")
+  exec 2>&1
+
+  echo "[$(timestamp)] Лог установки: ${LOG_FILE}"
 }
 
 discover_hosts() {
@@ -316,8 +333,9 @@ parse_args() {
 
 main() {
   trap cleanup EXIT
-  parse_args "$@"
   [[ "${EUID}" -eq 0 ]] || die "Скрипт нужно запускать от root."
+  parse_args "$@"
+  setup_logging
 
   need_cmd awk
   need_cmd cp
@@ -443,6 +461,7 @@ main() {
   green "Установка завершена."
   echo "Host: ${selected_host}"
   echo "Репозиторий в установленной системе: ${target_repo}"
+  echo "Лог установки: ${LOG_FILE}"
   echo "Перед reboot проверьте, что всё выглядит ожидаемо."
 }
 

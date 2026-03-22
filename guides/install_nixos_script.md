@@ -24,6 +24,7 @@ sudo ./scripts/install-nixos.sh --resume
 - копирует весь репозиторий в установленную систему в `/mnt/etc/nixos`
 - запускает `nixos-install --flake /mnt/etc/nixos/nixos-config#<hostname>`
 - перед тяжёлыми шагами чистит временный `nix`-store live ISO, чтобы не упираться в маленький overlay `/nix/store`
+- пишет полный stdout/stderr в лог-файл вида `/tmp/nixos-install-logs/install-YYYYmmdd-HHMMSS.log`
 
 Что нужно заранее:
 
