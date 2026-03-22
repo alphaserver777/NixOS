@@ -10,6 +10,7 @@ TARGET_REPO_PARENT_DEFAULT="/mnt/etc"
 TARGET_REPO_NAME="nixos"
 MOUNT_ROOT="/mnt"
 TMP_DISKO=""
+NIX_FLAKE_ARGS=(--extra-experimental-features "nix-command flakes")
 
 STATE_VERSION_DEFAULT="25.05"
 
@@ -253,7 +254,7 @@ preflight_evaluate_host() {
   local host="$2"
 
   print_section "Проверка flake перед установкой"
-  nix eval "${flake_ref}#nixosConfigurations.${host}.config.system.build.toplevel.drvPath" >/dev/null
+  nix "${NIX_FLAKE_ARGS[@]}" eval "${flake_ref}#nixosConfigurations.${host}.config.system.build.toplevel.drvPath" >/dev/null
 }
 
 main() {
@@ -338,8 +339,7 @@ main() {
   render_disko_config "$target_disk" "$TMP_DISKO"
 
   print_section "Разметка диска через disko"
-  nix --experimental-features "nix-command flakes" \
-    run github:nix-community/disko -- --mode disko "$TMP_DISKO"
+  nix "${NIX_FLAKE_ARGS[@]}" run github:nix-community/disko -- --mode disko "$TMP_DISKO"
 
   print_section "Генерация hardware-configuration.nix"
   nixos-generate-config --root "$MOUNT_ROOT"
