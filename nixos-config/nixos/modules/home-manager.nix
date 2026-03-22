@@ -1,4 +1,17 @@
-{ inputs, ... }: {
+{ inputs, homeStateVersion, hostname, user, secrets, ... }: {
   imports = [ inputs.home-manager.nixosModules.default ];
-  home-manager.backupFileExtension = "backup";
+
+  home-manager = {
+    backupFileExtension = "backup";
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    sharedModules = [ inputs.sops-nix.homeManagerModules.sops ];
+    extraSpecialArgs = {
+      inherit inputs homeStateVersion hostname user secrets;
+    };
+    users.${user} = {
+      imports = [ ../../home-manager/home.nix ];
+      home.stateVersion = homeStateVersion;
+    };
+  };
 }
