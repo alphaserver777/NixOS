@@ -1,4 +1,4 @@
-{ inputs, homeStateVersion, hostname, user, secrets, ... }: {
+{ config, inputs, hostname, user, secrets, ... }: {
   imports = [ inputs.home-manager.nixosModules.default ];
 
   home-manager = {
@@ -7,11 +7,11 @@
     useUserPackages = true;
     sharedModules = [ inputs.sops-nix.homeManagerModules.sops ];
     extraSpecialArgs = {
-      inherit inputs homeStateVersion hostname user secrets;
+      inherit inputs hostname user secrets;
     };
     users.${user} = {
       imports = [ ../../home-manager/home.nix ];
-      home.stateVersion = homeStateVersion;
+      home.stateVersion = config.system.stateVersion;
     };
   };
 }
