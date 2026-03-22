@@ -93,12 +93,12 @@ choose_from_list() {
   echo "${prompt_text}"
   local i=1
   for option in "${options[@]}"; do
-    printf '  %d) %s\n' "$i" "$option"
+    printf '  %d - %s\n' "$i" "$option"
     ((i++))
   done
 
   while true; do
-    read -r -p "Выберите номер: " index
+    read -r -p "Введите номер варианта: " index
     [[ "$index" =~ ^[0-9]+$ ]] || { echo "Нужен номер."; continue; }
     if (( index >= 1 && index <= ${#options[@]} )); then
       printf '%s' "${options[index-1]}"
@@ -116,14 +116,14 @@ choose_disk() {
   local disk_names=()
   local row=""
   for row in "${DISKS[@]}"; do
-    printf '  %d) %s\n' "$i" "$row"
+    printf '  %d - %s\n' "$i" "$row"
     disk_names+=("$(awk '{print $1}' <<<"$row")")
     ((i++))
   done
 
   local choice=""
   while true; do
-    read -r -p "Выберите диск по номеру: " choice
+    read -r -p "Введите номер диска: " choice
     [[ "$choice" =~ ^[0-9]+$ ]] || { echo "Нужен номер."; continue; }
     if (( choice >= 1 && choice <= ${#disk_names[@]} )); then
       printf '%s' "${disk_names[choice-1]}"
