@@ -24,6 +24,7 @@
       "$mainMod,       N, exec, swaync-client -t"
       ", Print, exec, grimblast --notify --freeze copysave area"
       ''$mainMod,       F12, exec, sh -c 'QT_QPA_PLATFORM=wayland flameshot gui --raw | wl-copy' ''
+      "$mainMod SHIFT, F12, exec, obs"
 
       # Moving focus
       "$mainMod, left, movefocus, l"

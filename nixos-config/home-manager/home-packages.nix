@@ -40,7 +40,7 @@
     # code-cursor
     # imv
     # mpv
-    # obs-studio
+    obs-studio
     # obsidian
     # pavucontrol
     # teams-for-linux
@@ -52,7 +52,7 @@
     # bottom
     # brightnessctl
     cliphist
-    # ffmpeg
+    ffmpeg
     # ffmpegthumbnailer
     # fzf
     # git-graph
