@@ -4,6 +4,22 @@ let
     builtins.readFile "${pkgs.hyprpanel}/share/themes/tokyo_night_moon_split.json"
   );
 
+  customModules = {
+    "custom/keyboard-flags" = {
+      label = "{}";
+      tooltip = "Keyboard Layout";
+      interval = 1;
+      execute = ''
+        layout=$(hyprctl devices -j 2>/dev/null | ${pkgs.jq}/bin/jq -r '.keyboards[] | select(.main == true) | .active_keymap' 2>/dev/null)
+        case "$layout" in
+          *Russian*) echo "🇷🇺" ;;
+          *English*) echo "🇺🇸" ;;
+          *) echo "🌐" ;;
+        esac
+      '';
+    };
+  };
+
   hyprpanelConfig = theme // {
     "bar.autoHide" = "never";
     "bar.clock.format" = "%d %b %H:%M";
@@ -11,6 +27,9 @@ let
     "bar.bluetooth.label" = false;
     "bar.network.label" = true;
     "bar.volume.label" = true;
+    "bar.customModules.kbLayout.label" = true;
+    "bar.customModules.kbLayout.labelType" = "code";
+    "bar.customModules.kbLayout.icon" = "󰌌";
     "bar.notifications.hideCountWhenZero" = true;
     "bar.launcher.autoDetectIcon" = false;
     "bar.launcher.icon" = "";
@@ -53,12 +72,12 @@ let
       "0" = {
         left = [ "dashboard" "workspaces" ];
         middle = [ "windowtitle" ];
-        right = [ "systray" "network" "bluetooth" "volume" "battery" "clock" "notifications" ];
+        right = [ "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "battery" "clock" "notifications" ];
       };
       "1" = {
         left = [ "dashboard" "workspaces" ];
         middle = [ "windowtitle" ];
-        right = [ "systray" "network" "bluetooth" "volume" "battery" "clock" "notifications" ];
+        right = [ "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "battery" "clock" "notifications" ];
       };
     };
 
@@ -99,6 +118,9 @@ let
     "theme.bar.buttons.network.background" = "rgba(17,17,27,0.72)";
     "theme.bar.buttons.network.icon" = "#94e2d5";
     "theme.bar.buttons.network.text" = "#94e2d5";
+    "theme.bar.buttons.modules.kbLayout.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.kbLayout.icon" = "#f9e2af";
+    "theme.bar.buttons.modules.kbLayout.text" = "#f9e2af";
     "theme.bar.buttons.bluetooth.background" = "rgba(17,17,27,0.72)";
     "theme.bar.buttons.bluetooth.icon" = "#89b4fa";
     "theme.bar.buttons.bluetooth.text" = "#89b4fa";
@@ -145,9 +167,11 @@ let
       pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; };
 
   configFile = pkgs.writeText "hyprpanel-config.json" (builtins.toJSON hyprpanelConfig);
+  modulesFile = pkgs.writeText "hyprpanel-modules.json" (builtins.toJSON customModules);
 in
 {
   programs.waybar.enable = lib.mkForce false;
+  services.dunst.enable = lib.mkForce false;
   services.swaync.enable = lib.mkForce false;
 
   home.packages = [
@@ -158,8 +182,11 @@ in
   home.activation.hyprpanelConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p "$HOME/.config/hyprpanel"
     $DRY_RUN_CMD rm -f "$HOME/.config/hyprpanel/config.json"
+    $DRY_RUN_CMD rm -f "$HOME/.config/hyprpanel/modules.json"
     $DRY_RUN_CMD cp ${configFile} "$HOME/.config/hyprpanel/config.json"
+    $DRY_RUN_CMD cp ${modulesFile} "$HOME/.config/hyprpanel/modules.json"
     $DRY_RUN_CMD chmod 644 "$HOME/.config/hyprpanel/config.json"
+    $DRY_RUN_CMD chmod 644 "$HOME/.config/hyprpanel/modules.json"
   '';
 
   wayland.windowManager.hyprland.settings.exec-once = [
