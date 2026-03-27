@@ -21,4 +21,11 @@
     noto-fonts-cjk-sans
     noto-fonts-emoji
   ];
+
+  environment.etc."xdg/openbox/autostart".text = ''
+    xsetroot -solid "#20242b"
+    tint2 &
+    nm-applet &
+    xterm -fa "DejaVu Sans Mono" -fs 10 -geometry 120x30+24+24 &
+  '';
 }
