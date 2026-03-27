@@ -45,6 +45,7 @@
   hosts = [
   { hostname = "Huawei"; stateVersion = "25.05"; }
   { hostname = "srv-home"; stateVersion = "25.05"; }
+  { hostname = "srv-home-min"; stateVersion = "25.05"; }
   { hostname = "x-disk"; stateVersion = "25.05"; }
   { hostname = "main"; stateVersion = "25.05"; }
   ];
