@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../srv-home-min/hardware-configuration.nix
+    ./hardware-configuration.nix
     ./local-packages.nix
     ../../nixos/modules/server
     ../../nixos/modules/audio.nix
