@@ -7,7 +7,7 @@
     useGlobalPkgs = false;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit hostname user;
+      inherit inputs hostname user;
     };
     users.${user} = {
       imports = [ ../../../home-manager/server-hypr.nix ];
