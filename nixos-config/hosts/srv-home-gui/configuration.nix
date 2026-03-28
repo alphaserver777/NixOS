@@ -6,7 +6,8 @@
     ./local-packages.nix
     ../../nixos/modules/server
     ../../nixos/modules/audio.nix
-    ../../nixos/modules/server/gui.nix
+    ../../nixos/modules/server/hypr-desktop.nix
+    ../../nixos/modules/server/hypr-home-manager.nix
   ];
 
   hardware.enableAllFirmware = true;
