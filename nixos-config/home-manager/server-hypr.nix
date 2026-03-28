@@ -3,9 +3,19 @@
 {
   imports = [
     ./modules/alacritty.nix
+    ./modules/atuin.nix
+    ./modules/eza.nix
+    ./modules/fzf.nix
+    ./modules/git.nix
+    ./modules/google-chrome.nix
     ./modules/hyprpanel.nix
+    ./modules/nvim-config
     ./modules/starship.nix
+    ./modules/stylix.nix
+    ./modules/tmux.nix
     ./modules/wofi
+    ./modules/zoxide.nix
+    ./modules/zsh.nix
   ];
 
   home = {
@@ -18,7 +28,6 @@
       brightnessctl
       cliphist
       jq
-      nemo
       playerctl
       ranger
       wl-clipboard
@@ -118,8 +127,8 @@
         "$mainMod CTRL, M, exit,"
         "$mainMod, R, exec, $menu --show drun"
         "$mainMod SHIFT, R, exec, $fileManager"
-        "$mainMod, E, exec, nemo"
-        "$mainMod, B, exec, firefox"
+        "$mainMod, E, exec, $fileManager"
+        "$mainMod, B, exec, google-chrome-stable --ozone-platform=wayland --disable-gpu"
         "$mainMod, F, togglefloating,"
         "$mainMod, P, pin,"
         "$mainMod, J, togglesplit,"
@@ -184,7 +193,7 @@
       ];
 
       windowrulev2 = [
-        "workspace 1,class:(firefox)"
+        "workspace 1,class:(google-chrome)"
         "float,class:(mpv)"
         "suppressevent maximize, class:.*"
       ];
