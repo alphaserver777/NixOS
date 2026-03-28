@@ -10,7 +10,7 @@
       inherit hostname user;
     };
     users.${user} = {
-      imports = [ ../../home-manager/server-hypr.nix ];
+      imports = [ ../../../home-manager/server-hypr.nix ];
       home.stateVersion = config.system.stateVersion;
     };
   };
