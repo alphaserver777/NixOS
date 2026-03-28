@@ -4,6 +4,109 @@ let
     builtins.readFile "${pkgs.hyprpanel}/share/themes/tokyo_night_moon_split.json"
   );
 
+  weatherScript = pkgs.writeShellScript "hyprpanel-weather-krasnodar" ''
+    weather=$(
+      ${pkgs.curl}/bin/curl -fsS --max-time 3 'https://wttr.in/Krasnodar?format=%c%20%t' 2>/dev/null \
+        | ${pkgs.gnused}/bin/sed -e 's/+//g' -e 's/[[:space:]]*$//'
+    ) || true
+
+    if [ -n "$weather" ]; then
+      printf '%s\n' "$weather"
+    else
+      printf '󰖐 --°C\n'
+    fi
+  '';
+
+  cryptoPriceScript = pkgs.writeShellScript "hyprpanel-crypto-price" ''
+    set -eu
+
+    state_dir="${"$"}HOME/.config/hyprpanel"
+    state_file="$state_dir/crypto-symbol"
+
+    ${pkgs.coreutils}/bin/mkdir -p "$state_dir"
+
+    if [ -r "$state_file" ]; then
+      symbol="$(${pkgs.coreutils}/bin/cat "$state_file")"
+    else
+      symbol="BTCUSDT"
+    fi
+
+    case "$symbol" in
+      BTCUSDT) short="BTC" ;;
+      ETHUSDT) short="ETH" ;;
+      SOLUSDT) short="SOL" ;;
+      BNBUSDT) short="BNB" ;;
+      XRPUSDT) short="XRP" ;;
+      ADAUSDT) short="ADA" ;;
+      DOGEUSDT) short="DOGE" ;;
+      TONUSDT) short="TON" ;;
+      *) short="$symbol" ;;
+    esac
+
+    price="$(
+      ${pkgs.curl}/bin/curl -fsS --max-time 4 "https://api.binance.com/api/v3/ticker/price?symbol=$symbol" 2>/dev/null \
+        | ${pkgs.jq}/bin/jq -r '.price // empty' 2>/dev/null
+    )" || true
+
+    if [ -z "$price" ]; then
+      printf '%s $--\n' "$short"
+      exit 0
+    fi
+
+    pretty="$(${pkgs.gawk}/bin/awk -v p="$price" '
+      BEGIN {
+        if (p >= 1000)      printf "%.0f", p
+        else if (p >= 1)    printf "%.2f", p
+        else                printf "%.4f", p
+      }
+    ')"
+
+    printf '%s $%s\n' "$short" "$pretty"
+  '';
+
+  cryptoSelectScript = pkgs.writeShellScript "hyprpanel-crypto-select" ''
+    set -eu
+
+    state_dir="${"$"}HOME/.config/hyprpanel"
+    state_file="$state_dir/crypto-symbol"
+
+    ${pkgs.coreutils}/bin/mkdir -p "$state_dir"
+
+    selected="$(
+      ${pkgs.coreutils}/bin/printf '%s\n' \
+        'BTCUSDT  BTC  Bitcoin' \
+        'ETHUSDT  ETH  Ethereum' \
+        'SOLUSDT  SOL  Solana' \
+        'BNBUSDT  BNB  BNB' \
+        'XRPUSDT  XRP  XRP' \
+        'ADAUSDT  ADA  Cardano' \
+        'DOGEUSDT  DOGE  Dogecoin' \
+        'TONUSDT  TON  Toncoin' \
+        | ${pkgs.wofi}/bin/wofi --dmenu --prompt 'Crypto' \
+        | ${pkgs.gawk}/bin/awk '{print $1}'
+    )"
+
+    if [ -n "$selected" ]; then
+      printf '%s\n' "$selected" > "$state_file"
+    fi
+  '';
+
+  restartHyprpanel = pkgs.writeShellScriptBin "restart-hyprpanel" ''
+    set -eu
+
+    socket_dir="/run/user/$(${pkgs.coreutils}/bin/id -u)/astal"
+    socket="$socket_dir/hyprpanel.sock"
+    log_file="${"$"}HOME/.cache/hyprpanel.log"
+
+    ${pkgs.coreutils}/bin/mkdir -p "$socket_dir" "${"$"}HOME/.cache"
+
+    ${pkgs.procps}/bin/pkill -f '(^|/)(hyprpanel|\.hyprpanel-wrapped)( |$)' 2>/dev/null || true
+    ${pkgs.coreutils}/bin/rm -f "$socket"
+    ${pkgs.coreutils}/bin/sleep 1
+
+    ${pkgs.util-linux}/bin/setsid ${pkgs.hyprpanel}/bin/hyprpanel >"$log_file" 2>&1 < /dev/null &
+  '';
+
   customModules = {
     "custom/keyboard-flags" = {
       label = "{}";
@@ -18,6 +121,21 @@ let
         esac
       '';
     };
+    "custom/weather-krasnodar" = {
+      label = "{}";
+      tooltip = "Weather: Krasnodar";
+      interval = 900;
+      hideOnEmpty = false;
+      execute = "${weatherScript}";
+    };
+    "custom/crypto-price" = {
+      label = "{}";
+      tooltip = "Crypto Price";
+      interval = 30;
+      execute = "${cryptoPriceScript}";
+      executeOnAction = "${cryptoPriceScript}";
+      actions.onLeftClick = "${cryptoSelectScript}";
+    };
   };
 
   hyprpanelConfig = theme // {
@@ -27,6 +145,41 @@ let
     "bar.bluetooth.label" = false;
     "bar.network.label" = true;
     "bar.volume.label" = true;
+    "bar.customModules.cpu.icon" = "󰍛";
+    "bar.customModules.cpu.label" = true;
+    "bar.customModules.cpu.round" = true;
+    "bar.customModules.cpu.pollingInterval" = 2000;
+    "bar.customModules.ram.icon" = "󰘚";
+    "bar.customModules.ram.label" = true;
+    "bar.customModules.ram.labelType" = "percentage";
+    "bar.customModules.ram.round" = true;
+    "bar.customModules.ram.pollingInterval" = 2000;
+    "bar.customModules.storage.icon" = "󰋊";
+    "bar.customModules.storage.label" = true;
+    "bar.customModules.storage.labelType" = "percentage";
+    "bar.customModules.storage.paths" = [ "/" ];
+    "bar.customModules.storage.units" = "gibibytes";
+    "bar.customModules.storage.tooltipStyle" = "simple";
+    "bar.customModules.storage.round" = true;
+    "bar.customModules.storage.pollingInterval" = 10000;
+    "bar.customModules.netstat.networkInterface" = "";
+    "bar.customModules.netstat.dynamicIcon" = true;
+    "bar.customModules.netstat.icon" = "󰇚";
+    "bar.customModules.netstat.label" = true;
+    "bar.customModules.netstat.networkInLabel" = "↓";
+    "bar.customModules.netstat.networkOutLabel" = "↑";
+    "bar.customModules.netstat.labelType" = "full";
+    "bar.customModules.netstat.rateUnit" = "auto";
+    "bar.customModules.netstat.round" = true;
+    "bar.customModules.netstat.pollingInterval" = 2000;
+    "bar.customModules.microphone.label" = false;
+    "bar.customModules.microphone.mutedIcon" = "🔴";
+    "bar.customModules.microphone.unmutedIcon" = "🟢";
+    "bar.customModules.microphone.leftClick" = "";
+    "bar.customModules.microphone.rightClick" = "";
+    "bar.customModules.microphone.middleClick" = "";
+    "bar.customModules.microphone.scrollUp" = "";
+    "bar.customModules.microphone.scrollDown" = "";
     "bar.customModules.kbLayout.label" = true;
     "bar.customModules.kbLayout.labelType" = "code";
     "bar.customModules.kbLayout.icon" = "󰌌";
@@ -70,14 +223,14 @@ let
 
     "bar.layouts" = {
       "0" = {
-        left = [ "dashboard" "workspaces" ];
+        left = [ "dashboard" "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
         middle = [ "windowtitle" ];
-        right = [ "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "battery" "clock" "notifications" ];
+        right = [ "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
       "1" = {
-        left = [ "dashboard" "workspaces" ];
+        left = [ "dashboard" "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
         middle = [ "windowtitle" ];
-        right = [ "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "battery" "clock" "notifications" ];
+        right = [ "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
     };
 
@@ -127,6 +280,21 @@ let
     "theme.bar.buttons.volume.background" = "rgba(17,17,27,0.72)";
     "theme.bar.buttons.volume.icon" = "#89b4fa";
     "theme.bar.buttons.volume.text" = "#89b4fa";
+    "theme.bar.buttons.modules.cpu.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.cpu.icon" = "#f38ba8";
+    "theme.bar.buttons.modules.cpu.text" = "#f38ba8";
+    "theme.bar.buttons.modules.ram.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.ram.icon" = "#f9e2af";
+    "theme.bar.buttons.modules.ram.text" = "#f9e2af";
+    "theme.bar.buttons.modules.storage.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.storage.icon" = "#a6e3a1";
+    "theme.bar.buttons.modules.storage.text" = "#a6e3a1";
+    "theme.bar.buttons.modules.netstat.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.netstat.icon" = "#89dceb";
+    "theme.bar.buttons.modules.netstat.text" = "#89dceb";
+    "theme.bar.middle.spacing" = "0.2em";
+    "theme.bar.buttons.windowtitle.enableBorder" = false;
+    "theme.bar.buttons.windowtitle.maxWidth" = "18em";
     "theme.bar.buttons.battery.background" = "rgba(17,17,27,0.72)";
     "theme.bar.buttons.battery.icon" = "#a6e3a1";
     "theme.bar.buttons.battery.text" = "#a6e3a1";
@@ -168,6 +336,42 @@ let
 
   configFile = pkgs.writeText "hyprpanel-config.json" (builtins.toJSON hyprpanelConfig);
   modulesFile = pkgs.writeText "hyprpanel-modules.json" (builtins.toJSON customModules);
+  modulesScssFile = pkgs.writeText "hyprpanel-modules.scss" ''
+    .cmodule-crypto-price {
+      min-width: 7.8em;
+    }
+
+    .cmodule-crypto-price .module-label {
+      color: #f5c2e7;
+      font-weight: 700;
+    }
+
+    .battery .module-label {
+      min-width: 4.2em;
+    }
+
+    .cpu .module-label,
+    .ram .module-label {
+      min-width: 4.0em;
+    }
+
+    .storage .module-label {
+      min-width: 4.8em;
+    }
+
+    .netstat .module-label {
+      min-width: 11.5em;
+    }
+
+    .cmodule-weather-krasnodar {
+      min-width: 5.8em;
+    }
+
+    .cmodule-weather-krasnodar .module-label {
+      color: #89dceb;
+      font-weight: 700;
+    }
+  '';
 in
 {
   programs.waybar.enable = lib.mkForce false;
@@ -177,19 +381,23 @@ in
   home.packages = [
     pkgs.hyprpanel
     nerdFont
+    restartHyprpanel
   ];
 
   home.activation.hyprpanelConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p "$HOME/.config/hyprpanel"
     $DRY_RUN_CMD rm -f "$HOME/.config/hyprpanel/config.json"
     $DRY_RUN_CMD rm -f "$HOME/.config/hyprpanel/modules.json"
+    $DRY_RUN_CMD rm -f "$HOME/.config/hyprpanel/modules.scss"
     $DRY_RUN_CMD cp ${configFile} "$HOME/.config/hyprpanel/config.json"
     $DRY_RUN_CMD cp ${modulesFile} "$HOME/.config/hyprpanel/modules.json"
+    $DRY_RUN_CMD cp ${modulesScssFile} "$HOME/.config/hyprpanel/modules.scss"
     $DRY_RUN_CMD chmod 644 "$HOME/.config/hyprpanel/config.json"
     $DRY_RUN_CMD chmod 644 "$HOME/.config/hyprpanel/modules.json"
+    $DRY_RUN_CMD chmod 644 "$HOME/.config/hyprpanel/modules.scss"
   '';
 
   wayland.windowManager.hyprland.settings.exec-once = [
-    "${pkgs.hyprpanel}/bin/hyprpanel"
+    "${restartHyprpanel}/bin/restart-hyprpanel"
   ];
 }
