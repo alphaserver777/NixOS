@@ -17,7 +17,6 @@ in
     imv #pic
     mpv #video
     git
-    anydesk
     pavucontrol
 
     # Office Suites

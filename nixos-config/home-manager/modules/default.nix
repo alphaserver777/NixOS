@@ -16,6 +16,7 @@
     ./atuin.nix
     # ./obsidian.nix
     ./pcmanfm.nix
+    ./rustdesk.nix
     ./sshAgent.nix
     ./starship.nix
     ./stylix.nix
