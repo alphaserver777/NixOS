@@ -21,7 +21,9 @@
 
     wev
     pamixer
+    playerctl
     brightnessctl
+    btop
     tree
     ranger
     rclone
@@ -38,7 +40,7 @@
     # code-cursor
     # imv
     # mpv
-    # obs-studio
+    obs-studio
     # obsidian
     # pavucontrol
     # teams-for-linux
@@ -50,7 +52,7 @@
     # bottom
     # brightnessctl
     cliphist
-    # ffmpeg
+    ffmpeg
     # ffmpegthumbnailer
     # fzf
     # git-graph
@@ -60,7 +62,6 @@
     # ntfs3g
     # mediainfo
     # microfetch
-    # playerctl
     # ripgrep
     # showmethekey
     # silicon
