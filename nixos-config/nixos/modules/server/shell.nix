@@ -4,12 +4,19 @@ let
     # Minimal server zsh profile
     export STARSHIP_CONFIG=/etc/starship.toml
 
+    if command -v atuin >/dev/null 2>&1; then
+      eval "$(atuin init zsh)"
+    fi
+
     if [[ $TERM != "dumb" ]] && command -v starship >/dev/null 2>&1; then
       eval "$(starship init zsh)"
     fi
   '';
 in {
-  environment.systemPackages = [ pkgs.starship ];
+  environment.systemPackages = with pkgs; [
+    atuin
+    starship
+  ];
 
   programs.zsh = {
     enable = true;
