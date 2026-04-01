@@ -1,3 +1,4 @@
+{ lib, hostname ? null, ... }:
 {
   imports = [
     ./alacritty.nix
@@ -16,7 +17,6 @@
     ./atuin.nix
     # ./obsidian.nix
     ./pcmanfm.nix
-    ./rustdesk.nix
     ./sshAgent.nix
     ./starship.nix
     ./stylix.nix
@@ -26,8 +26,9 @@
     ./zoxide.nix
     ./swaync
     ./nvim-config
-    ./waybar
     ./wofi
     ./ranger
+  ] ++ lib.optionals (hostname != "srv-home") [
+    ./rustdesk.nix
   ];
 }

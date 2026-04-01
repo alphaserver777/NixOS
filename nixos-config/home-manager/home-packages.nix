@@ -11,7 +11,6 @@
     dunst
     dnsutils # nslookup
     libnotify
-    waybar
     wl-clipboard
 
     # Screenshot
@@ -38,11 +37,13 @@
     # # Desktop apps
     # anki
     # code-cursor
+    gnome-clocks
     # imv
     # mpv
     obs-studio
     # obsidian
     # pavucontrol
+    super-productivity
     # teams-for-linux
     # telegram-desktop
     # vesktop

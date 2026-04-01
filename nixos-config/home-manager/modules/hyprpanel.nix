@@ -101,6 +101,10 @@ let
     ${pkgs.coreutils}/bin/mkdir -p "$socket_dir" "${"$"}HOME/.cache"
 
     ${pkgs.procps}/bin/pkill -f '(^|/)(hyprpanel|\.hyprpanel-wrapped)( |$)' 2>/dev/null || true
+    ${pkgs.procps}/bin/pkill -x dunst 2>/dev/null || true
+    ${pkgs.procps}/bin/pkill -x swaync 2>/dev/null || true
+    ${pkgs.procps}/bin/pkill -x waybar 2>/dev/null || true
+    ${pkgs.coreutils}/bin/rm -rf /tmp/hyprpanel
     ${pkgs.coreutils}/bin/rm -f "$socket"
     ${pkgs.coreutils}/bin/sleep 1
 
@@ -183,6 +187,10 @@ let
     "bar.customModules.kbLayout.label" = true;
     "bar.customModules.kbLayout.labelType" = "code";
     "bar.customModules.kbLayout.icon" = "󰌌";
+    "bar.customModules.hypridle.label" = false;
+    "bar.customModules.hypridle.pollingInterval" = 1000;
+    "bar.customModules.hypridle.offIcon" = "";
+    "bar.customModules.hypridle.onIcon" = "";
     "bar.notifications.hideCountWhenZero" = true;
     "bar.launcher.autoDetectIcon" = false;
     "bar.launcher.icon" = "";
@@ -225,12 +233,12 @@ let
       "0" = {
         left = [ "dashboard" "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
         middle = [ "windowtitle" ];
-        right = [ "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
+        right = [ "hypridle" "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
       "1" = {
         left = [ "dashboard" "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
         middle = [ "windowtitle" ];
-        right = [ "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
+        right = [ "hypridle" "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
     };
 
@@ -274,6 +282,12 @@ let
     "theme.bar.buttons.modules.kbLayout.background" = "rgba(17,17,27,0.72)";
     "theme.bar.buttons.modules.kbLayout.icon" = "#f9e2af";
     "theme.bar.buttons.modules.kbLayout.text" = "#f9e2af";
+    "theme.bar.buttons.modules.microphone.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.microphone.icon" = "#a6e3a1";
+    "theme.bar.buttons.modules.microphone.text" = "#a6e3a1";
+    "theme.bar.buttons.modules.hypridle.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.hypridle.icon" = "#fab387";
+    "theme.bar.buttons.modules.hypridle.text" = "#fab387";
     "theme.bar.buttons.bluetooth.background" = "rgba(17,17,27,0.72)";
     "theme.bar.buttons.bluetooth.icon" = "#89b4fa";
     "theme.bar.buttons.bluetooth.text" = "#89b4fa";
@@ -386,15 +400,19 @@ in
 
   home.activation.hyprpanelConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p "$HOME/.config/hyprpanel"
-    $DRY_RUN_CMD rm -f "$HOME/.config/hyprpanel/config.json"
-    $DRY_RUN_CMD rm -f "$HOME/.config/hyprpanel/modules.json"
-    $DRY_RUN_CMD rm -f "$HOME/.config/hyprpanel/modules.scss"
-    $DRY_RUN_CMD cp ${configFile} "$HOME/.config/hyprpanel/config.json"
-    $DRY_RUN_CMD cp ${modulesFile} "$HOME/.config/hyprpanel/modules.json"
-    $DRY_RUN_CMD cp ${modulesScssFile} "$HOME/.config/hyprpanel/modules.scss"
-    $DRY_RUN_CMD chmod 644 "$HOME/.config/hyprpanel/config.json"
-    $DRY_RUN_CMD chmod 644 "$HOME/.config/hyprpanel/modules.json"
-    $DRY_RUN_CMD chmod 644 "$HOME/.config/hyprpanel/modules.scss"
+    tmp_dir="$HOME/.config/hyprpanel/.hm-tmp"
+    $DRY_RUN_CMD rm -rf "$tmp_dir"
+    $DRY_RUN_CMD mkdir -p "$tmp_dir"
+    $DRY_RUN_CMD cp ${configFile} "$tmp_dir/config.json"
+    $DRY_RUN_CMD cp ${modulesFile} "$tmp_dir/modules.json"
+    $DRY_RUN_CMD cp ${modulesScssFile} "$tmp_dir/modules.scss"
+    $DRY_RUN_CMD chmod 644 "$tmp_dir/config.json"
+    $DRY_RUN_CMD chmod 644 "$tmp_dir/modules.json"
+    $DRY_RUN_CMD chmod 644 "$tmp_dir/modules.scss"
+    $DRY_RUN_CMD mv -f "$tmp_dir/config.json" "$HOME/.config/hyprpanel/config.json"
+    $DRY_RUN_CMD mv -f "$tmp_dir/modules.json" "$HOME/.config/hyprpanel/modules.json"
+    $DRY_RUN_CMD mv -f "$tmp_dir/modules.scss" "$HOME/.config/hyprpanel/modules.scss"
+    $DRY_RUN_CMD rmdir "$tmp_dir"
   '';
 
   wayland.windowManager.hyprland.settings.exec-once = [
