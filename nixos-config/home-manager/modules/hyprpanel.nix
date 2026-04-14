@@ -17,6 +17,16 @@ let
     fi
   '';
 
+  loadAverageScript = pkgs.writeShellScript "hyprpanel-load-average" ''
+    load_values="$(${pkgs.coreutils}/bin/cut -d' ' -f1-3 /proc/loadavg 2>/dev/null)" || true
+
+    if [ -n "$load_values" ]; then
+      printf '%s\n' "$load_values" | ${pkgs.gnused}/bin/sed 's/ /·/g'
+    else
+      printf '--\n'
+    fi
+  '';
+
   cryptoPriceScript = pkgs.writeShellScript "hyprpanel-crypto-price" ''
     set -eu
 
@@ -132,6 +142,13 @@ let
       hideOnEmpty = false;
       execute = "${weatherScript}";
     };
+    "custom/load-average" = {
+      label = "{}";
+      tooltip = "Load Average (1 min)";
+      interval = 5;
+      hideOnEmpty = false;
+      execute = "${loadAverageScript}";
+    };
     "custom/crypto-price" = {
       label = "{}";
       tooltip = "Crypto Price";
@@ -231,12 +248,12 @@ let
 
     "bar.layouts" = {
       "0" = {
-        left = [ "dashboard" "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
+        left = [ "dashboard" "workspaces" "battery" "custom/load-average" "cpu" "ram" "storage" "netstat" ];
         middle = [ "windowtitle" ];
         right = [ "hypridle" "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
       "1" = {
-        left = [ "dashboard" "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
+        left = [ "dashboard" "workspaces" "battery" "custom/load-average" "cpu" "ram" "storage" "netstat" ];
         middle = [ "windowtitle" ];
         right = [ "hypridle" "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
@@ -367,6 +384,19 @@ let
     .cpu .module-label,
     .ram .module-label {
       min-width: 4.0em;
+    }
+
+    .cmodule-load-average {
+      min-width: 0;
+      padding-left: 0.2rem;
+      padding-right: 0.2rem;
+    }
+
+    .cmodule-load-average .module-label {
+      color: #fab387;
+      font-weight: 700;
+      margin-left: 0;
+      margin-right: 0;
     }
 
     .storage .module-label {
