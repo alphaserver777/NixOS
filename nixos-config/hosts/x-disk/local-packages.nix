@@ -6,6 +6,7 @@ in
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
+    tor-browser
     telegram-desktop
     qtox
     obsidian
@@ -41,6 +42,7 @@ in
     smbmap
     metasploit
     traceroute
+    mtr
 
     # File manager
     pcmanfm
