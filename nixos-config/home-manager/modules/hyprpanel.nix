@@ -65,9 +65,21 @@ let
 
     pretty="$(${pkgs.gawk}/bin/awk -v p="$price" '
       BEGIN {
-        if (p >= 1000)      printf "%.0f", p
-        else if (p >= 1)    printf "%.2f", p
-        else                printf "%.4f", p
+        if (p >= 1000) {
+          n = sprintf("%.0f", p)
+          out = ""
+
+          while (length(n) > 3) {
+            out = "." substr(n, length(n) - 2, 3) out
+            n = substr(n, 1, length(n) - 3)
+          }
+
+          printf "%s%s", n, out
+        } else if (p >= 1) {
+          printf "%.2f", p
+        } else {
+          printf "%.4f", p
+        }
       }
     ')"
 

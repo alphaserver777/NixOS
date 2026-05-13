@@ -24,6 +24,7 @@
     ./docker.nix
     ./udisks.nix
     ./virtualbox.nix
+    ./wireshark.nix
     # ./tailscale.nix
   ];
 }

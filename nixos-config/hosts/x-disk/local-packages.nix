@@ -19,6 +19,7 @@ in
     ksnip
     mpv #video
     pavucontrol
+    wireshark
 
     # Office Suites
     libreoffice
