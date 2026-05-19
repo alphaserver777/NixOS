@@ -12,6 +12,7 @@
     ./net.nix
     ./nh.nix
     ./nix.nix
+    ./nix-ld.nix
     ./ssh.nix
     ./rsyslog-forwarding.nix
     ./timezone.nix
