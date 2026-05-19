@@ -1,4 +1,4 @@
-{ lib, pkgs, user, ... }:
+{ pkgs, user, ... }:
 
 {
   # Removable media integration for file managers and tray automounters.
@@ -14,9 +14,20 @@
   home-manager.users.${user} = {
     home.packages = [ pkgs.udiskie ];
 
-    wayland.windowManager.hyprland.settings.exec-once = lib.mkAfter [
-      "udiskie --tray --smart-tray --automount --notify"
-    ];
+    systemd.user.services.udiskie = {
+      Unit = {
+        Description = "Removable media automounter";
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
+      };
+
+      Service = {
+        ExecStart = "${pkgs.udiskie}/bin/udiskie --no-tray --automount --notify";
+        Restart = "on-failure";
+      };
+
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
   };
 
   environment.etc."polkit-1/rules.d/50-udisks.rules".text = ''
