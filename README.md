@@ -47,7 +47,7 @@
 
 2.  **Клонируйте репозиторий:**
 ```bash
-git clone https://github.com/alphaserver777/GitOps.git /home/admsys/
+git clone https://github.com/alphaserver777/NixOS.git /home/admsys/Nixos
 ```
 
 3.  **Соберите систему:**
