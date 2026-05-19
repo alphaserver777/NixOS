@@ -36,6 +36,7 @@ in
     python3
     lazyssh-client
     sshfs
+    ansible
 
 
     # Pentest
