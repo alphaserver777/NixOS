@@ -1,4 +1,4 @@
-{ config, inputs, lib, hostname, user, secrets, ... }: {
+{ config, inputs, hostname, user, secrets, ... }: {
   imports = [ inputs.home-manager.nixosModules.default ];
 
   home-manager = {
@@ -12,12 +12,6 @@
     users.${user} = {
       imports = [ ../../home-manager/home.nix ];
       home.stateVersion = config.system.stateVersion;
-      nixpkgs.config.allowUnfreePredicate = pkg:
-        builtins.elem (lib.getName pkg) [
-          "rustdesk"
-          "libsciter"
-          "libsciter-4.4.8.23-bis"
-        ];
     };
   };
 }

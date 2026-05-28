@@ -1,4 +1,4 @@
-{ lib, hostname ? null, ... }:
+{ ... }:
 {
   imports = [
     ./alacritty.nix
@@ -28,7 +28,5 @@
     ./nvim-config
     ./wofi
     ./ranger
-  ] ++ lib.optionals (hostname != "srv-home") [
-    ./rustdesk.nix
   ];
 }

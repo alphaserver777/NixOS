@@ -24,16 +24,6 @@
 
   outputs = { self, nixpkgs, home-manager, sops-nix, ... }@inputs: let
     system = "x86_64-linux";
-    allowedUnfreeNames = [
-      "rustdesk"
-      "libsciter"
-      "libsciter-4.4.8.23-bis"
-    ];
-    pkgsForHome = import nixpkgs {
-      inherit system;
-      config.allowUnfreePredicate = pkg:
-        builtins.elem (nixpkgs.lib.getName pkg) allowedUnfreeNames;
-    };
     secretsPathEnv = builtins.getEnv "NIXOS_SECRETS_PATH";
     secretsPath =
       if secretsPathEnv != "" then secretsPathEnv
@@ -73,7 +63,7 @@
     homeConfigurations = nixpkgs.lib.foldl' (configs: host:
       configs // {
         "${user}@${host.hostname}" = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgsForHome;
+          pkgs = nixpkgs.legacyPackages.${system};
           extraSpecialArgs = {
             inherit inputs homeStateVersion user secrets;
             hostname = host.hostname;
