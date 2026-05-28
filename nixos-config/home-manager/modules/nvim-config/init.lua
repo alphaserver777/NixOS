@@ -33,6 +33,7 @@ vim.cmd.colorscheme "catppuccin"
 -- Align autoformat with nixpkgs-fmt so on-save formatter matches CLI tooling
 vim.g.formatdef_nixpkgs_fmt = '"nixpkgs-fmt"'
 vim.g.formatters_nix = { "nixpkgs_fmt" }
+vim.g.autoformat_formatprg_markdown = 'prettier --parser markdown'
 
 -- Flash.nvim
 require("flash").setup({

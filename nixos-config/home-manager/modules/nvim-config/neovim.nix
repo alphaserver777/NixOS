@@ -12,6 +12,7 @@
       fd
       ripgrep
       tree-sitter
+      nodePackages.prettier
     ];
 
     # фиксим устаревший pynvim
