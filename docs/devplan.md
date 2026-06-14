@@ -9,20 +9,21 @@
 
 ## Этап 0 — Стабилизация текущих изменений (активно)
 
-Что сейчас в работе (см. git status `develop`):
+- **[done]** `nix-ld` — поддержка dynamically-linked бинарей. Закоммичено
+  как `0a9ef26 feat: nix-ld ...`. → Задача: `docs/tasks/001-nix-ld-deploy.md`
+- **[done]** `udisks.nix` — переход udiskie на systemd user service.
+  Закоммичено как `725969f refactor(udisks): ...`.
+- **[done]** ansible в `x-disk/local-packages.nix` — `cb4a49f chore(x-disk): ...`.
+- **[done]** SDD docs/ внедрены — `9c30c52 docs: внедрение SDD ...`.
+- **[done]** Remote URL переезд `GitOps → NixOS` — `6e6a83b chore: ...`.
+- **[in progress]** Задача 002: «Ассистент» как замена RustDesk
+  (`docs/tasks/002-install-assistant-replace-rustdesk.md`) — derivation
+  собирается, ждёт `nixos-rebuild switch` на `x-disk`/`Huawei`/`main`.
+- **[in progress]** Задача 003: установка Happ proxy-клиента
+  (`docs/tasks/003-install-happ-proxy.md`) — собрано, готово к switch.
 
-- **[in progress]** `nix-ld` — поддержка dynamically-linked бинарей на NixOS.
-  Модуль добавлен в `nixos/modules/default.nix`. Нужна проверка и коммит.
-  → Задача: `docs/tasks/001-nix-ld-deploy.md`
-
-- **[staged]** `udisks.nix` — обновлена конфигурация automount для сменных
-  носителей (udiskie как systemd user service, polkit-правила, exfatprogs).
-
-- **[staged]** `hosts/x-disk/local-packages.nix` — обновлён список пакетов
-  рабочей станции x-disk.
-
-**Цель этапа:** зафиксировать изменения в commit, проверить на `x-disk`
-и `Huawei`, смержить в `develop`.
+**Цель этапа:** применить 002+003 на трёх desktop-хостах, закоммитить,
+закрыть задачи.
 
 ---
 

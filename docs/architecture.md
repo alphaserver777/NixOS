@@ -59,10 +59,14 @@
 - **Desktop:** XFCE + Openbox
 - **Конфиг:** `hosts/srv-home-gui/configuration.nix`
 
-### main — шаблонная конфигурация
+### main — активный desktop-хост
 
-- **Роль:** Базовый шаблон / тестовый хост для новых конфигураций.
-- **Конфиг:** `hosts/main/configuration.nix`
+- **Роль:** Полноценная desktop-машина наравне с `x-disk` и `Huawei`.
+- **Модули:** `nixos/modules/default.nix` (полный desktop-набор)
+- **Конфиг:** `hosts/main/configuration.nix` (импортирует `../../nixos/modules`)
+- **Примечание:** Ранее статус хоста был неясен; уточнено при работе над
+  задачами 002/003 — `main` используется на реальном железе и должен
+  получать все изменения shared-модулей.
 
 ---
 
@@ -109,7 +113,7 @@ nixos-config/
 `kernel`, `mime`, `net`, `nh`, `nix`, **`nix-ld`**, `ssh`,
 `rsyslog-forwarding` (активен только на `x-disk`), `timezone`, `user`,
 `zram`, `amneziavpn`, `power`, `displayManager`, `syncthing`, `docker`,
-`udisks`, `virtualbox`, `wireshark`.
+`udisks`, `virtualbox`, `wireshark`, **`assistant`**, **`happ`**.
 
 **Замечание:** Набор широкий — `docker`, `virtualbox`, `syncthing` включены
 глобально для всех desktop-хостов. Это не всегда нужно. Потенциальная область
@@ -141,9 +145,14 @@ nixos-config/
 
 ## Custom-пакеты
 
-- `nixos-config/packages/lazyssh.nix` — LazySSH (Go-инструмент для SSH)
-- Сборка: `pkgs.callPackage ../../packages/lazyssh.nix {}`
-- Используется на: `x-disk`
+- `nixos-config/packages/lazyssh.nix` — LazySSH (Go-инструмент для SSH).
+  Сборка: `pkgs.callPackage ../../packages/lazyssh.nix {}`. Используется на: `x-disk`.
+- `nixos-config/packages/assistant.nix` — «Ассистент» (ГК САФИБ), remote access.
+  Распаковка `.deb` через `autoPatchelfHook + dpkg`. Подключается shared-модулем
+  `nixos/modules/assistant.nix` на все desktop-хосты.
+- `nixos-config/packages/happ.nix` — Happ, proxy-клиент на базе Xray.
+  Тот же паттерн `autoPatchelfHook + dpkg + dontWrapQtApps`. Bundled Qt6 в
+  `/opt/happ/lib/`. Подключается через `nixos/modules/happ.nix`.
 
 ---
 

@@ -61,9 +61,12 @@
 
 - Текущий канал: `nixos-25.05`. Изменение канала — отдельная задача с
   полным тестированием всех хостов.
-- Unfree-пакеты разрешены только для явно перечисленных в `flake.nix`:
-  `rustdesk`, `libsciter`, `libsciter-4.4.8.23-bis`.
-  Добавление нового unfree-пакета требует обновления `allowedUnfreeNames`.
+- Unfree-пакеты разрешены глобально через `nixpkgs.config.allowUnfree = true`
+  в [home-manager/home-packages.nix](../nixos-config/home-manager/home-packages.nix).
+  Раньше использовался whitelist `allowedUnfreeNames` в `flake.nix` (для
+  RustDesk/libsciter), но он удалён после отказа от RustDesk (commit `884cd39`).
+  При добавлении нового unfree-пакета — лицензию указывать явно в `meta.license`
+  derivation'а; никаких дополнительных правок `nixpkgs.config` не нужно.
 - `permittedInsecurePackages` — крайняя мера. Используется только если нет
   альтернативы. Текущий исключение: `beekeeper-studio-5.1.5` на `x-disk`.
 
