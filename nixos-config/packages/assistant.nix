@@ -52,6 +52,15 @@ buildFHSEnv {
     xorg.libXfixes xorg.libXi xorg.libXtst xorg.libXcomposite xorg.libXdamage
     xorg.libXScrnSaver xorg.libXcursor xorg.libXft xorg.libxshmfence
     stdenv.cc.cc.lib
+
+    # Core X11 bitmap fonts — нужны для XLoadFont() в окне удалённого desktop.
+    # Без них Ассистент пишет "Can not load the font" и показывает серый экран.
+    xorg.fontmiscmisc xorg.fontcursormisc
+    xorg.fontadobe75dpi xorg.fontadobe100dpi
+    xorg.fontbh75dpi xorg.fontbh100dpi
+    xorg.fontbhlucidatypewriter75dpi xorg.fontbhlucidatypewriter100dpi
+    xorg.fontbhttf xorg.fontbitstream100dpi xorg.fontbitstream75dpi
+    dejavu_fonts liberation_ttf
   ];
 
   runScript = launchScript;
