@@ -14,7 +14,12 @@
 
 ## Status
 
-`done`
+`partial` — установка и запуск работают, основное окно открывается,
+backend daemon подключается, прокси-конфиги из существующего хранилища
+загружаются. Но **диалоги Add Configuration / Settings нерабочие** из-за
+upstream-бага: Happ зависит от не-bundled QML-модуля `kvantum`, без
+которого custom QML-типы (`isDark`, `iconName`, `onButtonClicked`)
+отваливаются и фейлят создание диалогов.
 
 ---
 
@@ -202,12 +207,52 @@ property "iconName" / "isDark" / "onButtonClicked"`) — это kvantum-
 specific properties в исходниках Happ, без kvantum они просто
 игнорируются, на функциональность не влияют.
 
+### Known limitation: kvantum upstream-баг
+
+После всех фиксов Happ запускается, но **диалоги Add Configuration /
+Settings не работают**. Корневая причина:
+
+1. Happ зависит от QML-модуля `kvantum`. Без него Main.qml не загружается
+   (фикс через `QT_STYLE_OVERRIDE=Fusion` обходит загрузку Main.qml,
+   но не помогает с диалогами).
+2. `kvantum` в nixpkgs есть только для Qt5 (`libsForQt5.qtstyleplugin-
+   kvantum`) — это native style plugin, а не QML-модуль. Для Qt6 нет.
+3. Upstream забыл его упаковать: в Arch `.pkg.tar.zst` (PKGINFO) нет
+   зависимости от kvantum даже в `optdepend`.
+4. Эксперимент со stub QML-модулем (`module kvantum` в `qmldir`)
+   убрал import-ошибку, но проблема глубже — QML-типы `HappStyle`
+   ссылаются на properties (`isDark`, `iconName`, `onButtonClicked`),
+   которые определены в kvantum. Без реальной реализации kvantum-типов
+   эти properties отсутствуют, и `Qt.createQmlObject()` фейлит.
+5. CLI у Happ нет — `happd --help` показывает только версию/help.
+   Headless-управления подписками не существует.
+
+**Что работает:**
+- Запуск и главное окно
+- Backend daemon connect
+- Загрузка существующих субскрипций из `~/.config/Happ/`
+- Отображение существующих серверов
+
+**Что не работает:**
+- Добавление новых конфигов через GUI («+» / Add Configuration)
+- Settings dialog
+- Любое взаимодействие, требующее custom QML-типов из kvantum
+
+**Обходные пути для пользователя:**
+- Получить готовые subscription URLs/configs от провайдера на iOS/
+  Windows Happ-клиенте, перенести `~/.config/Happ/` файлы вручную
+  (если получится разобрать формат)
+- Открыть upstream issue: https://github.com/Happ-proxy/happ-desktop —
+  что Linux релиз неполный (либо bundle kvantum, либо убрать
+  зависимость из QML)
+- Альтернативные клиенты: `v2rayN`/`v2raya` в nixpkgs, но они не
+  понимают проприетарный `happ://` URL-формат (нужны стандартные
+  VLESS/VMess/Trojan URI)
+
 ### Follow-up
 
 - TUN-mode (daemon `happd.service` через `systemd.services` + polkit) —
   отдельная задача, заводить только если нужен системный VPN-mode.
-- Установка `pkgs.xray` (CLI из nixpkgs) — пока нет необходимости, всё
-  работает через bundled xray-core внутри Happ.
+- Установка `pkgs.xray` (CLI из nixpkgs) — пока нет необходимости.
 - Автозапуск в трее — через home-manager, если потребуется.
-- Пакетирование `kvantum` для Qt6 — это работа на уровне nixpkgs, не
-  здесь.
+- Пакетирование `kvantum` для Qt6 — на уровне nixpkgs/upstream, не здесь.

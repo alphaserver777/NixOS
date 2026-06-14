@@ -44,9 +44,8 @@ stdenv.mkDerivation rec {
     cp -r opt/happ $out/opt/
 
     # Принудительно перебиваем стиль — у пользователя в окружении может стоять
-    # QT_STYLE_OVERRIDE=kvantum (например, от Stylix), но Happ ожидает QML-модуль
-    # "kvantum", которого нет в bundled lib/qml/ и в nixpkgs (kvantum под Qt5
-    # only). Без Fusion Main.qml не загружается и приложение мгновенно exits.
+    # QT_STYLE_OVERRIDE=kvantum (например, от Stylix), Happ нужен Fusion-fallback,
+    # иначе Main.qml не загружается. См. docs/tasks/003 про kvantum-баг upstream.
     makeWrapper $out/opt/happ/bin/Happ $out/bin/happ \
       --chdir $out/opt/happ/bin \
       --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl ]} \
