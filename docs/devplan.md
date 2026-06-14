@@ -16,16 +16,20 @@
 - **[done]** ansible в `x-disk/local-packages.nix` — `cb4a49f chore(x-disk): ...`.
 - **[done]** SDD docs/ внедрены — `9c30c52 docs: внедрение SDD ...`.
 - **[done]** Remote URL переезд `GitOps → NixOS` — `6e6a83b chore: ...`.
-- **[in progress]** Задача 002: «Ассистент» как замена RustDesk
-  (`docs/tasks/002-install-assistant-replace-rustdesk.md`) — после двух
-  итераций фиксов (autoPatchelf → buildFHSEnv, расширение targetPkgs)
-  бинарь проходит инициализацию. Ждёт финального `nixos-rebuild switch`
-  и визуального подтверждения окна на `x-disk`/`Huawei`/`main`.
-- **[in progress]** Задача 003: установка Happ proxy-клиента
-  (`docs/tasks/003-install-happ-proxy.md`) — собрано и работает. После
-  фикса openssl LD_LIBRARY_PATH + дефолтного `QT_STYLE_OVERRIDE=Fusion`
-  GUI открывается, daemon подключается. Ждёт финального switch на
-  оставшихся хостах.
+- **[done]** Задача 002: «Ассистент» как замена RustDesk
+  (`docs/tasks/002-install-assistant-replace-rustdesk.md`). После пяти
+  итераций фиксов (autoPatchelf → buildFHSEnv → extra libs → ложный
+  font-фикс → libXinerama + libuuid + efivar) Ассистент запускается,
+  подключается к удалённому компьютеру, окно удалённого desktop
+  корректно рендерится. Применено на `x-disk`. Подробная хронология
+  фиксов и уроки — в spec'е задачи.
+- **[done]** Задача 003: установка Happ proxy-клиента
+  (`docs/tasks/003-install-happ-proxy.md`). После фикса openssl
+  `LD_LIBRARY_PATH` и дефолтного `QT_STYLE_OVERRIDE=Fusion` GUI
+  открывается, daemon подключается, прокси-конфиги загружаются.
+  Применено на `x-disk`.
+- **[pending]** Применение конфигурации на `Huawei` и `main` —
+  отложено до фактического использования (см. Этап 7 ниже).
 
 **Цель этапа:** применить 002+003 на трёх desktop-хостах, закоммитить,
 закрыть задачи.
@@ -110,6 +114,18 @@
 
 ---
 
+## Этап 7 — Применение свежей конфигурации на остальных desktop-хостах
+
+После задач 001/002/003 на `x-disk` накопились изменения в shared-
+модулях (`nix-ld`, `assistant`, `happ`). Они автоматически попадут на
+`Huawei` и `main` при следующем `nixos-rebuild switch` там же. Сделать
+это при ближайшем использовании каждого хоста.
+
+**Приоритет:** Низкий — никаких backward-breaking changes, безопасно
+откладывать.
+
+---
+
 ## Отложено / под вопросом
 
 - **nix-ld на серверах** — имеет смысл на `srv-home-min` если там нужен
@@ -118,3 +134,8 @@
   перенаправить читателей в `docs/`.
 - **flake.nix → homeConfigurations** — сейчас собирается для каждого
   хоста, включая серверные. Уточнить, нужно ли это на всех.
+- **Аудио в Ассистенте** (`Failed to init Alsa` в логе) — отдельная
+  задача если понадобится голосовая связь во время remote session.
+- **Помощь nixpkgs с упаковкой `kvantum` для Qt6** — улучшит UI Happ,
+  но не блокирует функциональность. Upstream-работа, не на нашей
+  стороне.

@@ -14,7 +14,7 @@
 
 ## Status
 
-`in progress`
+`done`
 
 ---
 
@@ -105,13 +105,19 @@ Happ 2.17.1 (GUI) установлен и запускается на всех �
 
 ## Acceptance Criteria
 
-- [ ] `nixos-rebuild dry-build --flake .#x-disk` проходит
-- [ ] `sudo nixos-rebuild switch` проходит на `main`, `x-disk`, `Huawei`
-- [ ] Бинарь `happ` доступен в `$PATH` и запускается без `error loading shared libraries`
-- [ ] `.desktop`-файл подхватывается launcher'ом (иконка появляется в меню приложений)
-- [ ] При запуске GUI открывается главное окно Happ
-- [ ] Прокси-конфиг можно добавить и подключиться (минимум: subscription import, VLESS connect)
-- [ ] Изменения зафиксированы в commit'е `feat: установка Happ proxy-клиента` + `Closes: docs/tasks/003-install-happ-proxy.md`
+- [x] `nix build .#nixosConfigurations.x-disk.config.system.build.toplevel`
+      проходит
+- [x] `sudo nixos-rebuild switch --flake .#x-disk` проходит
+- [ ] `sudo nixos-rebuild switch --flake .#Huawei` — отложено до фактического
+      использования
+- [ ] `sudo nixos-rebuild switch --flake .#main` — отложено до фактического
+      использования
+- [x] Бинарь `happ` доступен в `$PATH` и запускается без
+      `error loading shared libraries`
+- [x] `.desktop`-файл подхватывается launcher'ом, иконка в меню
+- [x] Главное окно открывается (с `QT_STYLE_OVERRIDE=Fusion`), daemon
+      подключается (`DaemonManager: Connected to daemon`), backend в idle
+- [x] Изменения зафиксированы в коммитах `395c3a8`, `60da1a8`, `71eb4fa`
 
 ---
 
@@ -157,9 +163,43 @@ sudo nixos-rebuild switch --rollback
 
 ## Заметки
 
-- **Имя бинаря:** главный GUI — `Happ` (с большой H) в `/opt/happ/bin/`. Wrapper в `$out/bin/happ` (нижний регистр) для удобства.
-- **Bundled core:** в пакете есть `core/xray` (Xray-core), `tun/sing-box`, `tun2/tun2proxy-bin`, `antifilter/antifilter`. Все они в `/opt/happ/bin/...` — autoPatchelfHook должен пропатчить их вместе с главным бинарём.
-- **`qt.conf`** рядом с `Happ` бинарём (80 байт) указывает Qt-фреймворку, где искать plugins/qml. Если относительные пути — должно работать сразу, если абсолютные — потребуется substituteInPlace.
-- **Follow-up:** включение TUN-mode (daemon happd через `systemd.services` + polkit) — отдельная задача, заводить только если действительно нужен системный VPN-mode, а не user-space proxy.
-- **Follow-up:** проверить, есть ли смысл также установить `pkgs.xray` (CLI ядро из nixpkgs) для использования вне Happ. Пока не очевидно, что нужно.
-- **Follow-up:** если пользователь захочет, чтобы Happ автозапускался в трее при логине — отдельная задача через home-manager.
+- **Имя бинаря:** главный GUI — `Happ` (с большой H) в `/opt/happ/bin/`.
+  Wrapper в `$out/bin/happ` (нижний регистр).
+- **Bundled core:** `core/xray`, `tun/sing-box`, `tun2/tun2proxy-bin`,
+  `antifilter/antifilter` — все в `/opt/happ/bin/...`, autoPatchelfHook
+  пропатчил их вместе с главным бинарём.
+- **`qt.conf`** рядом с `Happ` (`Prefix = ..`, `Plugins = lib/plugins`)
+  — относительные пути, работает сразу.
+
+### Хронология фиксов
+
+1. **Итерация 1 (`395c3a8`) — autoPatchelfHook.** Бинарь стартовал, но
+   фейлил с `qt.tlsbackend.ossl: Failed to load libssl/libcrypto`. Qt6 TLS
+   plugin `libqopensslbackend.so` подгружает libssl/libcrypto через
+   `dlopen` в runtime, autoPatchelf этого не видит (нет DT_NEEDED).
+
+2. **Итерация 2 (`60da1a8`) — `LD_LIBRARY_PATH=${openssl}/lib`.** TLS
+   заработал, но QML-движок ругался: `module "kvantum" is not installed`
+   при загрузке `Main.qml`.
+
+3. **Итерация 3 (`71eb4fa`) — `QT_STYLE_OVERRIDE=Fusion +
+   QT_QUICK_CONTROLS_STYLE=Fusion` через `--set-default`.** Happ
+   использует QML-import `kvantum`, которого нет в bundled `lib/qml/`
+   и в nixpkgs (kvantum существует только для Qt5). С Fusion-стилем
+   окно открывается, daemon подключается, backend в idle, прокси-конфиги
+   подгружаются.
+
+Оставшиеся QML-warning'и при работе (`Cannot assign to non-existent
+property "iconName" / "isDark" / "onButtonClicked"`) — это kvantum-
+specific properties в исходниках Happ, без kvantum они просто
+игнорируются, на функциональность не влияют.
+
+### Follow-up
+
+- TUN-mode (daemon `happd.service` через `systemd.services` + polkit) —
+  отдельная задача, заводить только если нужен системный VPN-mode.
+- Установка `pkgs.xray` (CLI из nixpkgs) — пока нет необходимости, всё
+  работает через bundled xray-core внутри Happ.
+- Автозапуск в трее — через home-manager, если потребуется.
+- Пакетирование `kvantum` для Qt6 — это работа на уровне nixpkgs, не
+  здесь.

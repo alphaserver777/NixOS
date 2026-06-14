@@ -14,7 +14,7 @@
 
 ## Status
 
-`in progress`
+`done`
 
 ---
 
@@ -105,14 +105,22 @@
 
 ## Acceptance Criteria
 
-- [ ] `nix --extra-experimental-features 'nix-command flakes' build .#nixosConfigurations.x-disk.config.system.build.toplevel --no-link` проходит (либо `nixos-rebuild dry-build --flake .#x-disk`)
-- [ ] `sudo nixos-rebuild switch --flake .#main` проходит без ошибок
-- [ ] `sudo nixos-rebuild switch --flake .#x-disk` проходит без ошибок
-- [ ] `sudo nixos-rebuild switch --flake .#Huawei` проходит без ошибок
-- [ ] Бинарь «Ассистент» запускается из терминала без `error loading shared libraries`
-- [ ] `.desktop`-файл подхватывается launcher'ом (wofi/hyprpanel) — иконка появляется в меню приложений
-- [ ] При запуске GUI открывается главное окно «Ассистент»
-- [ ] Изменения зафиксированы в commit'е с сообщением вида `feat: установка «Ассистент» как замена RustDesk` и `Closes: docs/tasks/002-install-assistant-replace-rustdesk.md`
+- [x] `nix build .#nixosConfigurations.x-disk.config.system.build.toplevel`
+      проходит без ошибок
+- [x] `sudo nixos-rebuild switch --flake .#x-disk` проходит — подтверждено
+      пользователем
+- [ ] `sudo nixos-rebuild switch --flake .#Huawei` — отложено до фактического
+      использования на ноутбуке
+- [ ] `sudo nixos-rebuild switch --flake .#main` — отложено до фактического
+      использования
+- [x] Бинарь «Ассистент» запускается без `error loading shared libraries`
+- [x] `.desktop`-файл подхватывается launcher'ом (wofi) — иконка в меню
+- [x] Главное окно открывается, получен ID/пароль, виден список партнёров
+- [x] Подключение к удалённому компьютеру KOMPUTER устанавливается, и
+      окно удалённого desktop корректно рендерится (а не серый прямоугольник)
+- [x] Изменения зафиксированы в семи коммитах:
+      `395c3a8 87d9e8b f9f00a8 eb546d4 f0b27a8 8220537` (последний —
+      решающий, плюс cleanup ложных фиксов)
 
 ---
 
@@ -165,26 +173,68 @@ sudo nixos-rebuild switch --rollback
 
 - **Имя бинаря:** `/opt/assistant/bin/assistant` (главный), плюс sub-процессы
   `master`, `slave`, `astrct`, `asts`, `st`, и бандлёный `ffmpeg`.
-- **autoPatchelfHook не подошёл.** Первая итерация делалась через
-  `stdenv.mkDerivation + autoPatchelfHook + dpkg`. Бинарь стартовал, открывал
-  GTK2 окно на долю секунды и падал с `Runtime error 203` (heap overflow в
-  TGtk2WidgetSet). Причина: bundled libs в `/opt/assistant/lib/`
-  (`libstdc.so.6.0.31` без `++`, bundled `libssl/libcrypto`) ABI-несовместимы с
-  тем, как autoPatchelf привязал бинарь к системным nixpkgs-эквивалентам.
-- **Переупаковано через `buildFHSEnv`** (commit `87d9e8b` + расширение
-  targetPkgs `f9f00a8`):
-  - `rawData` (внутренний `stdenv.mkDerivation` с `dontPatchELF / dontStrip /
-    dontAutoPatchelf`) — раскладывает `.deb` в `/nix/store` без модификации
-    бинарей
-  - Основной derivation — `buildFHSEnv` с расширенным `targetPkgs` (GTK2
-    runtime, sqlite, nss, openssl, libv4l, pipewire и т.д.)
-  - `runScript` (через `writeShellScript`) делает `cd $rawData/opt/assistant/bin`
-    + `LD_LIBRARY_PATH=$rawData/opt/assistant/lib` и `exec ./assistant`
-- **Шаблон autoPatchelf** всё равно остался работающим — для задачи 003 (Happ
-  с bundled Qt6) он подошёл. Так что в репозитории сейчас два валидных
-  паттерна упаковки `.deb`:
-  - autoPatchelfHook — когда bundled libs совместимы с системой (Happ)
-  - buildFHSEnv — когда bundled libs требуют Debian-like окружения (Assistant)
-- **Follow-up:** если бинарь требует `chmod +s` или systemd unit — отдельная
-  задача.
-- **Follow-up:** автозапуск/трей-иконка — отдельная задача через home-manager.
+
+### Хронология фиксов (полезно для будущих LLM)
+
+1. **Итерация 1 (`395c3a8`) — autoPatchelfHook.** Бинарь стартовал, открывал
+   GTK2 окно на долю секунды и падал с `Runtime error 203` (heap overflow
+   в TGtk2WidgetSet). Причина: bundled libs в `/opt/assistant/lib/`
+   (`libstdc.so.6.0.31` без `++`, bundled `libssl/libcrypto`) ABI-несовместимы
+   с системными nixpkgs-эквивалентами, на которые autoPatchelf переписал
+   RPATH'ы бинаря.
+
+2. **Итерация 2 (`87d9e8b`, `f9f00a8`) — переход на `buildFHSEnv`.** Бинарь
+   начал проходить инициализацию ("Init started, libraries loaded,
+   settings loaded"). Структура:
+   - `rawData` (внутренний `stdenv.mkDerivation` с `dontPatchELF /
+     dontStrip / dontAutoPatchelf`) — раскладывает `.deb` в `/nix/store`
+     без модификации бинарей
+   - Основной derivation — `buildFHSEnv` с расширенным `targetPkgs` (GTK2
+     runtime, sqlite, nss, openssl, libv4l, pipewire и т.д.)
+   - `runScript` (через `writeShellScript`) делает `cd` в `bin/`,
+     `LD_LIBRARY_PATH=$rawData/opt/assistant/lib` и `exec ./assistant`
+
+3. **Итерации 3-4 (`eb546d4`, `f0b27a8`) — ложный фикс «шрифты».**
+   stdout-лог Lazarus сообщал `Can not load the font`. Перебирали core X11
+   bitmap fonts сначала в FHS env, потом через `fonts.packages` на
+   системном уровне. **Не помогло.** Выяснилось, что XWayland имеет
+   `built-ins` шрифты (`xset q` → `Font Path: built-ins`), и в `xlsfonts`
+   видны `fixed`, `-misc-fixed-*`. Шрифты были не причиной серого экрана.
+   В рамках финального фикса оба ложных изменения вычищены (commit `<cleanup>`).
+
+4. **Итерация 5 (`8220537`) — решающий фикс.** В файловом логе
+   `~/.config/assistant/log/AstCln*.log` (Lazarus пишет туда без stdout-
+   буферизации) обнаружено:
+   ```
+   Failed to load libastrct.so: libXinerama.so.1: cannot open shared object file
+   libusbast.so: Unable to load ... (libuuid.so.1: cannot open shared object file)
+   ```
+   `libastrct.so` — это и есть Remote Control runtime, без неё рендер
+   удалённого desktop не работает (serый прямоугольник при успешном
+   handshake). Добавлены `xorg.libXinerama`, `util-linux.lib` (libuuid),
+   `efivar` (UEFI info, второстепенно).
+
+### Уроки
+
+- При диагностике GUI-приложений на NixOS **stdout-логи Lazarus
+  буферизуются** — смотри файловые логи приложения, если они есть
+  (`~/.config/<app>/log/...`).
+- bundled libs из `.deb` могут иметь свои runtime-зависимости, которые не
+  ловит autoPatchelfHook (он патчит только NEEDED). При загрузке через
+  `dlopen` в FHS env эти зависимости должны быть в `targetPkgs`.
+
+### Связь с задачей 003
+
+Шаблон `stdenv.mkDerivation + autoPatchelfHook + dpkg` всё равно остался
+работающим — для Happ (задача 003) с bundled Qt6 он подошёл. В репозитории
+сейчас два валидных паттерна упаковки `.deb`:
+- **autoPatchelfHook** — когда bundled libs совместимы с системой (Happ)
+- **buildFHSEnv** — когда bundled libs требуют Debian-like окружения
+  (Assistant)
+
+### Follow-up задачи
+
+- Применить на `Huawei` и `main` (есть соответствующий пункт в `devplan.md`)
+- Автозапуск/трей-иконка через home-manager — если потребуется
+- Аудио в чате не работает (`Failed to init Alsa` в логе) — отдельная
+  задача если понадобится голосовая связь
