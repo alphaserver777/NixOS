@@ -1,56 +1,67 @@
-{ stdenv, lib, fetchurl, dpkg, autoPatchelfHook, makeWrapper
-, glib, gtk2, libv4l, alsa-lib, libpulseaudio, libGL
-, libxkbcommon, fontconfig, freetype, dbus, pipewire
+{ stdenv, lib, fetchurl, dpkg, buildFHSEnv, writeShellScript
+, glib, gtk2, libv4l, alsa-lib, libpulseaudio, libGL, pipewire
+, libxkbcommon, fontconfig, freetype, dbus, openssl, curl
 , xorg
 }:
 
-stdenv.mkDerivation rec {
+let
   pname = "assistant";
   version = "6.5";
 
-  src = fetchurl {
-    url = "https://lk2.xn--80akicokc0aablc.xn--p1ai/WebApi/Platforms/Download/1375";
-    sha256 = "19hs3fdk2csbl1p7s7fdc0bd857b7j1ci6yqv4jlsp7q366rqka6";
+  # Lazarus/FPC бинарь от ГК САФИБ собран под Debian-like окружение.
+  # autoPatchelfHook ломает совместимость bundled libs из /opt/assistant/lib
+  # (libstdc.so.6.0.31, bundled libssl/libcrypto) с системными nixpkgs-
+  # эквивалентами, что приводит к heap overflow (RTE 203) в TGtk2WidgetSet.
+  # Поэтому раскладываем .deb «как есть» без патчинга и запускаем внутри
+  # FHS sandbox через buildFHSEnv.
+  rawData = stdenv.mkDerivation {
+    name = "${pname}-${version}-raw";
+    src = fetchurl {
+      url = "https://lk2.xn--80akicokc0aablc.xn--p1ai/WebApi/Platforms/Download/1375";
+      sha256 = "19hs3fdk2csbl1p7s7fdc0bd857b7j1ci6yqv4jlsp7q366rqka6";
+    };
+    nativeBuildInputs = [ dpkg ];
+    dontPatchELF = true;
+    dontStrip = true;
+    dontAutoPatchelf = true;
+    unpackPhase = "dpkg-deb -x $src .";
+    installPhase = ''
+      mkdir -p $out
+      cp -r opt $out/
+    '';
   };
 
-  nativeBuildInputs = [ dpkg autoPatchelfHook makeWrapper ];
+  launchScript = writeShellScript "assistant-launch" ''
+    cd ${rawData}/opt/assistant/bin
+    export LD_LIBRARY_PATH="${rawData}/opt/assistant/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    exec ./assistant "$@"
+  '';
+in
 
-  buildInputs = [
+buildFHSEnv {
+  inherit pname version;
+
+  targetPkgs = pkgs: with pkgs; [
+    bashInteractive coreutils
     glib gtk2 libv4l alsa-lib libpulseaudio libGL pipewire
-    libxkbcommon fontconfig freetype dbus
+    libxkbcommon fontconfig freetype dbus openssl curl
     xorg.libX11 xorg.libxcb xorg.libXext xorg.libXrandr xorg.libXrender
     xorg.libXfixes xorg.libXi xorg.libXtst xorg.libXcomposite xorg.libXdamage
     xorg.libXScrnSaver xorg.libXcursor stdenv.cc.cc.lib
   ];
 
-  appendRunpaths = [ "${placeholder "out"}/opt/assistant/lib" ];
+  runScript = launchScript;
 
-  unpackPhase = ''
-    runHook preUnpack
-    dpkg-deb -x $src .
-    runHook postUnpack
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    mkdir -p $out/opt $out/bin $out/share/applications $out/share/icons
-    cp -r opt/assistant $out/opt/
-
-    makeWrapper $out/opt/assistant/bin/assistant $out/bin/assistant \
-      --chdir $out/opt/assistant/bin
-
-    install -Dm644 opt/assistant/scripts/assistant.desktop \
+  extraInstallCommands = ''
+    mkdir -p $out/share/applications $out/share/icons
+    install -Dm644 ${rawData}/opt/assistant/scripts/assistant.desktop \
       $out/share/applications/assistant.desktop
     substituteInPlace $out/share/applications/assistant.desktop \
       --replace-fail "/opt/assistant/scripts/assistant.sh" "$out/bin/assistant" \
       --replace-fail "/opt/assistant/share/icons/assistant.png" \
                      "$out/share/icons/assistant.png"
-
-    install -Dm644 opt/assistant/share/icons/assistant.png \
+    install -Dm644 ${rawData}/opt/assistant/share/icons/assistant.png \
       $out/share/icons/assistant.png
-
-    runHook postInstall
   '';
 
   meta = with lib; {
@@ -58,5 +69,6 @@ stdenv.mkDerivation rec {
     homepage = "https://xn--80akicokc0aablc.xn--p1ai/";
     license = licenses.unfree;
     platforms = [ "x86_64-linux" ];
+    mainProgram = pname;
   };
 }
