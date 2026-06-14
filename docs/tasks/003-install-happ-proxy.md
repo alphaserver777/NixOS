@@ -189,6 +189,14 @@ sudo nixos-rebuild switch --rollback
    окно открывается, daemon подключается, backend в idle, прокси-конфиги
    подгружаются.
 
+4. **Итерация 4 (`<followup>`) — `--set` вместо `--set-default`.**
+   Stylix в проекте автоматически задаёт `QT_STYLE_OVERRIDE=kvantum`
+   для всех Qt-приложений на уровне пользовательской сессии.
+   `--set-default` не перебивает уже заданную переменную, поэтому
+   Happ продолжал получать `kvantum`, Main.qml падал, приложение
+   мгновенно exits. Заменили на `--set`, который форсит Fusion даже
+   при наличии другого значения в окружении.
+
 Оставшиеся QML-warning'и при работе (`Cannot assign to non-existent
 property "iconName" / "isDark" / "onButtonClicked"`) — это kvantum-
 specific properties в исходниках Happ, без kvantum они просто

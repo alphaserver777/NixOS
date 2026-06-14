@@ -43,11 +43,15 @@ stdenv.mkDerivation rec {
     mkdir -p $out/opt $out/bin
     cp -r opt/happ $out/opt/
 
+    # Принудительно перебиваем стиль — у пользователя в окружении может стоять
+    # QT_STYLE_OVERRIDE=kvantum (например, от Stylix), но Happ ожидает QML-модуль
+    # "kvantum", которого нет в bundled lib/qml/ и в nixpkgs (kvantum под Qt5
+    # only). Без Fusion Main.qml не загружается и приложение мгновенно exits.
     makeWrapper $out/opt/happ/bin/Happ $out/bin/happ \
       --chdir $out/opt/happ/bin \
       --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl ]} \
-      --set-default QT_STYLE_OVERRIDE Fusion \
-      --set-default QT_QUICK_CONTROLS_STYLE Fusion
+      --set QT_STYLE_OVERRIDE Fusion \
+      --set QT_QUICK_CONTROLS_STYLE Fusion
 
     install -Dm644 usr/share/applications/Happ.desktop \
       $out/share/applications/Happ.desktop
