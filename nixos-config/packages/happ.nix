@@ -45,7 +45,9 @@ stdenv.mkDerivation rec {
 
     makeWrapper $out/opt/happ/bin/Happ $out/bin/happ \
       --chdir $out/opt/happ/bin \
-      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl ]}
+      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl ]} \
+      --set-default QT_STYLE_OVERRIDE Fusion \
+      --set-default QT_QUICK_CONTROLS_STYLE Fusion
 
     install -Dm644 usr/share/applications/Happ.desktop \
       $out/share/applications/Happ.desktop
