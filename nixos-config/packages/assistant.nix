@@ -51,18 +51,9 @@ buildFHSEnv {
     xorg.libX11 xorg.libxcb xorg.libXext xorg.libXrandr xorg.libXrender
     xorg.libXfixes xorg.libXi xorg.libXtst xorg.libXcomposite xorg.libXdamage
     xorg.libXScrnSaver xorg.libXcursor xorg.libXft xorg.libxshmfence
-    xorg.libXinerama
-    util-linux.lib  # libuuid для libusbast.so
+    xorg.libXinerama  # libastrct.so (Remote Control runtime)
+    util-linux.lib    # libuuid для libusbast.so
     stdenv.cc.cc.lib
-
-    # Core X11 bitmap fonts — нужны для XLoadFont() в окне удалённого desktop.
-    # Без них Ассистент пишет "Can not load the font" и показывает серый экран.
-    xorg.fontmiscmisc xorg.fontcursormisc
-    xorg.fontadobe75dpi xorg.fontadobe100dpi
-    xorg.fontbh75dpi xorg.fontbh100dpi
-    xorg.fontbhlucidatypewriter75dpi xorg.fontbhlucidatypewriter100dpi
-    xorg.fontbhttf xorg.fontbitstream100dpi xorg.fontbitstream75dpi
-    dejavu_fonts liberation_ttf
   ];
 
   runScript = launchScript;
