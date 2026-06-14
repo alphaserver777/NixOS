@@ -148,8 +148,11 @@ nixos-config/
 - `nixos-config/packages/lazyssh.nix` — LazySSH (Go-инструмент для SSH).
   Сборка: `pkgs.callPackage ../../packages/lazyssh.nix {}`. Используется на: `x-disk`.
 - `nixos-config/packages/assistant.nix` — «Ассистент» (ГК САФИБ), remote access.
-  Распаковка `.deb` через `autoPatchelfHook + dpkg`. Подключается shared-модулем
-  `nixos/modules/assistant.nix` на все desktop-хосты.
+  Lazarus/FPC бинарь упакован через `buildFHSEnv`: внутренний `rawData`
+  derivation раскладывает `.deb` без патчинга (`dontPatchELF /
+  dontAutoPatchelf`), снаружи FHS-обёртка с GTK2 runtime в `targetPkgs`.
+  Подключается shared-модулем `nixos/modules/assistant.nix` на все desktop-хосты.
+  Подробности и причина отказа от autoPatchelf — в task spec 002.
 - `nixos-config/packages/happ.nix` — Happ, proxy-клиент на базе Xray.
   Тот же паттерн `autoPatchelfHook + dpkg + dontWrapQtApps`. Bundled Qt6 в
   `/opt/happ/lib/`. Подключается через `nixos/modules/happ.nix`.

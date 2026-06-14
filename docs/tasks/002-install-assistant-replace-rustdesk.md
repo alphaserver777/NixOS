@@ -163,7 +163,28 @@ sudo nixos-rebuild switch --rollback
 
 ## Заметки
 
-- **Имя бинаря** в .deb точно неизвестно до распаковки. Могут быть варианты: `assistant`, `safib-assistant`, `Assistant`. Проверить через `dpkg-deb -c assistant.deb | grep -E "bin/|opt/"` перед написанием wrapper'а.
-- **Шаблон packages/<name>.nix** через `stdenv.mkDerivation + autoPatchelfHook + dpkg`, который заводится этой задачей, переиспользуется задачей 003 (Happ).
-- **Follow-up:** если бинарь требует `chmod +s` или systemd unit — создать отдельную задачу.
-- **Follow-up:** если потребуется автозапуск/трей-иконка — отдельная задача через home-manager (`systemd.user.services` или `wayland.windowManager.hyprland.settings.exec-once`).
+- **Имя бинаря:** `/opt/assistant/bin/assistant` (главный), плюс sub-процессы
+  `master`, `slave`, `astrct`, `asts`, `st`, и бандлёный `ffmpeg`.
+- **autoPatchelfHook не подошёл.** Первая итерация делалась через
+  `stdenv.mkDerivation + autoPatchelfHook + dpkg`. Бинарь стартовал, открывал
+  GTK2 окно на долю секунды и падал с `Runtime error 203` (heap overflow в
+  TGtk2WidgetSet). Причина: bundled libs в `/opt/assistant/lib/`
+  (`libstdc.so.6.0.31` без `++`, bundled `libssl/libcrypto`) ABI-несовместимы с
+  тем, как autoPatchelf привязал бинарь к системным nixpkgs-эквивалентам.
+- **Переупаковано через `buildFHSEnv`** (commit `87d9e8b` + расширение
+  targetPkgs `f9f00a8`):
+  - `rawData` (внутренний `stdenv.mkDerivation` с `dontPatchELF / dontStrip /
+    dontAutoPatchelf`) — раскладывает `.deb` в `/nix/store` без модификации
+    бинарей
+  - Основной derivation — `buildFHSEnv` с расширенным `targetPkgs` (GTK2
+    runtime, sqlite, nss, openssl, libv4l, pipewire и т.д.)
+  - `runScript` (через `writeShellScript`) делает `cd $rawData/opt/assistant/bin`
+    + `LD_LIBRARY_PATH=$rawData/opt/assistant/lib` и `exec ./assistant`
+- **Шаблон autoPatchelf** всё равно остался работающим — для задачи 003 (Happ
+  с bundled Qt6) он подошёл. Так что в репозитории сейчас два валидных
+  паттерна упаковки `.deb`:
+  - autoPatchelfHook — когда bundled libs совместимы с системой (Happ)
+  - buildFHSEnv — когда bundled libs требуют Debian-like окружения (Assistant)
+- **Follow-up:** если бинарь требует `chmod +s` или systemd unit — отдельная
+  задача.
+- **Follow-up:** автозапуск/трей-иконка — отдельная задача через home-manager.

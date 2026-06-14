@@ -17,10 +17,15 @@
 - **[done]** SDD docs/ внедрены — `9c30c52 docs: внедрение SDD ...`.
 - **[done]** Remote URL переезд `GitOps → NixOS` — `6e6a83b chore: ...`.
 - **[in progress]** Задача 002: «Ассистент» как замена RustDesk
-  (`docs/tasks/002-install-assistant-replace-rustdesk.md`) — derivation
-  собирается, ждёт `nixos-rebuild switch` на `x-disk`/`Huawei`/`main`.
+  (`docs/tasks/002-install-assistant-replace-rustdesk.md`) — после двух
+  итераций фиксов (autoPatchelf → buildFHSEnv, расширение targetPkgs)
+  бинарь проходит инициализацию. Ждёт финального `nixos-rebuild switch`
+  и визуального подтверждения окна на `x-disk`/`Huawei`/`main`.
 - **[in progress]** Задача 003: установка Happ proxy-клиента
-  (`docs/tasks/003-install-happ-proxy.md`) — собрано, готово к switch.
+  (`docs/tasks/003-install-happ-proxy.md`) — собрано и работает. После
+  фикса openssl LD_LIBRARY_PATH + дефолтного `QT_STYLE_OVERRIDE=Fusion`
+  GUI открывается, daemon подключается. Ждёт финального switch на
+  оставшихся хостах.
 
 **Цель этапа:** применить 002+003 на трёх desktop-хостах, закоммитить,
 закрыть задачи.
