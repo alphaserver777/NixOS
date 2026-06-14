@@ -44,7 +44,8 @@ stdenv.mkDerivation rec {
     cp -r opt/happ $out/opt/
 
     makeWrapper $out/opt/happ/bin/Happ $out/bin/happ \
-      --chdir $out/opt/happ/bin
+      --chdir $out/opt/happ/bin \
+      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl ]}
 
     install -Dm644 usr/share/applications/Happ.desktop \
       $out/share/applications/Happ.desktop
