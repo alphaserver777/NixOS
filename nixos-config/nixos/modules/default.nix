@@ -26,6 +26,8 @@
     ./udisks.nix
     ./virtualbox.nix
     ./wireshark.nix
+    ./assistant.nix
+    ./happ.nix
     # ./tailscale.nix
   ];
 }
