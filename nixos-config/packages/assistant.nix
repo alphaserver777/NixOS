@@ -47,10 +47,12 @@ buildFHSEnv {
     libv4l alsa-lib libpulseaudio libGL pipewire
     libxkbcommon fontconfig freetype dbus openssl curl sqlite zlib
     libjpeg libpng libtiff libxml2 libxslt libsoup_2_4
-    nss nspr expat
+    nss nspr expat efivar
     xorg.libX11 xorg.libxcb xorg.libXext xorg.libXrandr xorg.libXrender
     xorg.libXfixes xorg.libXi xorg.libXtst xorg.libXcomposite xorg.libXdamage
     xorg.libXScrnSaver xorg.libXcursor xorg.libXft xorg.libxshmfence
+    xorg.libXinerama
+    util-linux.lib  # libuuid для libusbast.so
     stdenv.cc.cc.lib
 
     # Core X11 bitmap fonts — нужны для XLoadFont() в окне удалённого desktop.
