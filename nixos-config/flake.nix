@@ -4,6 +4,7 @@
   inputs = {
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
@@ -41,10 +42,15 @@
   { hostname = "main"; stateVersion = "25.05"; }
   ];
 
+  pkgs-unstable = import inputs.nixpkgs-unstable {
+    inherit system;
+    config.allowUnfree = true;
+  };
+
   makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {
     system = system;
     specialArgs = {
-      inherit inputs stateVersion homeStateVersion hostname user secrets;
+      inherit inputs stateVersion homeStateVersion hostname user secrets pkgs-unstable;
     };
 
     modules = [

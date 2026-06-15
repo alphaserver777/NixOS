@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 let
   lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
 in
@@ -47,6 +47,7 @@ in
     mtr
 
     # File manager
+    doublecmd
     pcmanfm
     nemo
     gvfs
@@ -92,8 +93,9 @@ in
     # qemu
     # quickemu
 
-    # AI
-    gemini-cli
-
+  ] ++ [
+    # AI — взят из nixpkgs-unstable (в 25.05 только 0.1.5, слишком старый).
+    # Паттерн cherry-pick из unstable — см. docs/tasks/004.
+    pkgs-unstable.gemini-cli
   ];
 }
