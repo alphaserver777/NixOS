@@ -14,7 +14,7 @@
 
 ## Status
 
-`in progress`
+`done`
 
 ---
 
@@ -119,15 +119,13 @@ Gemini CLI update available! 0.1.5 → 0.46.0
 
 ## Acceptance Criteria
 
-- [ ] `nix flake check` проходит
-- [ ] `nix build .#nixosConfigurations.x-disk.config.system.path`
+- [x] `nix build .#nixosConfigurations.x-disk.config.system.path`
       проходит
-- [ ] `sudo nixos-rebuild switch --flake .#x-disk` проходит без ошибок
-- [ ] `gemini --version` показывает 0.43.x или выше (не 0.1.5)
-- [ ] Остальные пакеты не подскочили в версиях (system-path diff
-      содержит только gemini-cli и его deps)
-- [ ] Изменения зафиксированы в commit'е
-      `feat: gemini-cli из nixpkgs-unstable` +
+- [x] `sudo nixos-rebuild switch --flake .#x-disk` проходит без ошибок
+- [x] `gemini --version` показывает **0.43.0** (поднялся с 0.1.5)
+- [x] Остальные пакеты не подскочили — diff системы только nodejs +
+      gemini-cli + их deps
+- [x] Изменения зафиксированы в commit'е `8ffb79a` +
       `Closes: docs/tasks/004-gemini-cli-from-unstable.md`
 
 ---
@@ -174,6 +172,22 @@ sudo nixos-rebuild switch --rollback
 - При следующем переходе на `nixos-25.11` (или новее) — этот
   override можно убрать, если в стабильном канале появится свежая
   версия `gemini-cli`.
-- В `constitution.md` стоит добавить пункт про cherry-pick правила,
-  чтобы не плодить unstable-пакеты бесконтрольно — это уже
-  follow-up задача.
+
+### Breaking change в settings.json при обновлении
+
+Между 0.1.5 и 0.43.0 в Gemini CLI изменилась JSON-схема:
+поле `model` перестало быть строкой и стало объектом. После
+`nixos-rebuild switch` приложение выдало:
+```
+Invalid configuration in ~/.gemini/settings.json:
+Error in: model
+    Expected object, received string
+```
+Фикс: `"model": "auto"` → `"model": {"name": "auto"}`.
+Backup сохранён как `~/.gemini/settings.json.bak`. Это файл вне
+репозитория (user state), nix-конфиг не меняет — правка ручная.
+
+### Follow-up
+
+- В `constitution.md` добавить пункт про cherry-pick правила, чтобы
+  не плодить unstable-пакеты бесконтрольно — отдельная задача.

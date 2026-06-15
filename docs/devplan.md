@@ -33,6 +33,12 @@
   реализация типов. См. spec про обходные пути и upstream issue.
 - **[pending]** Применение конфигурации на `Huawei` и `main` —
   отложено до фактического использования (см. Этап 7 ниже).
+- **[done]** Задача 004: gemini-cli из nixpkgs-unstable
+  (`docs/tasks/004-gemini-cli-from-unstable.md`). Введён cherry-pick
+  паттерн через отдельный `nixpkgs-unstable` flake input + передачу
+  `pkgs-unstable` через `specialArgs`. gemini-cli поднят с 0.1.5 до
+  0.43.0. Применено на `x-disk`, ручная правка `~/.gemini/settings.json`
+  под breaking-change нового формата (model: string → object).
 
 **Цель этапа:** применить 002+003 на трёх desktop-хостах, закоммитить,
 закрыть задачи.
