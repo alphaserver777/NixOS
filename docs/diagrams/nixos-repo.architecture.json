@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "NixOS Config Repository",
+    "subtitle": "Flake-based декларативная конфигурация 6 хостов",
+    "output": "nixos-repo.html"
+  },
+  "components": [
+    { "id": "inputs",        "type": "external",    "label": "Flake inputs",          "sublabel": "nixpkgs 25.05 + unstable, HM, sops-nix, stylix", "pos": [40, 60],   "size": [240, 80] },
+    { "id": "secrets",       "type": "security",    "label": "secrets.nix / SOPS",    "sublabel": "pingwin-cron-url, .sops.yaml",                   "pos": [40, 250],  "size": [240, 70] },
+    { "id": "github",        "type": "external",    "label": "GitHub origin",         "sublabel": "alphaserver777/NixOS",                            "pos": [40, 620],  "size": [240, 60] },
+
+    { "id": "flake",         "type": "cloud",       "label": "flake.nix",             "sublabel": "6 nixosConfig + 6 homeConfig",                    "pos": [400, 200], "size": [170, 90] },
+
+    { "id": "pkg-lazyssh",   "type": "backend",     "label": "lazyssh",               "sublabel": "buildGoModule",                                   "pos": [660, 80],  "size": [160, 56] },
+    { "id": "pkg-assistant", "type": "backend",     "label": "Ассистент",             "sublabel": "buildFHSEnv + dpkg",                              "pos": [660, 170], "size": [160, 56], "tag": "task 002" },
+    { "id": "pkg-happ",      "type": "backend",     "label": "Happ",                  "sublabel": "autoPatchelfHook + dpkg",                         "pos": [660, 260], "size": [160, 56], "tag": "task 003 partial" },
+
+    { "id": "xdisk",         "type": "frontend",    "label": "x-disk",                "sublabel": "осн. рабочая Hyprland",                           "pos": [900, 80],  "size": [160, 60] },
+    { "id": "huawei",        "type": "frontend",    "label": "Huawei",                "sublabel": "ноутбук Hyprland",                                "pos": [900, 170], "size": [160, 60] },
+    { "id": "main",          "type": "frontend",    "label": "main",                  "sublabel": "desktop Hyprland",                                "pos": [900, 260], "size": [160, 60] },
+
+    { "id": "srvmin",        "type": "backend",     "label": "srv-home-min",          "sublabel": "Docker, headless",                                "pos": [900, 430], "size": [160, 56] },
+    { "id": "srvgui",        "type": "backend",     "label": "srv-home-gui",          "sublabel": "XFCE",                                            "pos": [900, 500], "size": [160, 56] },
+    { "id": "srv",           "type": "backend",     "label": "srv-home",              "sublabel": "минимальный desktop",                             "pos": [900, 570], "size": [160, 56] },
+
+    { "id": "hm",            "type": "backend",     "label": "Home Manager",          "sublabel": "admsys@{host}, dotfiles, stylix",                 "pos": [400, 430], "size": [220, 70] },
+
+    { "id": "germany",       "type": "external",    "label": "Germany VDS",           "sublabel": "rsyslog 64.188.64.23:514",                        "pos": [1130, 80], "size": [160, 60], "tag": "log sink" },
+    { "id": "id-srv",        "type": "external",    "label": "ID-сервер Ассистент",   "sublabel": "id.xn--80akicokc0aablc.xn--p1ai",                 "pos": [1130, 200], "size": [190, 60] }
+  ],
+  "boundaries": [
+    { "kind": "region",          "label": "Custom packages — nixos-config/packages/",                "wraps": ["pkg-lazyssh", "pkg-assistant", "pkg-happ"] },
+    { "kind": "region",          "label": "Desktop hosts — nixos/modules/default.nix",               "wraps": ["xdisk", "huawei", "main"] },
+    { "kind": "region",          "label": "Server hosts — nixos/modules/server/",                    "wraps": ["srvmin", "srvgui", "srv"] }
+  ],
+  "connections": [
+    { "from": "inputs",        "to": "flake",         "label": "imports",          "variant": "emphasis" },
+    { "from": "secrets",       "to": "flake",         "label": "specialArgs",      "variant": "security" },
+    { "from": "github",        "to": "flake",         "label": "git sync",         "variant": "dashed", "fromSide": "right", "toSide": "left" },
+
+    { "from": "flake",         "to": "pkg-assistant", "label": "callPackage",      "variant": "dashed", "fromSide": "right", "toSide": "left" },
+    { "from": "flake",         "to": "hm",            "label": "homeConfig",       "fromSide": "bottom", "toSide": "top" },
+
+    { "from": "pkg-lazyssh",   "to": "xdisk",         "variant": "dashed", "fromSide": "right", "toSide": "left" },
+    { "from": "pkg-assistant", "to": "huawei",        "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+    { "from": "pkg-happ",      "to": "main",          "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+
+    { "from": "flake",         "to": "srvmin",        "fromSide": "bottom", "toSide": "left" },
+
+    { "from": "xdisk",         "to": "germany",       "variant": "dashed", "fromSide": "right", "toSide": "left" },
+    { "from": "huawei",        "to": "id-srv",        "variant": "security", "fromSide": "right", "toSide": "left" }
+  ],
+  "cards": [
+    { "dot": "cyan",    "title": "Cherry-pick (task 004)",            "items": ["nixpkgs-unstable передаётся через specialArgs во все nixosConfig", "pkgs-unstable.gemini-cli на x-disk (0.43 vs 0.1.5 в 25.05)", "Остальные пакеты остаются на стабильном канале"] },
+    { "dot": "emerald", "title": "Паттерны упаковки .deb",            "items": ["autoPatchelfHook — bundled libs совместимы (Happ Qt6)", "buildFHSEnv — нужен Debian-like sandbox (Ассистент Lazarus/FPC)", "buildGoModule — для Go-инструментов (lazyssh)"] },
+    { "dot": "rose",    "title": "SDD-документация (docs/)",          "items": ["WORKFLOW, constitution, architecture, devplan, DEPLOYMENT", "tasks/PROCESS, TEMPLATE, NNN-*.md", "Закрыто: 001, 002, 004 — partial: 003 (upstream-баг kvantum)"] }
+  ]
+}
