@@ -9,6 +9,7 @@
     wofi # Лаунчер
     nixpkgs-fmt
     dnsutils # nslookup
+    doublecmd # аналог Total Commander
     libnotify
     wl-clipboard
 
