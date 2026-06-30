@@ -34,6 +34,15 @@
     ];
   };
 
+  programs.neovim.extraPackages = lib.mkForce (with pkgs; [
+    lua-language-server
+    nixd
+    vimPlugins.nvim-treesitter-parsers.hyprlang
+    fd
+    ripgrep
+    tree-sitter
+  ]);
+
   wayland.windowManager.hyprland = {
     plugins = [ pkgs.hyprlandPlugins.hyprexpo ];
     enable = true;
@@ -53,7 +62,7 @@
       monitor =
         if hostname == "main" then [
           "HDMI-A-1,1920x1080@144.00Hz,0x0,1"
-          "DVI-D-1,1920x1080@60.00Hz,1536x0,1"
+          "DVI-D-1,1920x1080@60.00Hz,1920x0,1"
         ] else ",preferred,auto,1";
 
       "$mainMod" = "SUPER";

@@ -6,6 +6,7 @@
   home-manager = {
     useGlobalPkgs = false;
     useUserPackages = true;
+    backupFileExtension = "hm-bak";
     extraSpecialArgs = {
       inherit inputs hostname user;
     };
