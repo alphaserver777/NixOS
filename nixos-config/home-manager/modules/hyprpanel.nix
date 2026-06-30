@@ -1,7 +1,27 @@
 { lib, pkgs, ... }:
 let
+  hyprpanelPackage = pkgs.hyprpanel.overrideAttrs (oldAttrs: {
+    postInstall = (oldAttrs.postInstall or "") + ''
+      substituteInPlace $out/share/scripts/bluetooth.py \
+        --replace-fail "import dbus" "import os
+import sys
+
+if not os.path.isdir('/sys/class/bluetooth'):
+    sys.exit(0)
+
+import dbus"
+    '';
+    postFixup = (oldAttrs.postFixup or "") + ''
+      substituteInPlace $out/bin/.hyprpanel-wrapped \
+        --replace-fail 'Timer.measureSync("Notifications", () => notifications_default5());' \
+          'Timer.measureSync("Notifications", () => {});' \
+        --replace-fail 'Timer.measureSync("OSD", () => osd_default2());' \
+          'Timer.measureSync("OSD", () => {});'
+    '';
+  });
+
   theme = builtins.fromJSON (
-    builtins.readFile "${pkgs.hyprpanel}/share/themes/tokyo_night_moon_split.json"
+    builtins.readFile "${hyprpanelPackage}/share/themes/tokyo_night_moon_split.json"
   );
 
   weatherScript = pkgs.writeShellScript "hyprpanel-weather-krasnodar" ''
@@ -116,28 +136,38 @@ let
   restartHyprpanel = pkgs.writeShellScriptBin "restart-hyprpanel" ''
     set -eu
 
+    if ${pkgs.systemd}/bin/systemctl --user list-unit-files hyprpanel.service >/dev/null 2>&1; then
+      exec ${pkgs.systemd}/bin/systemctl --user restart hyprpanel.service
+    fi
+
     socket_dir="/run/user/$(${pkgs.coreutils}/bin/id -u)/astal"
     socket="$socket_dir/hyprpanel.sock"
     log_file="${"$"}HOME/.cache/hyprpanel.log"
-
     ${pkgs.coreutils}/bin/mkdir -p "$socket_dir" "${"$"}HOME/.cache"
-
     ${pkgs.procps}/bin/pkill -f '(^|/)(hyprpanel|\.hyprpanel-wrapped)( |$)' 2>/dev/null || true
-    ${pkgs.procps}/bin/pkill -x dunst 2>/dev/null || true
-    ${pkgs.procps}/bin/pkill -x swaync 2>/dev/null || true
-    ${pkgs.procps}/bin/pkill -x waybar 2>/dev/null || true
     ${pkgs.coreutils}/bin/rm -rf /tmp/hyprpanel
     ${pkgs.coreutils}/bin/rm -f "$socket"
     ${pkgs.coreutils}/bin/sleep 1
 
-    ${pkgs.util-linux}/bin/setsid ${pkgs.hyprpanel}/bin/hyprpanel >"$log_file" 2>&1 < /dev/null &
+    ${pkgs.util-linux}/bin/setsid ${hyprpanelPackage}/bin/hyprpanel >"$log_file" 2>&1 < /dev/null &
+  '';
+
+  cleanupHyprpanel = pkgs.writeShellScript "cleanup-hyprpanel" ''
+    set -u
+
+    socket_dir="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}/astal"
+
+    ${pkgs.coreutils}/bin/mkdir -p "$socket_dir" "${"$"}HOME/.cache"
+    ${pkgs.procps}/bin/pkill -f '(^|/)(hyprpanel|\.hyprpanel-wrapped)( |$)' 2>/dev/null || true
+    ${pkgs.coreutils}/bin/rm -rf /tmp/hyprpanel
+    ${pkgs.coreutils}/bin/rm -f "$socket_dir/hyprpanel.sock"
   '';
 
   customModules = {
     "custom/keyboard-flags" = {
       label = "{}";
       tooltip = "Keyboard Layout";
-      interval = 1;
+      interval = 5;
       execute = ''
         layout=$(hyprctl devices -j 2>/dev/null | ${pkgs.jq}/bin/jq -r '.keyboards[] | select(.main == true) | .active_keymap' 2>/dev/null)
         case "$layout" in
@@ -161,14 +191,7 @@ let
       hideOnEmpty = false;
       execute = "${loadAverageScript}";
     };
-    "custom/crypto-price" = {
-      label = "{}";
-      tooltip = "Crypto Price";
-      interval = 30;
-      execute = "${cryptoPriceScript}";
-      executeOnAction = "${cryptoPriceScript}";
-      actions.onLeftClick = "${cryptoSelectScript}";
-    };
+
   };
 
   hyprpanelConfig = theme // {
@@ -181,12 +204,12 @@ let
     "bar.customModules.cpu.icon" = "󰍛";
     "bar.customModules.cpu.label" = true;
     "bar.customModules.cpu.round" = true;
-    "bar.customModules.cpu.pollingInterval" = 2000;
+    "bar.customModules.cpu.pollingInterval" = 5000;
     "bar.customModules.ram.icon" = "󰘚";
     "bar.customModules.ram.label" = true;
     "bar.customModules.ram.labelType" = "percentage";
     "bar.customModules.ram.round" = true;
-    "bar.customModules.ram.pollingInterval" = 2000;
+    "bar.customModules.ram.pollingInterval" = 5000;
     "bar.customModules.storage.icon" = "󰋊";
     "bar.customModules.storage.label" = true;
     "bar.customModules.storage.labelType" = "percentage";
@@ -204,7 +227,7 @@ let
     "bar.customModules.netstat.labelType" = "full";
     "bar.customModules.netstat.rateUnit" = "auto";
     "bar.customModules.netstat.round" = true;
-    "bar.customModules.netstat.pollingInterval" = 2000;
+    "bar.customModules.netstat.pollingInterval" = 5000;
     "bar.customModules.microphone.label" = false;
     "bar.customModules.microphone.mutedIcon" = "🔴";
     "bar.customModules.microphone.unmutedIcon" = "🟢";
@@ -217,10 +240,9 @@ let
     "bar.customModules.kbLayout.labelType" = "code";
     "bar.customModules.kbLayout.icon" = "󰌌";
     "bar.customModules.hypridle.label" = false;
-    "bar.customModules.hypridle.pollingInterval" = 1000;
+    "bar.customModules.hypridle.pollingInterval" = 5000;
     "bar.customModules.hypridle.offIcon" = "";
     "bar.customModules.hypridle.onIcon" = "";
-    "bar.notifications.hideCountWhenZero" = true;
     "bar.launcher.autoDetectIcon" = false;
     "bar.launcher.icon" = "";
     "bar.workspaces.show_numbered" = true;
@@ -257,17 +279,21 @@ let
     "menus.dashboard.shortcuts.right.shortcut1.command" = "obs";
     "menus.dashboard.shortcuts.right.shortcut1.icon" = "󰐻";
     "menus.dashboard.shortcuts.right.shortcut1.tooltip" = "OBS Studio";
+    "menus.dashboard.controls.enabled" = false;
+    "menus.dashboard.stats.enabled" = false;
+    "menus.dashboard.shortcuts.enabled" = false;
+    "menus.dashboard.directories.enabled" = false;
 
     "bar.layouts" = {
       "0" = {
-        left = [ "dashboard" "workspaces" "battery" "custom/load-average" "cpu" "ram" "storage" "netstat" ];
-        middle = [ "windowtitle" ];
-        right = [ "hypridle" "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
+        left = [ "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
+        middle = [ ];
+        right = [ "hypridle" "kbLayout" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" ];
       };
       "1" = {
-        left = [ "dashboard" "workspaces" "battery" "custom/load-average" "cpu" "ram" "storage" "netstat" ];
-        middle = [ "windowtitle" ];
-        right = [ "hypridle" "custom/crypto-price" "systray" "custom/keyboard-flags" "network" "bluetooth" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
+        left = [ "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
+        middle = [ ];
+        right = [ "hypridle" "kbLayout" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" ];
       };
     };
 
@@ -435,7 +461,7 @@ in
   services.swaync.enable = lib.mkForce false;
 
   home.packages = [
-    pkgs.hyprpanel
+    hyprpanelPackage
     nerdFont
     restartHyprpanel
   ];
@@ -457,7 +483,25 @@ in
     $DRY_RUN_CMD rmdir "$tmp_dir"
   '';
 
-  wayland.windowManager.hyprland.settings.exec-once = [
-    "${restartHyprpanel}/bin/restart-hyprpanel"
-  ];
+  systemd.user.services.hyprpanel = {
+    Unit = {
+      Description = "Hyprpanel";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+
+    Service = {
+      Type = "simple";
+      ExecStartPre = cleanupHyprpanel;
+      ExecStart = "${hyprpanelPackage}/bin/hyprpanel";
+      Restart = "always";
+      RestartSec = 2;
+      KillMode = "mixed";
+      TimeoutStopSec = 5;
+      StandardOutput = "append:%h/.cache/hyprpanel.log";
+      StandardError = "append:%h/.cache/hyprpanel.log";
+    };
+
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 }

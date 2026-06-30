@@ -8,7 +8,6 @@
     alacritty # Терминал
     wofi # Лаунчер
     nixpkgs-fmt
-    dunst
     dnsutils # nslookup
     libnotify
     wl-clipboard
