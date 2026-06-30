@@ -20,7 +20,7 @@
       "$mainMod,       V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
       "$mainMod,       L, exec, loginctl lock-session"
       "$mainMod,       N, exec, swaync-client -t"
-      ", Print, exec, grimblast --notify --freeze copysave area"
+      ", Print, exec, sh -lc 'mkdir -p \"$HOME/screens\" && grimblast --notify copysave area'"
       ''$mainMod,       F12, exec, sh -c 'QT_QPA_PLATFORM=wayland flameshot gui --raw | wl-copy' ''
       "$mainMod SHIFT, F12, exec, obs"
 

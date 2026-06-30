@@ -8,6 +8,8 @@
     username = user;
     homeDirectory = "/home/${user}";
 
+    file."screens/.keep".text = "";
+
     sessionVariables = {
       # Переменная для работы Gemini-cli
       GOOGLE_CLOUD_PROJECT = "nixos-ai-001";
