@@ -31,6 +31,7 @@
     neofetch
     mc
     woeusb
+    xmind
     ntfs3g # для работы с флешкой
     gnupg
 

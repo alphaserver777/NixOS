@@ -7,6 +7,7 @@ in
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
+    tor-browser
     telegram-desktop
     obs-studio
     obsidian
