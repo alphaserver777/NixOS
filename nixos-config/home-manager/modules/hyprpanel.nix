@@ -16,7 +16,11 @@ import dbus"
         --replace-fail 'Timer.measureSync("Notifications", () => notifications_default5());' \
           'Timer.measureSync("Notifications", () => {});' \
         --replace-fail 'Timer.measureSync("OSD", () => osd_default2());' \
-          'Timer.measureSync("OSD", () => {});'
+          'Timer.measureSync("OSD", () => {});' \
+        --replace-fail '"English (US)": "US",' \
+          '"English (US)": "🇺🇸",' \
+        --replace-fail 'Russian: "RU",' \
+          'Russian: "🇷🇺",'
     '';
   });
 
@@ -238,7 +242,7 @@ import dbus"
     "bar.customModules.microphone.scrollDown" = "";
     "bar.customModules.kbLayout.label" = true;
     "bar.customModules.kbLayout.labelType" = "code";
-    "bar.customModules.kbLayout.icon" = "󰌌";
+    "bar.customModules.kbLayout.icon" = "";
     "bar.customModules.hypridle.label" = false;
     "bar.customModules.hypridle.pollingInterval" = 5000;
     "bar.customModules.hypridle.offIcon" = "";
@@ -288,12 +292,12 @@ import dbus"
       "0" = {
         left = [ "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
         middle = [ ];
-        right = [ "hypridle" "kbLayout" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" ];
+        right = [ "hypridle" "systray" "kbinput" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
       "1" = {
         left = [ "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
         middle = [ ];
-        right = [ "hypridle" "kbLayout" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" ];
+        right = [ "hypridle" "systray" "kbinput" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
     };
 
