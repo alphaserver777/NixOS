@@ -21,6 +21,7 @@
         if hostname == "main" then [
           "HDMI-A-1,1920x1080@144.00Hz,0x0,1"
           "DVI-D-1,1920x1080@60.00Hz,1920x0,1"
+          "DP-1,1440x900@59.89Hz,1920x-900,1"
         ] else ",1920x1080@60,auto,1";
       "$mainMod" = "SUPER";
       "$terminal" = "alacritty";
@@ -144,6 +145,7 @@
           "7, monitor:DVI-D-1"
           "8, monitor:DVI-D-1"
           "9, monitor:DVI-D-1"
+          "10, monitor:DP-1"
           "w[tv1], gapsout:0, gapsin:0"
           "f[1], gapsout:0, gapsin:0"
         ] else [
