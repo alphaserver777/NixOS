@@ -250,11 +250,11 @@ import dbus"
     "bar.launcher.autoDetectIcon" = false;
     "bar.launcher.icon" = "";
     "bar.workspaces.show_numbered" = true;
-    "bar.workspaces.showWsIcons" = true;
+    "bar.workspaces.showWsIcons" = false;
     "bar.workspaces.show_icons" = false;
     "bar.workspaces.monitorSpecific" = false;
     "bar.workspaces.showAllActive" = true;
-    "bar.workspaces.workspaces" = 9;
+    "bar.workspaces.workspaces" = 10;
     "bar.workspaces.workspaceIconMap" = {
       "1" = "";
       "2" = "";
@@ -290,6 +290,11 @@ import dbus"
 
     "bar.layouts" = {
       "0" = {
+        left = [ "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
+        middle = [ ];
+        right = [ "hypridle" "systray" "kbinput" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
+      };
+      "DP-1" = {
         left = [ "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
         middle = [ ];
         right = [ "hypridle" "systray" "kbinput" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
