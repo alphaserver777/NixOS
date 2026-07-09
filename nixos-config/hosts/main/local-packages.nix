@@ -27,6 +27,7 @@ in
     openboard
 
     # For Develop
+    ansible
     vscode
     gemini-cli
     google-cloud-sdk
