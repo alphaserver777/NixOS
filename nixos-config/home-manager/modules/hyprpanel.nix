@@ -253,6 +253,8 @@ import dbus"
     "bar.workspaces.showWsIcons" = false;
     "bar.workspaces.show_icons" = false;
     "bar.workspaces.monitorSpecific" = false;
+    "notifications.monitor" = 1;
+    "notifications.active_monitor" = false;
     "bar.workspaces.showAllActive" = true;
     "bar.workspaces.workspaces" = 10;
     "bar.workspaces.workspaceIconMap" = {

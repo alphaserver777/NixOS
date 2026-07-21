@@ -63,7 +63,7 @@
         if hostname == "main" then [
           "HDMI-A-1,1920x1080@144.00Hz,0x0,1"
           "DVI-D-1,1920x1080@60.00Hz,1920x0,1"
-          "DP-1,1440x900@59.89Hz,1920x-900,1"
+          "DP-1,1440x900@59.89Hz,0x-900,1"
         ] else ",preferred,auto,1";
 
       "$mainMod" = "SUPER";
