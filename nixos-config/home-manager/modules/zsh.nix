@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ config, lib, ... }: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -32,7 +32,8 @@
     history.size = 10000;
     history.path = "${config.xdg.dataHome}/zsh/history";
 
-    initContent = ''
+    initContent = lib.mkMerge [
+      (lib.mkOrder 1000 ''
 # Start Tmux automatically if not already running. No Tmux in TTY
       if [ -z "$TMUX" ] && [ -n "$DISPLAY" ]; then
         tmux attach-session -t default || tmux new-session -s default
@@ -42,6 +43,17 @@
           if uwsm check may-start > /dev/null && uwsm select; then
             exec systemd-cat -t uwsm_start uwsm start default
               fi
-              '';
+      '')
+
+      (lib.mkOrder 1500 ''
+        # Стандартное редактирование командной строки, как в Bash.
+        # Этот блок должен быть последним: дополнения Zsh меняют назначения клавиш.
+        bindkey -e
+        bindkey '^[[1;5D' backward-word
+        bindkey '^[[1;5C' forward-word
+        bindkey '^[[5D' backward-word
+        bindkey '^[[5C' forward-word
+      '')
+    ];
   };
-                 }
+}
