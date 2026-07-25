@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, ... }:
+{ pkgs, pkgs-unstable, opencodePackage, ... }:
 let
   lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
 in
@@ -7,7 +7,6 @@ in
   environment.systemPackages = with pkgs; [
     google-chrome
     tor-browser
-    telegram-desktop
     qtox
     obsidian
     syncthing
@@ -19,6 +18,7 @@ in
     ksnip
     mpv #video
     pavucontrol
+    networkmanagerapplet
     wireshark
 
     # Office Suites
@@ -87,6 +87,7 @@ in
     zip
     unzip
     p7zip
+    unrar
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8
@@ -97,5 +98,11 @@ in
     # AI — взят из nixpkgs-unstable (в 25.05 только 0.1.5, слишком старый).
     # Паттерн cherry-pick из unstable — см. docs/tasks/004.
     pkgs-unstable.gemini-cli
+
+    # AI — официальный flake opencode, обновляется через `nix flake update opencode`.
+    opencodePackage
+
+    # Telegram — из nixpkgs-unstable, чтобы не отставать от stable upstream.
+    pkgs-unstable.telegram-desktop
   ];
 }
