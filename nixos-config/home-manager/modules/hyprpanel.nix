@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, hostname, ... }:
 let
   hyprpanelPackage = pkgs.hyprpanel.overrideAttrs (oldAttrs: {
     postInstall = (oldAttrs.postInstall or "") + ''
@@ -253,7 +253,7 @@ import dbus"
     "bar.workspaces.showWsIcons" = false;
     "bar.workspaces.show_icons" = false;
     "bar.workspaces.monitorSpecific" = false;
-    "notifications.monitor" = 1;
+    "notifications.monitor" = if hostname == "x-disk" then 0 else 1;
     "notifications.active_monitor" = false;
     "bar.workspaces.showAllActive" = true;
     "bar.workspaces.workspaces" = 10;

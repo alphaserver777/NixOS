@@ -22,6 +22,9 @@
           "HDMI-A-1,1920x1080@144.00Hz,0x0,1"
           "DVI-D-1,1920x1080@60.00Hz,1920x0,1"
           "DP-1,1440x900@59.89Hz,0x-900,1"
+        ] else if hostname == "x-disk" then [
+          "HDMI-A-3,1920x1080@60.00Hz,0x0,1"
+          "DP-2,1920x1080@60.00Hz,1920x0,1"
         ] else ",1920x1080@60,auto,1";
       "$mainMod" = "SUPER";
       "$terminal" = "alacritty";
@@ -33,6 +36,9 @@
         "wl-paste --type image --watch cliphist store"
         # Предсоздаём рабочие столы 1..9, чтобы раскладка Expo была стабильной
         "sh -lc \"cur=$(hyprctl activeworkspace -j | jq -r .id 2>/dev/null || echo 1); for i in $(seq 1 9); do hyprctl dispatch workspace $i; done; hyprctl dispatch workspace $cur\""
+      ] ++ lib.optionals (hostname == "x-disk") [
+        # При отсутствии DP-2 все рабочие столы остаются на HDMI-A-3.
+        ''sh -lc 'sleep 1; target=HDMI-A-3; if hyprctl monitors | grep -q "^Monitor DP-2 "; then target=DP-2; fi; for i in 6 7 8 9; do hyprctl dispatch moveworkspacetomonitor "$i $target"; done' ''
       ];
 
       general = {
@@ -146,6 +152,18 @@
           "8, monitor:DVI-D-1"
           "9, monitor:DVI-D-1"
           "10, monitor:DP-1"
+          "w[tv1], gapsout:0, gapsin:0"
+          "f[1], gapsout:0, gapsin:0"
+        ] else if hostname == "x-disk" then [
+          "1, monitor:HDMI-A-3"
+          "2, monitor:HDMI-A-3"
+          "3, monitor:HDMI-A-3"
+          "4, monitor:HDMI-A-3"
+          "5, monitor:HDMI-A-3"
+          "6, monitor:DP-2"
+          "7, monitor:DP-2"
+          "8, monitor:DP-2"
+          "9, monitor:DP-2"
           "w[tv1], gapsout:0, gapsin:0"
           "f[1], gapsout:0, gapsin:0"
         ] else [
