@@ -77,6 +77,7 @@ in
     home-manager
     ntfs3g # driver for NTFS
     udisks2 # for USB and auto-mounting
+    wdisplays # Дисплей менеджер
 
     # Web & Terminal
     ueberzugpp # pic in terminal
