@@ -21,9 +21,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    opencode.url = "git+https://github.com/anomalyco/opencode";
+
     };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, ... }@inputs: let
+  outputs = { self, nixpkgs, home-manager, sops-nix, opencode, ... }@inputs: let
     system = "x86_64-linux";
     secretsPathEnv = builtins.getEnv "NIXOS_SECRETS_PATH";
     secretsPath =
@@ -47,10 +49,12 @@
     config.allowUnfree = true;
   };
 
+  opencodePackage = opencode.packages.${system}.default;
+
   makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {
     system = system;
     specialArgs = {
-      inherit inputs stateVersion homeStateVersion hostname user secrets pkgs-unstable;
+      inherit inputs stateVersion homeStateVersion hostname user secrets pkgs-unstable opencodePackage;
     };
 
     modules = [

@@ -34,7 +34,6 @@
     xmind
     ntfs3g # для работы с флешкой
     gnupg
-    opencode
 
     # # Desktop apps
     # anki
