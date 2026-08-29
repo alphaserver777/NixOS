@@ -28,6 +28,7 @@
     ./wireshark.nix
     ./assistant.nix
     ./happ.nix
+    ./hiddify.nix
     # ./tailscale.nix
   ];
 }
