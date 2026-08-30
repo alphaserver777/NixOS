@@ -28,7 +28,7 @@
     ./wireshark.nix
     ./assistant.nix
     ./happ.nix
-    ./hiddify.nix
+    ./clash-verge.nix
     # ./tailscale.nix
   ];
 }
