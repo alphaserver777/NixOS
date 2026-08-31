@@ -13,8 +13,6 @@ import dbus"
     '';
     postFixup = (oldAttrs.postFixup or "") + ''
       substituteInPlace $out/bin/.hyprpanel-wrapped \
-        --replace-fail 'Timer.measureSync("Notifications", () => notifications_default5());' \
-          'Timer.measureSync("Notifications", () => {});' \
         --replace-fail 'Timer.measureSync("OSD", () => osd_default2());' \
           'Timer.measureSync("OSD", () => {});' \
         --replace-fail '"English (US)": "US",' \
