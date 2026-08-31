@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, antigravityCliPackage, ... }:
 
 let
   lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
@@ -29,7 +29,7 @@ in
     # For Develop
     ansible
     vscode
-    gemini-cli
+    antigravityCliPackage
     google-cloud-sdk
     docker
     docker-compose

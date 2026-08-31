@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, antigravityCliPackage, ... }: {
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
@@ -15,7 +15,7 @@
 
 
     # For Develop
-    gemini-cli
+    antigravityCliPackage
     google-cloud-sdk
     docker
     docker-compose

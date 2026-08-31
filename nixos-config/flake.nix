@@ -50,11 +50,12 @@
   };
 
   opencodePackage = opencode.packages.${system}.default;
+  antigravityCliPackage = pkgs-unstable.callPackage ./packages/antigravity-cli.nix { };
 
   makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {
     system = system;
     specialArgs = {
-      inherit inputs stateVersion homeStateVersion hostname user secrets pkgs-unstable opencodePackage;
+      inherit inputs stateVersion homeStateVersion hostname user secrets pkgs-unstable opencodePackage antigravityCliPackage;
     };
 
     modules = [

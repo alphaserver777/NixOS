@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, opencodePackage, ... }:
+{ pkgs, pkgs-unstable, opencodePackage, antigravityCliPackage, ... }:
 let
   lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
 in
@@ -96,9 +96,8 @@ in
     # quickemu
 
   ] ++ [
-    # AI — взят из nixpkgs-unstable (в 25.05 только 0.1.5, слишком старый).
-    # Паттерн cherry-pick из unstable — см. docs/tasks/004.
-    pkgs-unstable.gemini-cli
+    # AI — официальная сборка Antigravity CLI; запускается командой agy.
+    antigravityCliPackage
 
     # AI — официальный flake opencode, обновляется через `nix flake update opencode`.
     opencodePackage
