@@ -35,7 +35,7 @@
     initContent = lib.mkMerge [
       (lib.mkOrder 1000 ''
 # Start Tmux automatically if not already running. No Tmux in TTY
-      if [ -z "$TMUX" ] && [ -n "$DISPLAY" ]; then
+      if [ -z "$TMUX" ] && [ -n "$DISPLAY" ] && [ "$TERM_PROGRAM" != "vscode" ]; then
         tmux attach-session -t default || tmux new-session -s default
           fi
 
