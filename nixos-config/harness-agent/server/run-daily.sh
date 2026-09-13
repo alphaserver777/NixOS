@@ -16,7 +16,7 @@ exec /usr/bin/docker run --rm \
   -e DSH_AGENTS_HOME=/root/.agents \
   -v "$base:$base" \
   -v "$agent/dsh-home:/root/.dsh" \
-  -v "$agent/dsh-home/skills:/root/.agents/skills:ro" \
+  -v "$workspace/MARKETING/AGENT/skills:/root/.agents/skills:ro" \
   -w "$workspace" \
   professorit-harness-agent:0.1.5 \
   sh -lc 'dsh --profile headless "$(cat MARKETING/AGENT/DAILY-PROMPT.md)"' \

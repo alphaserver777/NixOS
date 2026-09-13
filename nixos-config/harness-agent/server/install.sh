@@ -15,6 +15,9 @@ install -m 0750 "$script_dir/run-daily.sh" "$agent/bin/run-daily.sh"
 install -m 0644 "$script_dir/professorit-marketing-agent-bot.service" /etc/systemd/system/
 install -m 0644 "$script_dir/professorit-marketing-agent-daily.service" /etc/systemd/system/
 install -m 0644 "$script_dir/professorit-marketing-agent-daily.timer" /etc/systemd/system/
+install -d -m 0750 "$agent/dsh-home/profiles/headless"
+install -m 0644 "$script_dir/headless.cordis.patch.yml" \
+  "$agent/dsh-home/profiles/headless/cordis.patch.yml"
 
 if [[ ! -f /etc/professorit-agent/telegram.env ]]; then
   install -m 0600 "$script_dir/telegram.env.example" /etc/professorit-agent/telegram.env

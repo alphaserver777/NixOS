@@ -14,7 +14,7 @@ ExecStart=/usr/bin/docker run --rm --name professorit-marketing-agent-bot \
   -e DSH_AGENTS_HOME=/root/.agents \
   -v /root/professor_ot:/root/professor_ot \
   -v /root/professor_ot/agent/dsh-home:/root/.dsh \
-  -v /root/professor_ot/agent/dsh-home/skills:/root/.agents/skills:ro \
+  -v /root/professor_ot/agent/projects/professor-it-marketing/MARKETING/AGENT/skills:/root/.agents/skills:ro \
   professorit-harness-agent:0.1.5 dsh-tg-bot
 ExecStop=/usr/bin/docker stop -t 12 professorit-marketing-agent-bot
 Restart=always

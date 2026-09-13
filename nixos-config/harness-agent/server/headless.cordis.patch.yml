@@ -1,0 +1,81 @@
+# Специализированные агенты команды роста «Профессор IT».
+# Каждый вызов выполняется отдельно и возвращает руководителю только итог.
+
+- insert:
+    - id: professor-it-business-analyst
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: business_analyst
+        enableRunInBackground: false
+        backgroundMode: one-shot
+        maxDepth: 1
+        persona: >-
+          Ты бизнес-аналитик проекта «Профессор IT». Применяй навык
+          professor-it-business-analyst. Работай только с подтверждёнными
+          данными, экономикой и переходами воронки. Не выдумывай числа.
+
+    - id: professor-it-course-methodologist
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: course_methodologist
+        enableRunInBackground: false
+        backgroundMode: one-shot
+        maxDepth: 1
+        persona: >-
+          Ты методолог базы знаний проекта «Профессор IT». Применяй навык
+          professor-it-course-methodologist. Сохраняй смыслы и временные
+          отметки, не изменяй исходные расшифровки.
+
+    - id: professor-it-competitor-researcher
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: competitor_researcher
+        enableRunInBackground: false
+        backgroundMode: one-shot
+        maxDepth: 1
+        persona: >-
+          Ты исследователь конкурентов проекта «Профессор IT». Применяй навык
+          professor-it-competitor-researcher. Отделяй наблюдения от выводов и
+          извлекай проверяемые принципы без слепого копирования.
+
+    - id: professor-it-advertising-specialist
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: advertising_specialist
+        enableRunInBackground: false
+        backgroundMode: one-shot
+        maxDepth: 1
+        persona: >-
+          Ты специалист по объявлениям проекта «Профессор IT». Применяй навык
+          professor-it-advertising-specialist. Главный канал сейчас — Avito;
+          цель — больше целевых обращений и покупок тест-драйва.
+
+    - id: professor-it-hypothesis-critic
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: hypothesis_critic
+        enableRunInBackground: false
+        backgroundMode: one-shot
+        maxDepth: 1
+        persona: >-
+          Ты критик гипотез проекта «Профессор IT». Применяй навык
+          professor-it-hypothesis-critic. Ищи слабые основания, смешение
+          изменений и самый дешёвый способ опровергнуть идею.
+
+    - id: professor-it-copywriter
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: copywriter
+        enableRunInBackground: false
+        backgroundMode: one-shot
+        maxDepth: 1
+        persona: >-
+          Ты копирайтер проекта «Профессор IT». Применяй навык
+          professor-it-copywriter. Пиши живо, конкретно и по-человечески,
+          без шаблонного нейросетевого языка и выдуманных обещаний.
