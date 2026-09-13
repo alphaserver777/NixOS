@@ -1,0 +1,10 @@
+[Unit]
+Description=Ежедневный анализ роста «Профессор IT»
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/root/professor_ot/agent/bin/run-daily.sh
+TimeoutStartSec=45min

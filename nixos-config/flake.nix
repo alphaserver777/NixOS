@@ -64,6 +64,31 @@
   };
 
   in {
+    packages.${system}.harness-agent =
+      nixpkgs.legacyPackages.${system}.writeShellApplication {
+        name = "harness-agent";
+        runtimeInputs = [ nixpkgs.legacyPackages.${system}.nodejs_22 ];
+        text = ''
+          workspace="''${HARNESS_AGENT_WORKSPACE:-$PWD/harness-agent}"
+          if [ ! -d "$workspace" ]; then
+            echo "Не найдена рабочая папка: $workspace" >&2
+            echo "Запустите команду из /home/admsys/Nixos/nixos-config." >&2
+            exit 1
+          fi
+          cd "$workspace"
+          # shellcheck disable=SC2016
+          exec npx --yes --package=@deepseek-ai/dsh@latest -- sh -c '
+            dsh_bin=$(readlink -f "$(command -v dsh)")
+            exec node --expose-internals "$dsh_bin" web --no-open
+          '
+        '';
+      };
+
+    apps.${system}.harness-agent = {
+      type = "app";
+      program = "${self.packages.${system}.harness-agent}/bin/harness-agent";
+    };
+
     nixosConfigurations = nixpkgs.lib.foldl' (configs: host:
         configs // {
         "${host.hostname}" = makeSystem {

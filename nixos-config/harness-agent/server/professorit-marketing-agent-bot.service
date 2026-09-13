@@ -1,0 +1,25 @@
+[Unit]
+Description=Telegram-интерфейс маркетингового агента «Профессор IT»
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/professorit-agent/telegram.env
+ExecStartPre=-/usr/bin/docker rm -f professorit-marketing-agent-bot
+ExecStart=/usr/bin/docker run --rm --name professorit-marketing-agent-bot \
+  --env-file /etc/professorit-agent/telegram.env \
+  -e DSH_HOME=/root/.dsh \
+  -e DSH_AGENTS_HOME=/root/.agents \
+  -v /root/professor_ot:/root/professor_ot \
+  -v /root/professor_ot/agent/dsh-home:/root/.dsh \
+  -v /root/professor_ot/agent/dsh-home/skills:/root/.agents/skills:ro \
+  professorit-harness-agent:0.1.5 dsh-tg-bot
+ExecStop=/usr/bin/docker stop -t 12 professorit-marketing-agent-bot
+Restart=always
+RestartSec=10
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target
