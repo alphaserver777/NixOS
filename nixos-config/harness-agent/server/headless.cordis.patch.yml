@@ -1,6 +1,18 @@
 # Специализированные агенты команды роста «Профессор IT».
 # Каждый вызов выполняется отдельно и возвращает руководителю только итог.
 
+- id: tool-subagent
+  disabled: true
+
+- id: tool-subagent-fork
+  disabled: true
+
+- id: tool-subagent-control
+  disabled: true
+
+- id: tool-subagent-list-agents
+  disabled: true
+
 - insert:
     - id: professor-it-business-analyst
       name: '@deepseek-ai/dsh-tool-subagent'
