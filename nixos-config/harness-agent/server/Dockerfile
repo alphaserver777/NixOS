@@ -17,6 +17,14 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && npm cache clean --force \
     && rm -rf /var/lib/apt/lists/*
 
+COPY telegram-markdown.mjs \
+  /usr/local/lib/node_modules/dsh-plugin-telegram/scripts/telegram-markdown.mjs
+
+RUN sed -i "/from '.\\/agent.mjs'/a import { sendMarkdown } from './telegram-markdown.mjs'" \
+      /usr/local/lib/node_modules/dsh-plugin-telegram/scripts/bot.mjs \
+    && sed -i 's/await send(chatId, answer)/await sendMarkdown(chatId, answer, send)/' \
+      /usr/local/lib/node_modules/dsh-plugin-telegram/scripts/bot.mjs
+
 ENV DSH_HOME=/root/.dsh
 ENV DSH_AGENTS_HOME=/root/.agents
 ENV DSH_PROJECTS_DIR=/root/professor_ot/agent/projects
