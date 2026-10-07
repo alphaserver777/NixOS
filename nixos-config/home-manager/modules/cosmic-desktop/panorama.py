@@ -73,7 +73,8 @@ def apply(image, cache):
             ["hyprctl", "hyprpaper", "wallpaper", f"{rect['name']},{path}"],
             capture_output=True, text=True, timeout=5, check=True,
         )
-        if result.stdout.strip() != "ok":
+        # hyprpaper 0.8 может подтверждать успех пустым ответом.
+        if result.stdout.strip() not in ("", "ok"):
             raise RuntimeError(result.stdout.strip() or result.stderr.strip())
     print(f"Обои установлены: {len(files)} экран(а), область {bounds(rects)[2:]}", flush=True)
     return rects
