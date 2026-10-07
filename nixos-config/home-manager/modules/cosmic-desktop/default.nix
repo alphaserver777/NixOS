@@ -1,12 +1,6 @@
 { pkgs, ... }:
 let
-  python = pkgs.python3.withPackages (p: [ p.pillow ]);
-  wallpaper = ../../../wallpapers/cosmic-panorama.png;
-  panorama = pkgs.writeShellApplication {
-    name = "cosmic-panorama";
-    runtimeInputs = [ python pkgs.hyprland ];
-    text = ''exec python ${./panorama.py} --image ${wallpaper} "$@"'';
-  };
+  wallpaper = ../../../wallpapers/space.png;
   mode = pkgs.writeShellApplication {
     name = "cosmic-mode";
     runtimeInputs = [ pkgs.python3 pkgs.hyprland pkgs.walker pkgs.libnotify ];
@@ -18,27 +12,15 @@ let
     PartOf = [ "graphical-session.target" ];
   };
 in {
-  home.packages = [ pkgs.walker pkgs.elephant panorama mode ];
+  home.packages = [ pkgs.walker pkgs.elephant mode ];
 
-  # Панорамой управляет один процесс; обычный фон остаётся запасным.
+  # Прежние обои с космонавтом целиком на каждом экране.
   stylix.targets.hyprpaper.enable = false;
   services.hyprpaper.settings = {
     splash = false;
     wallpaper = [{ monitor = ""; path = "${wallpaper}"; }];
   };
 
-  systemd.user.services.cosmic-panorama = {
-    Unit = (sessionUnit "Панорамные обои") // {
-      After = [ "graphical-session.target" "hyprpaper.service" ];
-      Requires = [ "hyprpaper.service" ];
-    };
-    Service = {
-      ExecStart = "${panorama}/bin/cosmic-panorama";
-      Restart = "on-failure";
-      RestartSec = 3;
-    };
-    Install.WantedBy = [ "graphical-session.target" ];
-  };
   systemd.user.services.elephant = {
     Unit = sessionUnit "Служба общего поиска";
     Service = {
