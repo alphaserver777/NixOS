@@ -34,7 +34,7 @@
           text = "$TIME";
           color = "rgb(205, 214, 244)";
           font_size = 96;
-          font_family = "Orbitron Bold";
+          font_family = "Cosmic Stencil";
           shadow_passes = 2;
           position = "0, 180";
           halign = "center";

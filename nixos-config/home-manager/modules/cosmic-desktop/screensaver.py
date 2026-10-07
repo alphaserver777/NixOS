@@ -36,6 +36,7 @@ def locked():
 class Clock(Gtk.Window):
     def __init__(self, monitor):
         super().__init__()
+        self.geometry = monitor.get_geometry()
         self.set_decorated(False)
         self.set_app_paintable(True)
         self.set_visual(self.get_screen().get_rgba_visual())
@@ -58,8 +59,8 @@ class Clock(Gtk.Window):
         self.canvas.connect("size-allocate", self.position_labels)
         self.connect("realize", self.pass_input)
         self.connect("draw", self.clear_background)
-        self.show_all()
         self.refresh()
+        self.show_all()
 
     def pass_input(self, *_):
         # Клавиши и мышь получает заставка, часы не перехватывают ввод.
@@ -83,9 +84,13 @@ class Clock(Gtk.Window):
 
     def position_labels(self, *_):
         width, height = self.canvas.get_allocated_width(), self.canvas.get_allocated_height()
+        # До первого размещения GTK сообщает размер 1 × 1. Сразу задаём
+        # полноценный размер шрифта, чтобы не показывать мелкий текст в углу.
+        if width <= 1 or height <= 1:
+            width, height = self.geometry.width, self.geometry.height
         scale = min(1.0, height / 900, width / 1200)
         styles = [("Anurati", 52, 300, "#cdd6f4"),
-                  ("Orbitron Bold", 96, 180, "#cdd6f4"),
+                  ("Cosmic Stencil", 96, 180, "#cdd6f4"),
                   ("Orbitron", 20, 85, "#babbf1")]
         for label, text, (family, size, offset, color) in zip(
                 self.labels, getattr(self, "content", ["", "", ""]), styles):
@@ -158,6 +163,10 @@ class Screensaver:
                 self.minute = minute
                 for window in self.windows:
                     window.refresh()
+            # Полное обновление прозрачного слоя устраняет пропуски текста
+            # при частичной перерисовке на нескольких выходах Wayland.
+            for window in self.windows:
+                window.queue_draw()
             return GLib.SOURCE_CONTINUE
         except Exception as error:
             print(f"Заставка остановлена: {error}", file=sys.stderr)
