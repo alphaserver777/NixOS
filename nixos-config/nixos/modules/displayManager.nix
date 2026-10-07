@@ -46,7 +46,7 @@ let
     # Пакет темы не вызывает postInstall, поэтому дополняем сам этап установки.
     installPhase = old.installPhase + ''
       chmod u+w "$out/share/sddm/themes/sddm-astronaut-theme/Backgrounds"
-      cp ${../../wallpapers/space.png} "$out/share/sddm/themes/sddm-astronaut-theme/Backgrounds/space.png"
+      cp ${../../wallpapers/cosmic-panorama.png} "$out/share/sddm/themes/sddm-astronaut-theme/Backgrounds/space.png"
     '';
   });
 in

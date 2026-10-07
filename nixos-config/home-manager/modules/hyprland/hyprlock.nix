@@ -8,7 +8,7 @@
       background = [{
         monitor = "";
         # Интерполяция копирует сам файл в хранилище Nix и сохраняет зависимость.
-        path = "${../../../wallpapers/space.png}";
+        path = "${../../../wallpapers/cosmic-panorama.png}";
         color = "rgb(30, 30, 46)";
         blur_passes = 2;
         blur_size = 3;

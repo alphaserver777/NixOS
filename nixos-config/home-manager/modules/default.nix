@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./cosmic-desktop
     ./alacritty.nix
     # ./bat.nix
     # ./chromium.nix

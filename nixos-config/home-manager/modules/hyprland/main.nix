@@ -27,7 +27,7 @@
       "$mainMod" = "SUPER";
       "$terminal" = "alacritty";
       "$fileManager" = "$terminal -e sh -c 'ranger'";
-      "$menu" = "wofi";
+      "$menu" = "walker";
 
       exec-once = [
         "wl-paste --type text --watch cliphist store"
@@ -40,13 +40,13 @@
       ];
 
       general = {
-        gaps_in = 0;
-        gaps_out = 0;
+        gaps_in = 6;
+        gaps_out = 10;
 
-        border_size = 5;
+        border_size = 2;
 
-        "col.active_border" = "rgba(89b4faff) rgba(f5c2e7ff) 45deg";
-        "col.inactive_border" = "rgba(3c3836ff)";
+        "col.active_border" = "rgba(89b4faff) rgba(cba6f7ff) 45deg";
+        "col.inactive_border" = "rgba(30364cff)";
 
         resize_on_border = true;
 
@@ -55,17 +55,20 @@
       };
 
       decoration = {
-        rounding = 10;
+        rounding = 14;
 
         active_opacity = 1.0;
         inactive_opacity = 1.0;
 
         shadow = {
-          enabled = false;
+          enabled = true;
+          range = 18;
+          render_power = 3;
+          color = "rgba(00000055)";
         };
 
         blur = {
-          enabled = true;
+          enabled = false;
           size = 8;
           passes = 4;
           vibrancy = 0.1696;
@@ -78,6 +81,30 @@
 
       animations = {
         enabled = true;
+        bezier = [ "cosmic, 0.16, 1, 0.3, 1" ];
+        animation = [
+          "windows, 1, 4, cosmic, popin 96%"
+          "windowsOut, 1, 3, cosmic, popin 96%"
+          "border, 1, 3, cosmic"
+          "fade, 1, 3, cosmic"
+          "workspaces, 1, 4, cosmic, slide"
+        ];
+      };
+
+      plugin.overview = {
+        panelColor = "rgba(151824ff)";
+        panelBorderColor = "rgba(89b4faff)";
+        workspaceActiveBackground = "rgba(242c40ff)";
+        workspaceInactiveBackground = "rgba(151824ff)";
+        workspaceActiveBorder = "rgba(cba6f7ff)";
+        panelBorderWidth = 1;
+        workspaceBorderSize = 2;
+        workspaceMargin = 8;
+        disableBlur = true;
+        centerAligned = true;
+        showEmptyWorkspace = true;
+        showNewWorkspace = true;
+        autoDrag = true;
       };
 
       input = {
@@ -113,7 +140,6 @@
       };
 
       windowrule = [
-        "match:float false, match:workspace w[t1], border_size 0"
         "match:class (mpv|imv|showmethekey-gtk), float on"
         "match:class showmethekey-gtk, move 990 60, size 900 170, pin on, no_initial_focus on"
         "match:class google-chrome, workspace 1"
@@ -140,7 +166,6 @@
           "8, monitor:DVI-D-1"
           "9, monitor:DVI-D-1"
           "10, monitor:DP-1"
-          "w[tv1], gapsout:0, gapsin:0"
           "f[1], gapsout:0, gapsin:0"
         ] else if hostname == "x-disk" then [
           "1, monitor:HDMI-A-3"
@@ -152,10 +177,8 @@
           "7, monitor:DP-2"
           "8, monitor:DP-2"
           "9, monitor:DP-2"
-          "w[tv1], gapsout:0, gapsin:0"
           "f[1], gapsout:0, gapsin:0"
         ] else [
-          "w[tv1], gapsout:0, gapsin:0"
           "f[1], gapsout:0, gapsin:0"
         ];
     };

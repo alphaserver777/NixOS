@@ -164,6 +164,13 @@ import dbus"
   '';
 
   customModules = {
+    "custom/cosmic-mode" = {
+      label = "{}";
+      tooltip = "Режим рабочего стола";
+      interval = 2;
+      execute = "cosmic-mode status";
+      actions.onLeftClick = "cosmic-mode menu";
+    };
     "custom/keyboard-flags" = {
       label = "{}";
       tooltip = "Keyboard Layout";
@@ -201,7 +208,7 @@ import dbus"
     "bar.clock.format" = "%d %b %H:%M";
     "bar.clock.showIcon" = false;
     "bar.bluetooth.label" = false;
-    "bar.network.label" = true;
+    "bar.network.label" = false;
     "bar.volume.label" = true;
     "bar.customModules.cpu.icon" = "󰍛";
     "bar.customModules.cpu.label" = true;
@@ -268,61 +275,52 @@ import dbus"
       "10" = "";
     };
 
-    "menus.dashboard.shortcuts.left.shortcut1.command" = "code";
+    "menus.dashboard.shortcuts.left.shortcut1.command" = "cosmic-mode work";
     "menus.dashboard.shortcuts.left.shortcut1.icon" = "";
-    "menus.dashboard.shortcuts.left.shortcut1.tooltip" = "VS Code";
-    "menus.dashboard.shortcuts.left.shortcut2.command" = "keepassxc";
-    "menus.dashboard.shortcuts.left.shortcut2.icon" = "";
-    "menus.dashboard.shortcuts.left.shortcut2.tooltip" = "KeePassXC";
-    "menus.dashboard.shortcuts.left.shortcut3.command" = "obsidian";
-    "menus.dashboard.shortcuts.left.shortcut3.icon" = "󰎚";
-    "menus.dashboard.shortcuts.left.shortcut3.tooltip" = "Obsidian";
-    "menus.dashboard.shortcuts.left.shortcut4.command" = "amnezia-vpn";
-    "menus.dashboard.shortcuts.left.shortcut4.icon" = "󰖂";
-    "menus.dashboard.shortcuts.left.shortcut4.tooltip" = "AmneziaVPN";
+    "menus.dashboard.shortcuts.left.shortcut1.tooltip" = "Работа";
+    "menus.dashboard.shortcuts.left.shortcut2.command" = "cosmic-mode video";
+    "menus.dashboard.shortcuts.left.shortcut2.icon" = "󰕧";
+    "menus.dashboard.shortcuts.left.shortcut2.tooltip" = "Видео";
+    "menus.dashboard.shortcuts.left.shortcut3.command" = "cosmic-mode show";
+    "menus.dashboard.shortcuts.left.shortcut3.icon" = "󰍹";
+    "menus.dashboard.shortcuts.left.shortcut3.tooltip" = "Показ";
+    "menus.dashboard.shortcuts.left.shortcut4.command" = "cosmic-mode normal";
+    "menus.dashboard.shortcuts.left.shortcut4.icon" = "󰁯";
+    "menus.dashboard.shortcuts.left.shortcut4.tooltip" = "Обычный режим";
     "menus.dashboard.shortcuts.right.shortcut1.command" = "obs";
     "menus.dashboard.shortcuts.right.shortcut1.icon" = "󰐻";
     "menus.dashboard.shortcuts.right.shortcut1.tooltip" = "OBS Studio";
-    "menus.dashboard.controls.enabled" = false;
-    "menus.dashboard.stats.enabled" = false;
-    "menus.dashboard.shortcuts.enabled" = false;
+    "menus.dashboard.controls.enabled" = true;
+    "menus.dashboard.stats.enabled" = true;
+    "menus.dashboard.shortcuts.enabled" = true;
     "menus.dashboard.directories.enabled" = false;
 
+    # Одинаковая панель на любом числе подключённых экранов.
     "bar.layouts" = {
-      "0" = {
-        left = [ "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
-        middle = [ ];
-        right = [ "hypridle" "systray" "kbinput" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
-      };
-      "DP-1" = {
-        left = [ "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
-        middle = [ ];
-        right = [ "hypridle" "systray" "kbinput" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
-      };
-      "1" = {
-        left = [ "workspaces" "battery" "cpu" "ram" "storage" "netstat" ];
-        middle = [ ];
+      "*" = {
+        left = [ "dashboard" "workspaces" "custom/cosmic-mode" ];
+        middle = [ "media" ];
         right = [ "hypridle" "systray" "kbinput" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
     };
 
     "theme.font.name" = "JetBrainsMono Nerd Font";
-    "theme.font.size" = "0.8rem";
-    "theme.font.weight" = 700;
+    "theme.font.size" = "0.85rem";
+    "theme.font.weight" = 600;
 
     "theme.bar.floating" = true;
-    "theme.bar.transparent" = true;
+    "theme.bar.transparent" = false;
     "theme.bar.opacity" = 100;
-    "theme.bar.background" = "rgba(0,0,0,0.0)";
-    "theme.bar.border.color" = "rgba(0,0,0,0.0)";
+    "theme.bar.background" = "#151824";
+    "theme.bar.border.color" = "#30364c";
     "theme.bar.margin_sides" = "0.35em";
     "theme.bar.margin_top" = "0.35em";
     "theme.bar.outer_spacing" = "0.35em";
 
     "theme.bar.buttons.style" = "default";
     "theme.bar.buttons.monochrome" = false;
-    "theme.bar.buttons.background" = "rgba(17,17,27,0.72)";
-    "theme.bar.buttons.hover" = "rgba(69,71,90,0.75)";
+    "theme.bar.buttons.background" = "#1e2436";
+    "theme.bar.buttons.hover" = "#30364c";
     "theme.bar.buttons.borderColor" = "rgba(205,214,244,0.08)";
     "theme.bar.buttons.radius" = "0.5rem";
     "theme.bar.buttons.padding_x" = "0.45rem";
@@ -331,64 +329,64 @@ import dbus"
     "theme.bar.buttons.icon" = "#cdd6f4";
     "theme.bar.buttons.text" = "#cdd6f4";
 
-    "theme.bar.buttons.dashboard.background" = "rgba(30,30,46,0.80)";
+    "theme.bar.buttons.dashboard.background" = "#1e2436";
     "theme.bar.buttons.dashboard.icon" = "#89b4fa";
-    "theme.bar.buttons.workspaces.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.workspaces.background" = "#1e2436";
     "theme.bar.buttons.workspaces.available" = "#6c7086";
     "theme.bar.buttons.workspaces.occupied" = "#bac2de";
     "theme.bar.buttons.workspaces.active" = "#f5e0dc";
     "theme.bar.buttons.windowtitle.text" = "#ffffff";
-    "theme.bar.buttons.windowtitle.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.windowtitle.background" = "#1e2436";
     "theme.bar.buttons.windowtitle.icon" = "#bac2de";
-    "theme.bar.buttons.network.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.network.background" = "#1e2436";
     "theme.bar.buttons.network.icon" = "#94e2d5";
     "theme.bar.buttons.network.text" = "#94e2d5";
-    "theme.bar.buttons.modules.kbLayout.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.kbLayout.background" = "#1e2436";
     "theme.bar.buttons.modules.kbLayout.icon" = "#f9e2af";
     "theme.bar.buttons.modules.kbLayout.text" = "#f9e2af";
-    "theme.bar.buttons.modules.microphone.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.microphone.background" = "#1e2436";
     "theme.bar.buttons.modules.microphone.icon" = "#a6e3a1";
     "theme.bar.buttons.modules.microphone.text" = "#a6e3a1";
-    "theme.bar.buttons.modules.hypridle.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.hypridle.background" = "#1e2436";
     "theme.bar.buttons.modules.hypridle.icon" = "#fab387";
     "theme.bar.buttons.modules.hypridle.text" = "#fab387";
-    "theme.bar.buttons.bluetooth.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.bluetooth.background" = "#1e2436";
     "theme.bar.buttons.bluetooth.icon" = "#89b4fa";
     "theme.bar.buttons.bluetooth.text" = "#89b4fa";
-    "theme.bar.buttons.volume.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.volume.background" = "#1e2436";
     "theme.bar.buttons.volume.icon" = "#89b4fa";
     "theme.bar.buttons.volume.text" = "#89b4fa";
-    "theme.bar.buttons.modules.cpu.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.cpu.background" = "#1e2436";
     "theme.bar.buttons.modules.cpu.icon" = "#f38ba8";
     "theme.bar.buttons.modules.cpu.text" = "#f38ba8";
-    "theme.bar.buttons.modules.ram.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.ram.background" = "#1e2436";
     "theme.bar.buttons.modules.ram.icon" = "#f9e2af";
     "theme.bar.buttons.modules.ram.text" = "#f9e2af";
-    "theme.bar.buttons.modules.storage.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.storage.background" = "#1e2436";
     "theme.bar.buttons.modules.storage.icon" = "#a6e3a1";
     "theme.bar.buttons.modules.storage.text" = "#a6e3a1";
-    "theme.bar.buttons.modules.netstat.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.modules.netstat.background" = "#1e2436";
     "theme.bar.buttons.modules.netstat.icon" = "#89dceb";
     "theme.bar.buttons.modules.netstat.text" = "#89dceb";
     "theme.bar.middle.spacing" = "0.2em";
     "theme.bar.buttons.windowtitle.enableBorder" = false;
     "theme.bar.buttons.windowtitle.maxWidth" = "18em";
-    "theme.bar.buttons.battery.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.battery.background" = "#1e2436";
     "theme.bar.buttons.battery.icon" = "#a6e3a1";
     "theme.bar.buttons.battery.text" = "#a6e3a1";
-    "theme.bar.buttons.clock.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.clock.background" = "#1e2436";
     "theme.bar.buttons.clock.icon" = "#b4befe";
     "theme.bar.buttons.clock.text" = "#b4befe";
-    "theme.bar.buttons.notifications.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.notifications.background" = "#1e2436";
     "theme.bar.buttons.notifications.icon" = "#f5c2e7";
     "theme.bar.buttons.notifications.total" = "#f5c2e7";
-    "theme.bar.buttons.systray.background" = "rgba(17,17,27,0.72)";
+    "theme.bar.buttons.systray.background" = "#1e2436";
     "theme.bar.buttons.systray.customIcon" = "#cdd6f4";
 
-    "theme.bar.menus.opacity" = 95;
-    "theme.bar.menus.background" = "rgba(17,17,27,0.94)";
-    "theme.bar.menus.card.color" = "rgba(30,30,46,0.95)";
-    "theme.bar.menus.border.color" = "rgba(49,50,68,0.95)";
+    "theme.bar.menus.opacity" = 100;
+    "theme.bar.menus.background" = "#151824";
+    "theme.bar.menus.card.color" = "#1e2436";
+    "theme.bar.menus.border.color" = "#30364c";
     "theme.bar.menus.text" = "#cdd6f4";
     "theme.bar.menus.label" = "#b4befe";
     "theme.bar.menus.dimtext" = "#7f849c";
