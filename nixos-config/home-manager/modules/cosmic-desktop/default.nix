@@ -12,7 +12,7 @@ let
     PartOf = [ "graphical-session.target" ];
   };
 in {
-  imports = [ ./screensaver.nix ];
+  imports = [ ./screensaver.nix ./control-center.nix ];
   home.packages = [ pkgs.walker pkgs.elephant mode ];
 
   # Прежние обои с космонавтом целиком на каждом экране.
@@ -52,6 +52,12 @@ in {
     "elephant/files.toml".text = ''
       ignored_dirs = ["/node_modules(/|$)", "/target(/|$)", "/.git(/|$)", "/.cache(/|$)", "/.local/state(/|$)"]
       watch = false
+    '';
+    "elephant/clipboard.toml".text = ''
+      name_pretty = "История копирования"
+      max_items = 300
+      pinned_on_top = true
+      ignore_symbols = false
     '';
   };
   xdg.desktopEntries = builtins.listToAttrs (map (entry: {

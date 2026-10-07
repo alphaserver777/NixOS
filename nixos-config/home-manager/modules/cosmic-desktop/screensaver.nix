@@ -16,6 +16,12 @@ let
     </fontconfig>
   '';
   python = pkgs.python3.withPackages (p: [ p.pygobject3 p.pycairo ]);
+  scripts = pkgs.runCommand "cosmic-screensaver-scripts" { } ''
+    mkdir -p $out
+    cp ${./screensaver.py} $out/screensaver.py
+    cp ${./screensaver-control.py} $out/control.py
+    cp ${./effects.py} $out/effects.py
+  '';
   clock = pkgs.writeShellApplication {
     name = "cosmic-screensaver-clock";
     runtimeInputs = [ pkgs.hyprland pkgs.procps ];
@@ -28,7 +34,7 @@ let
       export GI_TYPELIB_PATH="${lib.makeSearchPathOutput "out" "lib/girepository-1.0" [ pkgs.gtk3 pkgs.gtk-layer-shell pkgs.pango pkgs.gdk-pixbuf pkgs.atk pkgs.glib pkgs.cairo pkgs.harfbuzz pkgs.gobject-introspection ]}''${GI_TYPELIB_PATH:+:$GI_TYPELIB_PATH}"
       exec ${pkgs.coreutils}/bin/env \
         LC_ALL=C \
-        ${python}/bin/python3 ${./screensaver.py} ${hyprsaver}/bin/hyprsaver
+        ${python}/bin/python3 ${scripts}/screensaver.py ${hyprsaver}/bin/hyprsaver
     '';
   };
   cursor = pkgs.writeShellApplication {
@@ -55,14 +61,8 @@ let
   };
   control = pkgs.writeShellApplication {
     name = "cosmic-screensaver";
-    runtimeInputs = [ pkgs.systemd ];
-    text = ''
-      case "''${1:-start}" in
-        start) systemctl --user start cosmic-screensaver.service ;;
-        stop) systemctl --user stop cosmic-screensaver.service ;;
-        *) echo 'Использование: cosmic-screensaver [start|stop]' >&2; exit 2 ;;
-      esac
-    '';
+    runtimeInputs = [ pkgs.systemd pkgs.walker ];
+    text = ''exec ${pkgs.python3}/bin/python3 ${scripts}/control.py "$@"'';
   };
 in {
   home.packages = [ hyprsaver control anurati digits pkgs.orbitron ];
@@ -93,6 +93,9 @@ in {
           -e 's/SPEED = 0.36/SPEED = 0.22/' \
           ${hyprsaver}/share/hyprsaver/starfield.frag > $out
     '';
+  xdg.configFile."hypr/hyprsaver/shaders/cosmic-aurora.frag".source = ./shaders/cosmic-aurora.frag;
+  xdg.configFile."hypr/hyprsaver/shaders/cosmic-meteors.frag".source = ./shaders/cosmic-meteors.frag;
+  xdg.configFile."hypr/hyprsaver/shaders/cosmic-constellations.frag".source = ./shaders/cosmic-constellations.frag;
   systemd.user.services.cosmic-screensaver = {
     Unit = {
       Description = "Космическая заставка с часами";
@@ -122,5 +125,12 @@ in {
     icon = "preferences-desktop-screensaver";
     terminal = false;
     categories = [ "Utility" ];
+  };
+  xdg.desktopEntries.cosmic-screensaver-choice = {
+    name = "Выбрать заставку";
+    exec = "${control}/bin/cosmic-screensaver choose";
+    icon = "preferences-desktop-screensaver";
+    terminal = false;
+    categories = [ "Settings" ];
   };
 }

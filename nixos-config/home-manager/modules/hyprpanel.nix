@@ -164,6 +164,21 @@ import dbus"
   '';
 
   customModules = {
+    "custom/cosmic-center" = {
+      label = "󰣇";
+      tooltip = "Центр управления · Win + D";
+      interval = 86400;
+      hideOnEmpty = false;
+      execute = "true";
+      actions.onLeftClick = "cosmic-control-center";
+    };
+    "custom/clash" = {
+      label = "{}";
+      tooltip = "Clash: наличие сетевого туннеля. Нажмите для открытия приложения.";
+      interval = 5;
+      execute = "if test -d /sys/class/net/Meta; then printf '󰒃'; else printf '󰒄'; fi";
+      actions.onLeftClick = "clash-verge";
+    };
     "custom/cosmic-mode" = {
       label = "{}";
       tooltip = "Режим рабочего стола";
@@ -298,9 +313,9 @@ import dbus"
     # Одинаковая панель на любом числе подключённых экранов.
     "bar.layouts" = {
       "*" = {
-        left = [ "dashboard" "workspaces" "custom/cosmic-mode" ];
+        left = [ "custom/cosmic-center" "workspaces" "custom/cosmic-mode" ];
         middle = [ "media" ];
-        right = [ "hypridle" "systray" "kbinput" "network" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
+        right = [ "hypridle" "systray" "kbinput" "network" "custom/clash" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
       };
     };
 

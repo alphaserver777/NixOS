@@ -8,6 +8,8 @@ import subprocess
 import sys
 import time
 
+from effects import selected
+
 import cairo
 import gi
 
@@ -113,7 +115,7 @@ class Screensaver:
         self.minute = None
         self.mapping_deadline = 0
         self.ready = False
-        self.child = subprocess.Popen([executable])
+        self.child = subprocess.Popen([executable, "--shader", "cosmic-" + selected()])
         self.display.connect("monitor-added", self.monitors_changed)
         self.display.connect("monitor-removed", self.monitors_changed)
         self.monitors_changed()

@@ -30,8 +30,7 @@
       "$menu" = "walker";
 
       exec-once = [
-        "wl-paste --type text --watch cliphist store"
-        "wl-paste --type image --watch cliphist store"
+        # Историю текста и изображений ведёт Elephant; старый архив сохранён.
         # Предсоздаём рабочие столы 1..9, чтобы раскладка Expo была стабильной
         "sh -lc \"cur=$(hyprctl activeworkspace -j | jq -r .id 2>/dev/null || echo 1); for i in $(seq 1 9); do hyprctl dispatch workspace $i; done; hyprctl dispatch workspace $cur\""
       ] ++ lib.optionals (hostname == "x-disk") [
@@ -81,13 +80,21 @@
 
       animations = {
         enabled = true;
-        bezier = [ "cosmic, 0.16, 1, 0.3, 1" ];
+        bezier = [
+          "cosmic, 0.16, 1, 0.3, 1"
+          "cosmic-close, 0.4, 0, 1, 1"
+          "cosmic-glide, 0.22, 1, 0.36, 1"
+        ];
         animation = [
-          "windows, 1, 4, cosmic, popin 96%"
-          "windowsOut, 1, 3, cosmic, popin 96%"
-          "border, 1, 3, cosmic"
-          "fade, 1, 3, cosmic"
-          "workspaces, 1, 4, cosmic, slide"
+          "windowsIn, 1, 3.2, cosmic, popin 94%"
+          "windowsOut, 1, 2, cosmic-close, popin 97%"
+          "windowsMove, 1, 3.5, cosmic-glide"
+          "border, 1, 2.5, cosmic"
+          "fade, 1, 2, cosmic"
+          "workspaces, 1, 3.5, cosmic-glide, slide"
+          "specialWorkspace, 1, 3, cosmic, slidevert"
+          "layersIn, 1, 2.5, cosmic, slide top"
+          "layersOut, 1, 1.5, cosmic-close, fade"
         ];
       };
 
