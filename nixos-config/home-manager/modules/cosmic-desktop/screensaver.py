@@ -78,15 +78,15 @@ class Clock(Gtk.Window):
     def refresh(self):
         now = datetime.datetime.now().astimezone()
         self.content = [WEEKDAYS[now.weekday()], now.strftime("%H:%M"),
-                        now.strftime("%A, %d %B")]
+                        now.strftime("%d %B %Y").upper()]
         self.position_labels()
 
     def position_labels(self, *_):
         width, height = self.canvas.get_allocated_width(), self.canvas.get_allocated_height()
         scale = min(1.0, height / 900, width / 1200)
         styles = [("Anurati", 52, 300, "#cdd6f4"),
-                  ("JetBrains Mono", 96, 180, "#cdd6f4"),
-                  ("Noto Sans", 22, 85, "#babbf1")]
+                  ("Orbitron Bold", 96, 180, "#cdd6f4"),
+                  ("Orbitron", 20, 85, "#babbf1")]
         for label, text, (family, size, offset, color) in zip(
                 self.labels, getattr(self, "content", ["", "", ""]), styles):
             markup = (f'<span font_desc="{family} {size * scale:.2f}" '
@@ -180,7 +180,7 @@ class Screensaver:
 
 
 def main():
-    locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
+    locale.setlocale(locale.LC_TIME, "C")
     monitors = hypr_json("monitors")
     if locked() or not monitors or not any(m.get("dpmsStatus", False) for m in monitors):
         return

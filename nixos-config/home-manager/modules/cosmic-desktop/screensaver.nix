@@ -8,7 +8,7 @@ let
     <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
     <fontconfig>
       <dir>${anurati}/share/fonts</dir>
-      <dir>${pkgs.jetbrains-mono}/share/fonts</dir>
+      <dir>${pkgs.orbitron}/share/fonts</dir>
       <dir>${pkgs.noto-fonts}/share/fonts</dir>
       <cachedir prefix="xdg">fontconfig</cachedir>
     </fontconfig>
@@ -23,8 +23,7 @@ let
       export FONTCONFIG_FILE=${clockFonts}
       export GI_TYPELIB_PATH="${lib.makeSearchPathOutput "out" "lib/girepository-1.0" [ pkgs.gtk3 pkgs.gtk-layer-shell pkgs.pango pkgs.gdk-pixbuf pkgs.atk pkgs.glib pkgs.cairo pkgs.harfbuzz pkgs.gobject-introspection ]}''${GI_TYPELIB_PATH:+:$GI_TYPELIB_PATH}"
       exec ${pkgs.coreutils}/bin/env \
-        LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive \
-        LOCALE_ARCHIVE_2_27=${pkgs.glibcLocales}/lib/locale/locale-archive LC_ALL=ru_RU.UTF-8 \
+        LC_ALL=C \
         ${python}/bin/python3 ${./screensaver.py} ${hyprsaver}/bin/hyprsaver
     '';
   };
@@ -40,7 +39,7 @@ let
     '';
   };
 in {
-  home.packages = [ hyprsaver control anurati ];
+  home.packages = [ hyprsaver control anurati pkgs.orbitron ];
   fonts.fontconfig.enable = true;
   xdg.configFile."hypr/hyprsaver.toml".text = ''
     [general]
