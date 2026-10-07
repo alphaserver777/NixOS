@@ -1,79 +1,88 @@
+{ pkgs, ... }:
 {
-  programs = {
-    hyprlock = {
-      enable = true;
-      settings = {
-        # Общие настройки поведения
-        general = {
-          # Скрываем курсор, чтобы не отвлекал
-          hide_cursor = true;
-        };
+  programs.hyprlock = {
+    enable = true;
+    settings = {
+      general.hide_cursor = true;
 
-        # Настройки фона
-        background = [
-          {
-            # Устанавливаем изображение
-            path = toString ../../../wallpapers/space.png;
+      background = [{
+        monitor = "";
+        # Интерполяция копирует сам файл в хранилище Nix и сохраняет зависимость.
+        path = "${../../../wallpapers/space.png}";
+        color = "rgb(30, 30, 46)";
+        blur_passes = 2;
+        blur_size = 3;
+        contrast = 1.0;
+        brightness = 0.8;
+        vibrancy = 0.15;
+      }];
 
-            # path = "../../../wallpapers/bsod.png";
-            # Применяем эффекты
-            blur_passes = 0;
-            blur_size = 0;
-            contrast = 0.5;
-            brightness = 0.5;
-            vibrancy = 0.5;
-          }
-        ];
+      label = [
+        {
+          monitor = "";
+          text = "$TIME";
+          color = "rgb(205, 214, 244)";
+          font_size = 96;
+          font_family = "JetBrains Mono";
+          shadow_passes = 2;
+          position = "0, 180";
+          halign = "center";
+          valign = "center";
+        }
+        {
+          monitor = "";
+          text = "cmd[update:60000] LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive LC_TIME=ru_RU.UTF-8 ${pkgs.coreutils}/bin/date +'%A, %d %B'";
+          color = "rgb(186, 187, 241)";
+          font_size = 22;
+          font_family = "Noto Sans";
+          shadow_passes = 2;
+          position = "0, 85";
+          halign = "center";
+          valign = "center";
+        }
+        {
+          monitor = "";
+          text = "$USER · $LAYOUT";
+          color = "rgb(166, 173, 200)";
+          font_size = 16;
+          font_family = "Noto Sans";
+          position = "0, -105";
+          halign = "center";
+          valign = "center";
+        }
+        {
+          monitor = "";
+          text = "Сеанс заблокирован";
+          color = "rgb(166, 173, 200)";
+          font_size = 14;
+          font_family = "Noto Sans";
+          position = "0, 45";
+          halign = "center";
+          valign = "bottom";
+        }
+      ];
 
-        # Настройки для текстовых элементов (Time и Date)
-        label = [
-          # Время
-          {
-            monitor = "";
-            text = ''cmd[update:1000] echo "$(date +'%k:%M')"'';
-            color = "rgb(205, 214, 244)";
-            font_size = 80;
-            font_family = "Maple Mono Bold";
-            shadow_passes = 3;
-            position = "0, -50";
-            halign = "center";
-            valign = "top";
-          }
-          # Дата
-          {
-            monitor = "";
-            text = ''cmd[update:1000] echo "- $(date +'%A, %B %d') -" '';
-            color = "rgb(205, 214, 244)";
-            font_size = 18;
-            font_family = "Maple Mono";
-            shadow_passes = 3;
-            position = "0, -25";
-            halign = "center";
-            valign = "top";
-          }
-        ];
-
-        input-field = [
-          {
-            # Позиция поля ввода
-            position = "0, 0";
-            # Размер
-            size = "300, 60";
-            # Цвет текста
-            font_color = "rgb(205, 214, 244)"; # Catppuccin Mocha 'Text'
-            # Цвет внутренней части
-            inner_color = "rgb(49, 50, 68)"; # Catppuccin Mocha 'Surface2'
-            # Цвет границы
-            outer_color = "rgb(186, 187, 241)"; # Catppuccin Mocha 'Lavender'
-            # Толщина границы
-            outline_thickness = 2;
-            # Текст-заполнитель
-            placeholder_text = "ACCESS CODE";
-            # Анимация
-            fade_on_empty = false;
-          }
-        ];
-      };
+      input-field = [{
+        monitor = "";
+        position = "0, -20";
+        halign = "center";
+        valign = "center";
+        size = "360, 64";
+        rounding = 18;
+        font_family = "Noto Sans";
+        font_color = "rgb(205, 214, 244)";
+        inner_color = "rgba(30, 30, 46, 0.85)";
+        outer_color = "rgb(137, 180, 250) rgb(203, 166, 247) 45deg";
+        check_color = "rgb(166, 227, 161)";
+        fail_color = "rgb(243, 139, 168)";
+        capslock_color = "rgb(249, 226, 175)";
+        outline_thickness = 2;
+        dots_center = true;
+        placeholder_text = "Введите пароль";
+        fail_text = "Неверный пароль · попытка $ATTEMPTS";
+        fade_on_empty = false;
+        shadow_passes = 2;
+      }];
     };
   };
 }

@@ -11,20 +11,18 @@ if not os.path.isdir('/sys/class/bluetooth'):
 
 import dbus"
     '';
-    postFixup = (oldAttrs.postFixup or "") + ''
-      substituteInPlace $out/bin/.hyprpanel-wrapped \
-        --replace-fail 'Timer.measureSync("OSD", () => osd_default2());' \
-          'Timer.measureSync("OSD", () => {});' \
-        --replace-fail '"English (US)": "US",' \
-          '"English (US)": "🇺🇸",' \
-        --replace-fail 'Russian: "RU",' \
-          'Russian: "🇷🇺",'
+    postPatch = (oldAttrs.postPatch or "") + ''
+      substituteInPlace src/core/initialization/index.ts \
+        --replace-fail "Timer.measureSync('OSD', () => OSD());" \
+          "Timer.measureSync('OSD', () => {});"
+      substituteInPlace src/components/bar/modules/kblayout/helpers/layouts.ts \
+        --replace-fail "'English (US)': 'US'," "'English (US)': '🇺🇸'," \
+        --replace-fail "Russian: 'RU'," "Russian: '🇷🇺',"
     '';
   });
 
-  theme = builtins.fromJSON (
-    builtins.readFile "${hyprpanelPackage}/share/themes/tokyo_night_moon_split.json"
-  );
+  # Цвета сохранены локально: проверка настроек не требует сборки панели.
+  theme = builtins.fromJSON (builtins.readFile ./hyprpanel-theme.json);
 
   weatherScript = pkgs.writeShellScript "hyprpanel-weather-krasnodar" ''
     weather=$(
@@ -197,6 +195,8 @@ import dbus"
   };
 
   hyprpanelConfig = theme // {
+    # Обои показывает hyprpaper; второй фон панели закрывает его.
+    "wallpaper.enable" = false;
     "bar.autoHide" = "never";
     "bar.clock.format" = "%d %b %H:%M";
     "bar.clock.showIcon" = false;

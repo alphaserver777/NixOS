@@ -1,5 +1,12 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
+  screenshot = pkgs.writeShellScript "screenshot" ''
+    set -eu
+    mkdir -p "$HOME/screens"
+    file="$HOME/screens/$(date +%Y-%m-%d_%H-%M-%S-%N).png"
+    mode="''${1:-area}"
+    ${pkgs.grimblast}/bin/grimblast --notify copysave "$mode" "$file"
+  '';
   toggleMicrophone = pkgs.writeShellScript "toggle-microphone" ''
     ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
@@ -26,13 +33,15 @@ in
       "$mainMod,       A, exec, amnezia-vpn"
       "$mainMod,       F, togglefloating,"
       "$mainMod,       P, pin,"
-      "$mainMod,       J, togglesplit,"
-      "$mainMod,     Tab, exec, hyprctl dispatch hyprexpo:expo toggle"
+      "$mainMod,       J, layoutmsg, orientationcycle left top right bottom"
+      "$mainMod,     Tab, exec, hyprctl dispatch overview:toggle"
       "$mainMod,       V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
       "$mainMod,       L, exec, loginctl lock-session"
       "$mainMod,       N, exec, swaync-client -t"
-      ", Print, exec, sh -lc 'mkdir -p \"$HOME/screens\" && grimblast --notify copysave area'"
-      ''$mainMod,       F12, exec, sh -c 'QT_QPA_PLATFORM=wayland flameshot gui --raw | wl-copy' ''
+      ", Print, exec, ${config.services.flameshot.package}/bin/flameshot gui"
+      "SHIFT, Print, exec, ${screenshot} output"
+      "CTRL, Print, exec, ${screenshot} screen"
+      "$mainMod, F12, exec, ${config.services.flameshot.package}/bin/flameshot gui"
       "$mainMod SHIFT, F12, exec, obs"
 
       # Moving focus

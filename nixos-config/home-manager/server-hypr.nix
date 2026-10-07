@@ -44,11 +44,9 @@
   ]);
 
   wayland.windowManager.hyprland = {
-    plugins = [ pkgs.hyprlandPlugins.hyprexpo ];
+    plugins = [ pkgs.hyprlandPlugins.hyprspace ];
+    configType = "hyprlang";
     enable = true;
-    extraConfig = ''
-      plugin = ${pkgs.hyprlandPlugins.hyprexpo}/lib/libhyprexpo.so
-    '';
     systemd.enable = true;
     settings = {
       env = [
@@ -90,8 +88,8 @@
 
       decoration = {
         rounding = 10;
-        active_opacity = 0.92;
-        inactive_opacity = 0.88;
+        active_opacity = 1.0;
+        inactive_opacity = 1.0;
         shadow.enabled = false;
         blur = {
           enabled = true;
@@ -110,14 +108,13 @@
         kb_options = "grp:caps_toggle";
       };
 
+      gesture = [ "3, horizontal, workspace" ];
       gestures = {
-        workspace_swipe = true;
         workspace_swipe_invert = false;
         workspace_swipe_forever = true;
       };
 
       dwindle = {
-        pseudotile = true;
         preserve_split = true;
       };
 
@@ -143,7 +140,7 @@
         "$mainMod, F, togglefloating,"
         "$mainMod, P, pin,"
         "$mainMod, J, togglesplit,"
-        "$mainMod, TAB, exec, hyprctl dispatch hyprexpo:expo toggle"
+        "$mainMod, TAB, exec, hyprctl dispatch overview:toggle"
         "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
 
         "$mainMod, left, movefocus, l"
@@ -203,10 +200,10 @@
         ", XF86AudioPrev, exec, playerctl previous"
       ];
 
-      windowrulev2 = [
-        "workspace 1,class:(google-chrome)"
-        "float,class:(mpv)"
-        "suppressevent maximize, class:.*"
+      windowrule = [
+        "match:class google-chrome, workspace 1"
+        "match:class mpv, float on"
+        "match:class .*, suppress_event maximize"
       ];
 
       workspace = [

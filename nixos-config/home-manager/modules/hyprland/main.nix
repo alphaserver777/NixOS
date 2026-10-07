@@ -1,10 +1,8 @@
 { lib, pkgs, hostname, ... }: {
   wayland.windowManager.hyprland = {
-    plugins = [ pkgs.hyprlandPlugins.hyprexpo ];
+    plugins = [ pkgs.hyprlandPlugins.hyprspace ];
     enable = true;
-    extraConfig = ''
-      plugin = ${pkgs.hyprlandPlugins.hyprexpo}/lib/libhyprexpo.so
-    '';
+    configType = "hyprlang";
     systemd.enable = true;
     settings = {
       env = [
@@ -59,8 +57,8 @@
       decoration = {
         rounding = 10;
 
-        active_opacity = 0.85;
-        inactive_opacity = 0.85;
+        active_opacity = 1.0;
+        inactive_opacity = 1.0;
 
         shadow = {
           enabled = false;
@@ -93,14 +91,13 @@
         output = "HDMI-A-1";
       }];
 
+      gesture = [ "3, horizontal, workspace" ];
       gestures = {
-        workspace_swipe = true;
         workspace_swipe_invert = false;
         workspace_swipe_forever = true;
       };
 
       dwindle = {
-        pseudotile = true;
         preserve_split = true;
       };
 
@@ -115,29 +112,20 @@
         disable_hyprland_logo = true;
       };
 
-      windowrulev2 = [
-        "bordersize 0, floating:0, onworkspace:w[t1]"
-
-        "float,class:(mpv)|(imv)|(showmethekey-gtk)"
-        "move 990 60,size 900 170,pin,noinitialfocus,class:(showmethekey-gtk)"
-        # "noborder,nofocus,class:(showmethekey-gtk)"
-        "workspace 1,class:(google-chrome)"
-        "workspace 2,class:(Alacritty)"
-        "workspace 3,class:(obsidian)"
-        "workspace 3,class:(zathura)"
-        "workspace 4,class:^(code(-oss)?|code-url-handler|vscode|VSCodium|Code)$"
-        "workspace 5,class:(org.telegram.desktop)"
-        "workspace 6,class:(qemu)"
-
-        "suppressevent maximize, class:.*"
-        "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-
-        "opacity 0.0 override, class:^(xwaylandvideobridge)$"
-        "noanim, class:^(xwaylandvideobridge)$"
-        "noinitialfocus, class:^(xwaylandvideobridge)$"
-        "maxsize 1 1, class:^(xwaylandvideobridge)$"
-        "noblur, class:^(xwaylandvideobridge)$"
-        "nofocus, class:^(xwaylandvideobridge)$"
+      windowrule = [
+        "match:float false, match:workspace w[t1], border_size 0"
+        "match:class (mpv|imv|showmethekey-gtk), float on"
+        "match:class showmethekey-gtk, move 990 60, size 900 170, pin on, no_initial_focus on"
+        "match:class google-chrome, workspace 1"
+        "match:class Alacritty, workspace 2"
+        "match:class obsidian, workspace 3"
+        "match:class zathura, workspace 3"
+        "match:class ^(code(-oss)?|code-url-handler|vscode|VSCodium|Code)$, workspace 4"
+        "match:class org.telegram.desktop, workspace 5"
+        "match:class qemu, workspace 6"
+        "match:class .*, suppress_event maximize"
+        "match:class ^$, match:title ^$, match:xwayland true, match:float true, match:fullscreen false, match:pin false, no_focus on"
+        "match:class xwaylandvideobridge, opacity 0.0 override, no_anim on, no_initial_focus on, max_size 1 1, no_blur on, no_focus on"
       ];
 
       workspace =

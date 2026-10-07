@@ -46,7 +46,7 @@ buildFHSEnv {
     glib gtk2 gdk-pixbuf pango cairo atk at-spi2-core harfbuzz
     libv4l alsa-lib libpulseaudio libGL pipewire
     libxkbcommon fontconfig freetype dbus openssl curl sqlite zlib
-    libjpeg libpng libtiff libxml2 libxslt libsoup_2_4
+    libjpeg libpng libtiff libxml2 libxslt
     nss nspr expat efivar
     xorg.libX11 xorg.libxcb xorg.libXext xorg.libXrandr xorg.libXrender
     xorg.libXfixes xorg.libXi xorg.libXtst xorg.libXcomposite xorg.libXdamage

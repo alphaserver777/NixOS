@@ -6,6 +6,8 @@
         before_sleep_cmd = "loginctl lock-session";
         after_sleep_cmd = "hyprctl dispatch dpms on";
         ignore_dbus_inhibit = false;
+        # Не переходить в сон до подтверждения блокировки.
+        inhibit_sleep = 3;
         lock_cmd = "pidof hyprlock || hyprlock";
       };
 
@@ -26,7 +28,7 @@
         }
         {
           timeout = 1200;
-          on-timeout = "sysemctl suspend";
+          on-timeout = "systemctl suspend";
         }
       ];
     };

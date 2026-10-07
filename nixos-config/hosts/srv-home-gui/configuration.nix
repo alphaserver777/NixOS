@@ -55,7 +55,7 @@
     pkgs.dejavu_fonts
     pkgs.noto-fonts
     pkgs.noto-fonts-cjk-sans
-    pkgs.noto-fonts-emoji
+    pkgs.noto-fonts-color-emoji
   ];
 
   environment.systemPackages = [ pkgs.xfce.xfce4-terminal ];

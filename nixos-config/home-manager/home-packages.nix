@@ -16,7 +16,6 @@
     # Screenshot
     grim
     slurp
-    swappy
 
     wev
     pamixer
@@ -28,7 +27,7 @@
     rclone
     sops #encrypted in nixos
     xclip
-    neofetch
+    fastfetch
     mc
     woeusb
     xmind
@@ -82,7 +81,6 @@
     # python311
     #
     # # WM stuff
-    libsForQt5.xwaylandvideobridge
     xdg-desktop-portal-gtk
     xdg-desktop-portal-hyprland
     #
