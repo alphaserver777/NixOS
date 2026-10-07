@@ -12,6 +12,7 @@ let
     PartOf = [ "graphical-session.target" ];
   };
 in {
+  imports = [ ./screensaver.nix ];
   home.packages = [ pkgs.walker pkgs.elephant mode ];
 
   # Прежние обои с космонавтом целиком на каждом экране.

@@ -20,6 +20,17 @@
       label = [
         {
           monitor = "";
+          text = "cmd[update:60000] LC_ALL=C ${pkgs.coreutils}/bin/date +'%A' | ${pkgs.coreutils}/bin/tr '[:lower:]' '[:upper:]'";
+          color = "rgb(205, 214, 244)";
+          font_size = 52;
+          font_family = "Anurati";
+          shadow_passes = 2;
+          position = "0, 300";
+          halign = "center";
+          valign = "center";
+        }
+        {
+          monitor = "";
           text = "$TIME";
           color = "rgb(205, 214, 244)";
           font_size = 96;
@@ -31,7 +42,7 @@
         }
         {
           monitor = "";
-          text = "cmd[update:60000] LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive LC_TIME=ru_RU.UTF-8 ${pkgs.coreutils}/bin/date +'%A, %d %B'";
+          text = "cmd[update:60000] LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive LOCALE_ARCHIVE_2_27=${pkgs.glibcLocales}/lib/locale/locale-archive LC_ALL=ru_RU.UTF-8 ${pkgs.coreutils}/bin/date +'%A, %d %B'";
           color = "rgb(186, 187, 241)";
           font_size = 22;
           font_family = "Noto Sans";
