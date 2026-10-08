@@ -16,6 +16,13 @@ def replace(path, before, after):
 
 replace("DMSShell.qml", "    DesktopWidgetLayer {}", "    CosmicCenter {}\n    KeyboardLayoutOSD {}\n\n    DesktopWidgetLayer {}")
 
+# Задача 007: уменьшать отступ только у флага, сохраняя остальные виджеты.
+replace("Modules/Plugins/BasePill.qml",
+        '    readonly property real horizontalPadding: (barConfig?.removeWidgetPadding ?? false) ? 0 : Theme.snap((barConfig?.widgetPadding ?? 12) * (widgetThickness / 30), dpr)',
+        '    property real horizontalPaddingOverride: -1\n    readonly property real horizontalPadding: (barConfig?.removeWidgetPadding ?? false) ? 0 : Theme.snap((horizontalPaddingOverride >= 0 ? horizontalPaddingOverride : (barConfig?.widgetPadding ?? 12)) * (widgetThickness / 30), dpr)')
+replace("Modules/DankBar/Widgets/KeyboardLayoutName.qml", '    id: root\n',
+        '    id: root\n    horizontalPaddingOverride: 6\n')
+
 # Штатный виджет сохраняет переключение раскладки, подписи заменены флагами.
 layout_path = root / "Modules/DankBar/Widgets/KeyboardLayoutName.qml"
 layout_text = layout_path.read_text()
@@ -23,8 +30,8 @@ layout_text, count = re.subn(
     r'NumericText \{\n                    isMonospace: false\n.*?\n                    (anchors\.(?:horizontal|vertical)Center: parent\.(?:horizontal|vertical)Center)\n                \}',
     r'''Image {
                     source: Qt.resolvedUrl("../../../assets/flags/" + (root.currentLayout.toLowerCase().startsWith("ru") ? "ru" : "us") + ".svg")
-                    width: 30
-                    height: 20
+                    width: 24
+                    height: 16
                     fillMode: Image.PreserveAspectFit
                     \1
                 }''', layout_text, flags=re.S)
