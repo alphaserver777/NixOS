@@ -11,6 +11,7 @@ import qs.Modules.DankDash
 import qs.Modules.Settings
 import qs.Modules.ProcessList
 import qs.Modules.ControlCenter.Details
+import qs.Modules.ControlCenter.Widgets
 
 DankModal {
     id: root
@@ -60,6 +61,7 @@ DankModal {
         function section(index: int): void { root.selectSection(index); }
         function status(): string {
             return JSON.stringify({visible: root.shouldBeVisible, section: root.sectionIndex,
+                coffee: SessionService.idleInhibited,
                 screen: root.effectiveScreen?.name ?? "", x: root.alignedX, y: root.alignedY,
                 width: root.modalWidth, height: root.modalHeight});
         }
@@ -200,7 +202,29 @@ DankModal {
                 }
             }
         }
-        Component { id: audioPage; AudioTab {} }
+        Component {
+            id: audioPage
+            ColumnLayout {
+                spacing: Theme.spacingM
+                StyledText {
+                    Layout.fillWidth: true
+                    text: "Громкость"
+                    color: Theme.surfaceText
+                    font.pixelSize: Theme.fontSizeMedium
+                }
+                AudioSliderRow {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 40
+                }
+                AudioOutputDetail {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.minimumHeight: 0
+                    Layout.preferredHeight: 0
+                    hasVolumeSliderInCC: true
+                }
+            }
+        }
         Component { id: networkPage; NetworkTab {} }
         Component {
             id: bluetoothPage

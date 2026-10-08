@@ -13,6 +13,13 @@ def replace(path, before, after):
     target.write_text(source.replace(before, after))
 
 
+# Заголовки и сетка календаря используют одну точку отсчёта недели.
+replace("Modules/DankDash/Overview/CalendarOverviewCard.qml",
+        "return Qt.locale().firstDayOfWeek % 7;", "return 1;")
+replace("Modules/DankDash/Overview/CalendarOverviewCard.qml",
+        "const qtFirst = loc.firstDayOfWeek;", "const qtFirst = root.weekStartJs() || 7;")
+
+
 replace("DMSShell.qml", "    WallpaperBackground {}", "    CosmicCenter {}\n\n    WallpaperBackground {}")
 replace("Services/PopoutService.qml", "    property var controlCenterPopout: null", "    property var cosmicCenter: null\n    property var controlCenterPopout: null")
 replace("Modules/DankBar/DankBarWindow.qml", "    function triggerControlCenter() {", """    function triggerControlCenter() {

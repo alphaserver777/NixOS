@@ -6,6 +6,8 @@
         before_sleep_cmd = "cosmic-screensaver stop; loginctl lock-session";
         after_sleep_cmd = "hyprctl dispatch dpms on";
         ignore_dbus_inhibit = false;
+        # Режим «Кофе» DMS предотвращает все действия по таймеру простоя.
+        ignore_wayland_inhibit = false;
         # Не переходить в сон до подтверждения блокировки.
         inhibit_sleep = 3;
         # Блокировка живёт отдельно от hypridle и переживает его перезапуск.
