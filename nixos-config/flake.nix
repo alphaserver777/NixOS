@@ -21,7 +21,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    opencode.url = "git+https://github.com/anomalyco/opencode";
+    # Ветка по умолчанию в репозитории — dev, а не master.
+    # Без явного ref nix пытается разрешить master и падает,
+    # плюс git-конфиг переписывает https на ssh (см. home-manager/modules/git.nix).
+    opencode.url = "git+https://github.com/anomalyco/opencode?ref=dev";
 
     };
 
