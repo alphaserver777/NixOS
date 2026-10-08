@@ -1,4 +1,18 @@
 { pkgs, ... }:
+let
+  weekday = pkgs.writeShellScript "cosmic-lock-weekday" ''
+    export LC_ALL=C
+    name="$(${pkgs.coreutils}/bin/date +'%A' | ${pkgs.coreutils}/bin/tr '[:lower:]' '[:upper:]')"
+    printf '<span letter_spacing="6144">%s</span>\n' "$name"
+  '';
+  date = pkgs.writeShellScript "cosmic-lock-date" ''
+    export LC_ALL=C
+    day="$(${pkgs.coreutils}/bin/date +'%d')"
+    month="$(${pkgs.coreutils}/bin/date +'%B' | ${pkgs.coreutils}/bin/tr '[:lower:]' '[:upper:]')"
+    year="$(${pkgs.coreutils}/bin/date +'%Y')"
+    printf '<span letter_spacing="2048">%s <span font_family="Anurati">%s</span> %s</span>\n' "$day" "$month" "$year"
+  '';
+in
 {
   programs.hyprlock = {
     enable = true;
@@ -20,7 +34,7 @@
       label = [
         {
           monitor = "";
-          text = "cmd[update:60000] LC_ALL=C ${pkgs.coreutils}/bin/date +'%A' | ${pkgs.coreutils}/bin/tr '[:lower:]' '[:upper:]'";
+          text = "cmd[update:60000] ${weekday}";
           color = "rgb(205, 214, 244)";
           font_size = 52;
           font_family = "Anurati";
@@ -31,7 +45,7 @@
         }
         {
           monitor = "";
-          text = "$TIME";
+          text = "<span letter_spacing=\"2048\">$TIME</span>";
           color = "rgb(205, 214, 244)";
           font_size = 96;
           font_family = "Cosmic Stencil";
@@ -42,10 +56,10 @@
         }
         {
           monitor = "";
-          text = "cmd[update:60000] LC_ALL=C ${pkgs.coreutils}/bin/date +'%d %B %Y' | ${pkgs.coreutils}/bin/tr '[:lower:]' '[:upper:]'";
+          text = "cmd[update:60000] ${date}";
           color = "rgb(186, 187, 241)";
-          font_size = 20;
-          font_family = "Orbitron";
+          font_size = 24;
+          font_family = "Cosmic Stencil";
           shadow_passes = 2;
           position = "0, 85";
           halign = "center";

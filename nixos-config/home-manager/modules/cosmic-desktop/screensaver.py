@@ -91,13 +91,20 @@ class Clock(Gtk.Window):
         if width <= 1 or height <= 1:
             width, height = self.geometry.width, self.geometry.height
         scale = min(1.0, height / 900, width / 1200)
-        styles = [("Anurati", 52, 300, "#cdd6f4"),
-                  ("Cosmic Stencil", 96, 180, "#cdd6f4"),
-                  ("Orbitron", 20, 85, "#babbf1")]
-        for label, text, (family, size, offset, color) in zip(
-                self.labels, getattr(self, "content", ["", "", ""]), styles):
+        styles = [("Anurati", 52, 300, "#cdd6f4", 6),
+                  ("Cosmic Stencil", 96, 180, "#cdd6f4", 2),
+                  ("Cosmic Stencil", 24, 85, "#babbf1", 2)]
+        for index, (label, text, (family, size, offset, color, spacing)) in enumerate(zip(
+                self.labels, getattr(self, "content", ["", "", ""]), styles)):
+            content = GLib.markup_escape_text(text)
+            if index == 2 and text:
+                day, month, year = text.split(" ", 2)
+                content = (f'{GLib.markup_escape_text(day)} '
+                           f'<span font_family="Anurati">{GLib.markup_escape_text(month)}</span> '
+                           f'{GLib.markup_escape_text(year)}')
             markup = (f'<span font_desc="{family} {size * scale:.2f}" '
-                      f'foreground="{color}">{GLib.markup_escape_text(text)}</span>')
+                      f'foreground="{color}" letter_spacing="{round(spacing * scale * 1024)}">'
+                      f'{content}</span>')
             if label.get_label() != markup:
                 label.set_markup(markup)
             natural = label.get_preferred_size()[1]
