@@ -7,6 +7,7 @@ let
     cp -r ${pkgs.dms-shell}/share/quickshell/dms/. "$out/"
     chmod -R u+w "$out"
     cp ${./CosmicCenter.qml} "$out/Modules/CosmicCenter.qml"
+    cp ${./ClipboardDetail.qml} "$out/Modals/Clipboard/ClipboardDetail.qml"
     python3 ${./dms-center-patch.py} "$out"
   '';
   noctalia = pkgs.writeShellApplication {

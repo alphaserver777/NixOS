@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import qs.Common
 import qs.Services
@@ -35,6 +36,10 @@ DankModal {
     Component.onCompleted: PopoutService.cosmicCenter = root
     Component.onDestruction: PopoutService.cosmicCenter = null
     onBackgroundClicked: close()
+    HyprlandFocusGrab {
+        windows: [root.contentWindow]
+        active: root.useHyprlandFocusGrab && root.shouldHaveFocus
+    }
 
     Shortcut {
         sequence: "Ctrl+Down"
