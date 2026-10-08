@@ -5,7 +5,6 @@
     ./hardware-configuration.nix
     ./local-packages.nix
     ../../nixos/modules
-    ../../nixos/modules/nvidia-main.nix
   ];
 
   environment.systemPackages = [ pkgs.home-manager ];
