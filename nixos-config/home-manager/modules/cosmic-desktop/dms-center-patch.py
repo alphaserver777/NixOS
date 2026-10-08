@@ -1,5 +1,6 @@
 """Добавить панель к установленным исходникам DMS без пересборки программы."""
 import pathlib
+import re
 import sys
 
 root = pathlib.Path(sys.argv[1])
@@ -20,7 +21,24 @@ replace("Modules/DankDash/Overview/CalendarOverviewCard.qml",
         "const qtFirst = loc.firstDayOfWeek;", "const qtFirst = root.weekStartJs() || 7;")
 
 
-replace("DMSShell.qml", "    WallpaperBackground {}", "    CosmicCenter {}\n\n    WallpaperBackground {}")
+replace("DMSShell.qml", "    WallpaperBackground {}", "    CosmicCenter {}\n    KeyboardLayoutOSD {}\n\n    WallpaperBackground {}")
+
+# Сохраняем штатное переключение раскладки по нажатию, меняем только вид.
+layout_path = root / "Modules/DankBar/Widgets/KeyboardLayoutName.qml"
+layout_text = layout_path.read_text()
+layout_text, count = re.subn(
+    r'StyledText \{\s+text: \{.*?\n                    \}\n                    font.pixelSize: .*?\n                    color: Theme.widgetTextColor\n                    (anchors\.(?:horizontal|vertical)Center: parent\.(?:horizontal|vertical)Center)\n                \}',
+    r'''Image {
+                    source: Qt.resolvedUrl("../../../assets/flags/" + (root.currentLayout.toLowerCase().startsWith("ru") ? "ru" : "us") + ".svg")
+                    width: 30
+                    height: 20
+                    fillMode: Image.PreserveAspectFit
+                    \1
+                }''',
+    layout_text, flags=re.S)
+if count != 2:
+    raise RuntimeError("Изменилась структура виджета раскладки DMS")
+layout_path.write_text(layout_text)
 replace("Services/PopoutService.qml", "    property var controlCenterPopout: null", "    property var cosmicCenter: null\n    property var controlCenterPopout: null")
 replace("Modules/DankBar/DankBarWindow.qml", "    function triggerControlCenter() {", """    function triggerControlCenter() {
         if (PopoutService.cosmicCenter) {
