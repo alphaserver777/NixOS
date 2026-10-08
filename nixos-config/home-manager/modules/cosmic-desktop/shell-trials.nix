@@ -1,5 +1,14 @@
 { pkgs, ... }:
 let
+  dmsCenter = pkgs.runCommand "dms-centered-control" {
+    nativeBuildInputs = [ pkgs.python3 ];
+  } ''
+    mkdir -p "$out"
+    cp -r ${pkgs.dms-shell}/share/quickshell/dms/. "$out/"
+    chmod -R u+w "$out"
+    cp ${./CosmicCenter.qml} "$out/Modules/CosmicCenter.qml"
+    python3 ${./dms-center-patch.py} "$out"
+  '';
   noctalia = pkgs.writeShellApplication {
     name = "cosmic-noctalia";
     runtimeInputs = [ pkgs.noctalia pkgs.hyprland pkgs.systemd ];
@@ -25,7 +34,7 @@ let
       fi
       export DMS_DISABLE_POLKIT=1
       export DMS_DISABLE_MATUGEN=1
-      exec dms "$@"
+      exec dms -c ${dmsCenter} "$@"
     '';
   };
   switcher = pkgs.writeShellApplication {

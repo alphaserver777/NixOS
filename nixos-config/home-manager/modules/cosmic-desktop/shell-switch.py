@@ -158,7 +158,7 @@ def main():
         },
         "dms": {
             "launcher": ["cosmic-dms", "ipc", "spotlight", "toggle"],
-            "center": ["cosmic-dms", "ipc", "control-center", "toggle"],
+            "center": ["cosmic-dms", "ipc", "cosmic-center", "toggle"],
             "dashboard": ["cosmic-dms", "ipc", "dash", "toggle", ""],
             "clipboard": ["cosmic-dms", "ipc", "clipboard", "toggle"],
             "notifications": ["cosmic-dms", "ipc", "notifications", "toggle"],
