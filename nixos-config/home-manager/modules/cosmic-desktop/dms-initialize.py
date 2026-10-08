@@ -31,10 +31,23 @@ if not marker.exists():
     data = json.loads(path.read_text()) if path.exists() else {}
     for name, defaults in {
         "smartTimer": {"enabled": True, "volume": 50, "ringDuration": 15, "noTrigger": True},
-        "smartTimerLauncher": {"enabled": True, "noTrigger": True},
     }.items():
         settings = data.setdefault(name, {})
         for key, value in defaults.items():
             settings.setdefault(key, value)
     write_json(path, data)
     marker.touch(mode=0o600)
+
+# В DMS 1.6 календарь настраивается штатно, Sands содержит свой движок.
+migration_marker = root / ".cosmic-dms-1-6-v1"
+if not migration_marker.exists():
+    path = root / "settings.json"
+    data = json.loads(path.read_text())
+    data["firstDayOfWeek"] = 1
+    write_json(path, data)
+    path = root / "plugin_settings.json"
+    data = json.loads(path.read_text()) if path.exists() else {}
+    if "smartTimerLauncher" in data:
+        data["smartTimerLauncher"]["enabled"] = False
+    write_json(path, data)
+    migration_marker.touch(mode=0o600)

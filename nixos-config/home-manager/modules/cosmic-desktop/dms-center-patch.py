@@ -14,48 +14,36 @@ def replace(path, before, after):
     target.write_text(source.replace(before, after))
 
 
-# Заголовки и сетка календаря используют одну точку отсчёта недели.
-replace("Modules/DankDash/Overview/CalendarOverviewCard.qml",
-        "return Qt.locale().firstDayOfWeek % 7;", "return 1;")
-replace("Modules/DankDash/Overview/CalendarOverviewCard.qml",
-        "const qtFirst = loc.firstDayOfWeek;", "const qtFirst = root.weekStartJs() || 7;")
+replace("DMSShell.qml", "    DesktopWidgetLayer {}", "    CosmicCenter {}\n    KeyboardLayoutOSD {}\n\n    DesktopWidgetLayer {}")
 
-
-replace("DMSShell.qml", "    WallpaperBackground {}", "    CosmicCenter {}\n    KeyboardLayoutOSD {}\n\n    WallpaperBackground {}")
-
-# Сохраняем штатное переключение раскладки по нажатию, меняем только вид.
+# Штатный виджет сохраняет переключение раскладки, подписи заменены флагами.
 layout_path = root / "Modules/DankBar/Widgets/KeyboardLayoutName.qml"
 layout_text = layout_path.read_text()
 layout_text, count = re.subn(
-    r'StyledText \{\s+text: \{.*?\n                    \}\n                    font.pixelSize: .*?\n                    color: Theme.widgetTextColor\n                    (anchors\.(?:horizontal|vertical)Center: parent\.(?:horizontal|vertical)Center)\n                \}',
+    r'NumericText \{\n                    isMonospace: false\n.*?\n                    (anchors\.(?:horizontal|vertical)Center: parent\.(?:horizontal|vertical)Center)\n                \}',
     r'''Image {
                     source: Qt.resolvedUrl("../../../assets/flags/" + (root.currentLayout.toLowerCase().startsWith("ru") ? "ru" : "us") + ".svg")
                     width: 30
                     height: 20
                     fillMode: Image.PreserveAspectFit
                     \1
-                }''',
-    layout_text, flags=re.S)
+                }''', layout_text, flags=re.S)
 if count != 2:
     raise RuntimeError("Изменилась структура виджета раскладки DMS")
 layout_path.write_text(layout_text)
 replace("Services/PopoutService.qml", "    property var controlCenterPopout: null", "    property var cosmicCenter: null\n    property var controlCenterPopout: null")
-replace("Modules/DankBar/DankBarWindow.qml", "    function triggerControlCenter() {", """    function triggerControlCenter() {
-        if (PopoutService.cosmicCenter) {
-            PopoutService.cosmicCenter.toggle();
-            return;
-        }
-""")
 replace("Modules/DankBar/DankBarContent.qml",
-        "isActive: controlCenterLoader.item ? controlCenterLoader.item.shouldBeVisible : false",
+        "isActive: PopoutService.controlCenterLoader?.item ? PopoutService.controlCenterLoader?.item.shouldBeVisible : false",
         "isActive: PopoutService.cosmicCenter ? PopoutService.cosmicCenter.shouldBeVisible : false")
 replace("Modules/DankBar/DankBarContent.qml", """            onClicked: {
-                controlCenterLoader.active = true;""", """            onClicked: {
+                topBarContent.openWidgetPopout({
+                    loader: PopoutService.controlCenterLoader,""", """            onClicked: {
                 if (PopoutService.cosmicCenter) {
                     PopoutService.cosmicCenter.toggle();
                     return;
                 }
-                controlCenterLoader.active = true;""")
+                topBarContent.openWidgetPopout({
+                    loader: PopoutService.controlCenterLoader,""")
 
 replace("Modals/Clipboard/ClipboardHistoryModal.qml",
         "modalWidth: ClipboardConstants.modalWidth",
@@ -69,8 +57,8 @@ replace("Modals/Clipboard/ClipboardContent.qml",
         readonly property real detailWidth: parent.width >= 850 ? Math.min(510, parent.width * 0.46) : 0
 """)
 replace("Modals/Clipboard/ClipboardContent.qml",
-        "        anchors.rightMargin: Theme.spacingM\n        anchors.bottomMargin: modal.showKeyboardHints",
-        "        anchors.rightMargin: Theme.spacingM + (detailWidth > 0 ? detailWidth + Theme.spacingM : 0)\n        anchors.bottomMargin: modal.showKeyboardHints")
+        "        anchors.rightMargin: Theme.spacingM\n        anchors.bottomMargin: (modal.showKeyboardHints",
+        "        anchors.rightMargin: Theme.spacingM + (detailWidth > 0 ? detailWidth + Theme.spacingM : 0)\n        anchors.bottomMargin: (modal.showKeyboardHints")
 replace("Modals/Clipboard/ClipboardContent.qml",
         "    Loader {\n        id: keyboardHintsLoader",
         """    ClipboardDetail {
@@ -90,7 +78,13 @@ replace("Modals/Clipboard/ClipboardContent.qml",
 
     Loader {
         id: keyboardHintsLoader""")
-replace("Modals/Clipboard/ClipboardEntry.qml", "        onClicked: copyRequested()", """        onEntered: {
+replace("Modals/Clipboard/ClipboardEntry.qml", """        onClicked: {
+            if (SettingsData.clipboardClickToPaste) {
+                pasteRequested();
+            } else {
+                copyRequested();
+            }
+        }""", """        onEntered: {
             ClipboardService.selectedIndex = root.itemIndex;
             ClipboardService.keyboardNavigationActive = true;
         }
@@ -98,16 +92,19 @@ replace("Modals/Clipboard/ClipboardEntry.qml", "        onClicked: copyRequested
             ClipboardService.selectedIndex = root.itemIndex;
             ClipboardService.keyboardNavigationActive = true;
         }
-        onDoubleClicked: copyRequested()""")
+        onDoubleClicked: {
+            if (SettingsData.clipboardClickToPaste) pasteRequested();
+            else copyRequested();
+        }""")
 
 # Кнопка на панели открывает то же широкое окно, что и Win + V.
 bar_content = (root / "Modules/DankBar/DankBarContent.qml").read_text()
-start = "            function openClipboardPopout(initialTab) {"
+start = "            function openClipboardPopout(initialTab, mode) {"
 end = "\n            onClipboardClicked:"
 if bar_content.count(start) != 1 or bar_content.count(end) != 1:
     raise RuntimeError("Изменилась кнопка истории копирования DMS")
 replace("Modules/DankBar/DankBarContent.qml",
-        bar_content[bar_content.index(start):bar_content.index(end)], """            function openClipboardPopout(initialTab) {
+        bar_content[bar_content.index(start):bar_content.index(end)], """            function openClipboardPopout(initialTab, mode) {
                 const modal = PopoutService.clipboardHistoryModal;
                 if (!modal) return;
                 if (modal.shouldBeVisible && modal.activeTab === initialTab) {

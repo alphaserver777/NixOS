@@ -10,6 +10,7 @@
   "blurredWallpaperLayer": false,
   "blurWallpaperOnOverview": false,
   "use24HourClock": true,
+  "firstDayOfWeek": 1,
   "showSeconds": false,
   "animationSpeed": 1,
   "enableRippleEffects": true,

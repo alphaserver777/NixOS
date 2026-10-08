@@ -1,26 +1,25 @@
 { pkgs, ... }:
 let
+  dmsPackage = pkgs.callPackage ../../../packages/dms-shell-1-6-2.nix { };
   sandsSource = pkgs.fetchFromGitHub {
     owner = "lung595";
     repo = "Sands";
     rev = "b3760d9d438e06d37b136a8c2f9c87fed73de279";
     hash = "sha256:1b8h56gvk4rnzln7ym0xg8sh6cx0bizf4wc3g2jbx39iaiys3xz2";
   };
-  sands = pkgs.runCommand "sands-1.4.3-dms-1.4.6" {
+  sands = pkgs.runCommand "sands-1.4.3-dms-1.6" {
     nativeBuildInputs = [ pkgs.python3 ];
   } ''
-    mkdir -p "$out/widget" "$out/launcher"
-    cp -r ${sandsSource}/. "$out/widget/"
+    mkdir -p "$out"
+    cp -r ${sandsSource}/. "$out/"
     chmod -R u+w "$out"
-    python3 ${./sands-adapt.py} "$out/widget" ${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo
-    cp -r "$out/widget/." "$out/launcher/"
-    cp "$out/widget/launcher-plugin.json" "$out/launcher/plugin.json"
+    python3 ${./sands-adapt.py} "$out" ${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo
   '';
   dmsCenter = pkgs.runCommand "dms-centered-control" {
     nativeBuildInputs = [ pkgs.python3 ];
   } ''
     mkdir -p "$out"
-    cp -r ${pkgs.dms-shell}/share/quickshell/dms/. "$out/"
+    cp -r ${dmsPackage}/share/quickshell/dms/. "$out/"
     chmod -R u+w "$out"
     cp ${./CosmicCenter.qml} "$out/Modules/CosmicCenter.qml"
     cp ${./KeyboardLayoutOSD.qml} "$out/Modules/KeyboardLayoutOSD.qml"
@@ -41,7 +40,7 @@ let
   };
   dms = pkgs.writeShellApplication {
     name = "cosmic-dms";
-    runtimeInputs = [ pkgs.dms-shell pkgs.quickshell pkgs.dgop pkgs.systemd pkgs.python3 pkgs.pipewire pkgs.libnotify pkgs.glib ];
+    runtimeInputs = [ dmsPackage pkgs.quickshell pkgs.dgop pkgs.systemd pkgs.python3 pkgs.pipewire pkgs.libnotify pkgs.glib ];
     text = ''
       if [ "''${1:-}" = init ]; then
         settings_dir="''${XDG_CONFIG_HOME:-$HOME/.config}/DankMaterialShell"
@@ -54,6 +53,11 @@ let
       fi
       export DMS_DISABLE_POLKIT=1
       export DMS_DISABLE_MATUGEN=1
+      # Сохраняем команды горячих клавиш и переключателя после изменения CLI.
+      if [ "''${1:-}" = ipc ] && [ -n "''${2:-}" ] && [ "''${2:-}" != call ] && [ "''${2:-}" != --help ] && [ "''${2:-}" != -h ]; then
+        shift
+        set -- ipc call "$@"
+      fi
       exec dms -c ${dmsCenter} "$@"
     '';
   };
@@ -65,8 +69,7 @@ let
 in {
   home.packages = [ noctalia dms switcher ];
   xdg.configFile."cosmic-desktop/noctalia/config.toml".source = ./noctalia.toml;
-  xdg.configFile."DankMaterialShell/plugins/Sands".source = "${sands}/widget";
-  xdg.configFile."DankMaterialShell/plugins/SandsLauncher".source = "${sands}/launcher";
+  xdg.configFile."DankMaterialShell/plugins/Sands".source = sands;
 
   # Home Manager запускает службы WantedBy при повторном применении.
   # Прежняя панель пропускает запуск, если выбрана другая оболочка.
