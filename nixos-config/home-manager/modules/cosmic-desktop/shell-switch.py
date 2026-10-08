@@ -3,7 +3,6 @@
 import fcntl
 import os
 from pathlib import Path
-import socket
 import subprocess
 import sys
 import time
@@ -50,14 +49,6 @@ def fallback(failed):
     return choice if choice != failed else "original"
 
 
-def close_center():
-    with socket.socket(socket.AF_UNIX) as client:
-        try:
-            client.connect(str(RUNTIME / "cosmic-control-center.sock"))
-        except (FileNotFoundError, ConnectionRefusedError):
-            pass
-
-
 def activate(choice):
     # Выбранная оболочка защищена от повторного запуска Hyprpanel при
     # применении системы. При ошибке restore() сразу возвращает прежний выбор.
@@ -101,7 +92,6 @@ def restore(choice):
 
 
 def switch(choice, remember=True):
-    close_center()
     previous = active_choice()
     try:
         activate(choice)
@@ -144,7 +134,7 @@ def main():
     actions = {
         "original": {
             "launcher": ["walker"],
-            "center": ["cosmic-control-center"],
+            "center": ["hyprpanel", "toggleWindow", "dashboardmenu"],
             "dashboard": ["hyprpanel", "toggleWindow", "dashboardmenu"],
             "clipboard": ["walker", "--provider", "clipboard"],
             "notifications": ["hyprpanel", "toggleWindow", "notificationsmenu"],

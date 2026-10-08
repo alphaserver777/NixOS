@@ -170,7 +170,7 @@ import dbus"
       interval = 86400;
       hideOnEmpty = false;
       execute = "true";
-      actions.onLeftClick = "cosmic-control-center";
+      actions.onLeftClick = "hyprpanel toggleWindow dashboardmenu";
     };
     "custom/clash" = {
       label = "{}";
