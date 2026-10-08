@@ -11,21 +11,42 @@ let
       exec noctalia "$@"
     '';
   };
+  dms = pkgs.writeShellApplication {
+    name = "cosmic-dms";
+    runtimeInputs = [ pkgs.dms-shell pkgs.quickshell pkgs.dgop pkgs.systemd ];
+    text = ''
+      if [ "''${1:-}" = init ]; then
+        settings_dir="''${XDG_CONFIG_HOME:-$HOME/.config}/DankMaterialShell"
+        mkdir -p "$settings_dir"
+        if [ ! -e "$settings_dir/settings.json" ]; then
+          install -m 600 ${./dms-settings.json} "$settings_dir/settings.json"
+        fi
+        exit 0
+      fi
+      export DMS_DISABLE_POLKIT=1
+      export DMS_DISABLE_MATUGEN=1
+      exec dms "$@"
+    '';
+  };
   switcher = pkgs.writeShellApplication {
     name = "cosmic-shell";
-    runtimeInputs = [ pkgs.python3 pkgs.systemd pkgs.walker pkgs.hyprpanel noctalia ];
+    runtimeInputs = [ pkgs.python3 pkgs.systemd pkgs.walker pkgs.hyprpanel noctalia dms ];
     text = ''exec python3 ${./shell-switch.py} "$@"'';
   };
 in {
-  home.packages = [ noctalia switcher ];
+  home.packages = [ noctalia dms switcher ];
   xdg.configFile."cosmic-desktop/noctalia/config.toml".source = ./noctalia.toml;
+
+  # Home Manager запускает службы WantedBy при повторном применении.
+  # Прежняя панель пропускает запуск, если выбрана другая оболочка.
+  systemd.user.services.hyprpanel.Service.ExecCondition = "${switcher}/bin/cosmic-shell allow-original";
 
   systemd.user.services.cosmic-noctalia = {
     Unit = {
       Description = "Пробное оформление Noctalia";
       After = [ "graphical-session.target" "hyprpanel.service" ];
       PartOf = [ "graphical-session.target" ];
-      Conflicts = [ "hyprpanel.service" ];
+      Conflicts = [ "cosmic-dms.service" ];
     };
     Service = {
       ExecStartPre = "${noctalia}/bin/cosmic-noctalia config validate";
@@ -36,9 +57,25 @@ in {
       KillMode = "control-group";
     };
   };
+  systemd.user.services.cosmic-dms = {
+    Unit = {
+      Description = "Пробное оформление DankMaterialShell";
+      After = [ "graphical-session.target" "hyprpanel.service" ];
+      PartOf = [ "graphical-session.target" ];
+      Conflicts = [ "cosmic-noctalia.service" ];
+    };
+    Service = {
+      ExecStartPre = "${dms}/bin/cosmic-dms init";
+      ExecStart = "${dms}/bin/cosmic-dms run --session";
+      ExecStopPost = "${pkgs.systemd}/bin/systemctl --user --no-block start cosmic-shell-recover.service";
+      Restart = "no";
+      TimeoutStopSec = 5;
+      KillMode = "control-group";
+    };
+  };
   systemd.user.services.cosmic-shell-recover = {
     Unit = {
-      Description = "Возврат панели после завершения Noctalia";
+      Description = "Возврат оформления после завершения оболочки";
       PartOf = [ "graphical-session.target" ];
     };
     Service = {
@@ -61,6 +98,13 @@ in {
   };
 
   xdg.desktopEntries = {
+    cosmic-dms-trial = {
+      name = "DankMaterialShell — попробовать";
+      exec = "${switcher}/bin/cosmic-shell dms";
+      icon = "preferences-desktop-theme";
+      terminal = false;
+      categories = [ "Settings" ];
+    };
     cosmic-noctalia-trial = {
       name = "Noctalia — попробовать";
       exec = "${switcher}/bin/cosmic-shell noctalia";

@@ -12,7 +12,7 @@ let
     PartOf = [ "graphical-session.target" ];
   };
 in {
-  imports = [ ./screensaver.nix ./control-center.nix ./noctalia-trial.nix ];
+  imports = [ ./screensaver.nix ./control-center.nix ./shell-trials.nix ];
   home.packages = [ pkgs.walker pkgs.elephant mode ];
 
   # Прежние обои с космонавтом целиком на каждом экране.
