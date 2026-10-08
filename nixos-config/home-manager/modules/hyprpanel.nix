@@ -1,0 +1,529 @@
+{ lib, pkgs, hostname, ... }:
+let
+  hyprpanelPackage = pkgs.hyprpanel.overrideAttrs (oldAttrs: {
+    postInstall = (oldAttrs.postInstall or "") + ''
+      substituteInPlace $out/share/scripts/bluetooth.py \
+        --replace-fail "import dbus" "import os
+import sys
+
+if not os.path.isdir('/sys/class/bluetooth'):
+    sys.exit(0)
+
+import dbus"
+    '';
+    postPatch = (oldAttrs.postPatch or "") + ''
+      substituteInPlace src/core/initialization/index.ts \
+        --replace-fail "Timer.measureSync('OSD', () => OSD());" \
+          "Timer.measureSync('OSD', () => {});"
+      substituteInPlace src/components/bar/modules/kblayout/helpers/layouts.ts \
+        --replace-fail "'English (US)': 'US'," "'English (US)': '🇺🇸'," \
+        --replace-fail "Russian: 'RU'," "Russian: '🇷🇺',"
+    '';
+  });
+
+  # Цвета сохранены локально: проверка настроек не требует сборки панели.
+  theme = builtins.fromJSON (builtins.readFile ./hyprpanel-theme.json);
+
+  weatherScript = pkgs.writeShellScript "hyprpanel-weather-krasnodar" ''
+    weather=$(
+      ${pkgs.curl}/bin/curl -fsS --max-time 3 'https://wttr.in/Krasnodar?format=%c%20%t' 2>/dev/null \
+        | ${pkgs.gnused}/bin/sed -e 's/+//g' -e 's/[[:space:]]*$//'
+    ) || true
+
+    if [ -n "$weather" ]; then
+      printf '%s\n' "$weather"
+    else
+      printf '󰖐 --°C\n'
+    fi
+  '';
+
+  loadAverageScript = pkgs.writeShellScript "hyprpanel-load-average" ''
+    load_values="$(${pkgs.coreutils}/bin/cut -d' ' -f1-3 /proc/loadavg 2>/dev/null)" || true
+
+    if [ -n "$load_values" ]; then
+      printf '%s\n' "$load_values" | ${pkgs.gnused}/bin/sed 's/ /·/g'
+    else
+      printf '--\n'
+    fi
+  '';
+
+  cryptoPriceScript = pkgs.writeShellScript "hyprpanel-crypto-price" ''
+    set -eu
+
+    state_dir="${"$"}HOME/.config/hyprpanel"
+    state_file="$state_dir/crypto-symbol"
+
+    ${pkgs.coreutils}/bin/mkdir -p "$state_dir"
+
+    if [ -r "$state_file" ]; then
+      symbol="$(${pkgs.coreutils}/bin/cat "$state_file")"
+    else
+      symbol="BTCUSDT"
+    fi
+
+    case "$symbol" in
+      BTCUSDT) short="BTC" ;;
+      ETHUSDT) short="ETH" ;;
+      SOLUSDT) short="SOL" ;;
+      BNBUSDT) short="BNB" ;;
+      XRPUSDT) short="XRP" ;;
+      ADAUSDT) short="ADA" ;;
+      DOGEUSDT) short="DOGE" ;;
+      TONUSDT) short="TON" ;;
+      *) short="$symbol" ;;
+    esac
+
+    price="$(
+      ${pkgs.curl}/bin/curl -fsS --max-time 4 "https://api.binance.com/api/v3/ticker/price?symbol=$symbol" 2>/dev/null \
+        | ${pkgs.jq}/bin/jq -r '.price // empty' 2>/dev/null
+    )" || true
+
+    if [ -z "$price" ]; then
+      printf '%s $--\n' "$short"
+      exit 0
+    fi
+
+    pretty="$(${pkgs.gawk}/bin/awk -v p="$price" '
+      BEGIN {
+        if (p >= 1000) {
+          n = sprintf("%.0f", p)
+          out = ""
+
+          while (length(n) > 3) {
+            out = "." substr(n, length(n) - 2, 3) out
+            n = substr(n, 1, length(n) - 3)
+          }
+
+          printf "%s%s", n, out
+        } else if (p >= 1) {
+          printf "%.2f", p
+        } else {
+          printf "%.4f", p
+        }
+      }
+    ')"
+
+    printf '%s $%s\n' "$short" "$pretty"
+  '';
+
+  cryptoSelectScript = pkgs.writeShellScript "hyprpanel-crypto-select" ''
+    set -eu
+
+    state_dir="${"$"}HOME/.config/hyprpanel"
+    state_file="$state_dir/crypto-symbol"
+
+    ${pkgs.coreutils}/bin/mkdir -p "$state_dir"
+
+    selected="$(
+      ${pkgs.coreutils}/bin/printf '%s\n' \
+        'BTCUSDT  BTC  Bitcoin' \
+        'ETHUSDT  ETH  Ethereum' \
+        'SOLUSDT  SOL  Solana' \
+        'BNBUSDT  BNB  BNB' \
+        'XRPUSDT  XRP  XRP' \
+        'ADAUSDT  ADA  Cardano' \
+        'DOGEUSDT  DOGE  Dogecoin' \
+        'TONUSDT  TON  Toncoin' \
+        | ${pkgs.wofi}/bin/wofi --dmenu --prompt 'Crypto' \
+        | ${pkgs.gawk}/bin/awk '{print $1}'
+    )"
+
+    if [ -n "$selected" ]; then
+      printf '%s\n' "$selected" > "$state_file"
+    fi
+  '';
+
+  restartHyprpanel = pkgs.writeShellScriptBin "restart-hyprpanel" ''
+    set -eu
+
+    if ${pkgs.systemd}/bin/systemctl --user list-unit-files hyprpanel.service >/dev/null 2>&1; then
+      exec ${pkgs.systemd}/bin/systemctl --user restart hyprpanel.service
+    fi
+
+    socket_dir="/run/user/$(${pkgs.coreutils}/bin/id -u)/astal"
+    socket="$socket_dir/hyprpanel.sock"
+    log_file="${"$"}HOME/.cache/hyprpanel.log"
+    ${pkgs.coreutils}/bin/mkdir -p "$socket_dir" "${"$"}HOME/.cache"
+    ${pkgs.procps}/bin/pkill -f '(^|/)(hyprpanel|\.hyprpanel-wrapped)( |$)' 2>/dev/null || true
+    ${pkgs.coreutils}/bin/rm -rf /tmp/hyprpanel
+    ${pkgs.coreutils}/bin/rm -f "$socket"
+    ${pkgs.coreutils}/bin/sleep 1
+
+    ${pkgs.util-linux}/bin/setsid ${hyprpanelPackage}/bin/hyprpanel >"$log_file" 2>&1 < /dev/null &
+  '';
+
+  cleanupHyprpanel = pkgs.writeShellScript "cleanup-hyprpanel" ''
+    set -u
+
+    socket_dir="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}/astal"
+
+    ${pkgs.coreutils}/bin/mkdir -p "$socket_dir" "${"$"}HOME/.cache"
+    ${pkgs.procps}/bin/pkill -f '(^|/)(hyprpanel|\.hyprpanel-wrapped)( |$)' 2>/dev/null || true
+    ${pkgs.coreutils}/bin/rm -rf /tmp/hyprpanel
+    ${pkgs.coreutils}/bin/rm -f "$socket_dir/hyprpanel.sock"
+  '';
+
+  customModules = {
+    "custom/cosmic-center" = {
+      label = "󰣇";
+      tooltip = "Центр управления · Win + D";
+      interval = 86400;
+      hideOnEmpty = false;
+      execute = "true";
+      actions.onLeftClick = "cosmic-control-center";
+    };
+    "custom/clash" = {
+      label = "{}";
+      tooltip = "Clash: наличие сетевого туннеля. Нажмите для открытия приложения.";
+      interval = 5;
+      execute = "if test -d /sys/class/net/Meta; then printf '󰒃'; else printf '󰒄'; fi";
+      actions.onLeftClick = "clash-verge";
+    };
+    "custom/cosmic-mode" = {
+      label = "{}";
+      tooltip = "Режим рабочего стола";
+      interval = 2;
+      execute = "cosmic-mode status";
+      actions.onLeftClick = "cosmic-mode menu";
+    };
+    "custom/keyboard-flags" = {
+      label = "{}";
+      tooltip = "Keyboard Layout";
+      interval = 5;
+      execute = ''
+        layout=$(hyprctl devices -j 2>/dev/null | ${pkgs.jq}/bin/jq -r '.keyboards[] | select(.main == true) | .active_keymap' 2>/dev/null)
+        case "$layout" in
+          *Russian*) echo "🇷🇺" ;;
+          *English*) echo "🇺🇸" ;;
+          *) echo "🌐" ;;
+        esac
+      '';
+    };
+    "custom/weather-krasnodar" = {
+      label = "{}";
+      tooltip = "Weather: Krasnodar";
+      interval = 900;
+      hideOnEmpty = false;
+      execute = "${weatherScript}";
+    };
+    "custom/load-average" = {
+      label = "{}";
+      tooltip = "Load Average (1 min)";
+      interval = 5;
+      hideOnEmpty = false;
+      execute = "${loadAverageScript}";
+    };
+
+  };
+
+  hyprpanelConfig = theme // {
+    # Обои показывает hyprpaper; второй фон панели закрывает его.
+    "wallpaper.enable" = false;
+    "bar.autoHide" = "never";
+    "bar.clock.format" = "%d %b %H:%M";
+    "bar.clock.showIcon" = false;
+    "bar.bluetooth.label" = false;
+    "bar.network.label" = false;
+    "bar.volume.label" = true;
+    "bar.customModules.cpu.icon" = "󰍛";
+    "bar.customModules.cpu.label" = true;
+    "bar.customModules.cpu.round" = true;
+    "bar.customModules.cpu.pollingInterval" = 5000;
+    "bar.customModules.ram.icon" = "󰘚";
+    "bar.customModules.ram.label" = true;
+    "bar.customModules.ram.labelType" = "percentage";
+    "bar.customModules.ram.round" = true;
+    "bar.customModules.ram.pollingInterval" = 5000;
+    "bar.customModules.storage.icon" = "󰋊";
+    "bar.customModules.storage.label" = true;
+    "bar.customModules.storage.labelType" = "percentage";
+    "bar.customModules.storage.paths" = [ "/" ];
+    "bar.customModules.storage.units" = "gibibytes";
+    "bar.customModules.storage.tooltipStyle" = "simple";
+    "bar.customModules.storage.round" = true;
+    "bar.customModules.storage.pollingInterval" = 10000;
+    "bar.customModules.netstat.networkInterface" = "";
+    "bar.customModules.netstat.dynamicIcon" = true;
+    "bar.customModules.netstat.icon" = "󰇚";
+    "bar.customModules.netstat.label" = true;
+    "bar.customModules.netstat.networkInLabel" = "↓";
+    "bar.customModules.netstat.networkOutLabel" = "↑";
+    "bar.customModules.netstat.labelType" = "full";
+    "bar.customModules.netstat.rateUnit" = "auto";
+    "bar.customModules.netstat.round" = true;
+    "bar.customModules.netstat.pollingInterval" = 5000;
+    "bar.customModules.microphone.label" = false;
+    "bar.customModules.microphone.mutedIcon" = "🔴";
+    "bar.customModules.microphone.unmutedIcon" = "🟢";
+    "bar.customModules.microphone.leftClick" = "";
+    "bar.customModules.microphone.rightClick" = "";
+    "bar.customModules.microphone.middleClick" = "";
+    "bar.customModules.microphone.scrollUp" = "";
+    "bar.customModules.microphone.scrollDown" = "";
+    "bar.customModules.kbLayout.label" = true;
+    "bar.customModules.kbLayout.labelType" = "code";
+    "bar.customModules.kbLayout.icon" = "";
+    "bar.customModules.hypridle.label" = false;
+    "bar.customModules.hypridle.pollingInterval" = 5000;
+    "bar.customModules.hypridle.offIcon" = "";
+    "bar.customModules.hypridle.onIcon" = "";
+    "bar.launcher.autoDetectIcon" = false;
+    "bar.launcher.icon" = "";
+    "bar.workspaces.show_numbered" = true;
+    "bar.workspaces.showWsIcons" = false;
+    "bar.workspaces.show_icons" = false;
+    "bar.workspaces.monitorSpecific" = false;
+    "notifications.monitor" = if hostname == "x-disk" then 0 else 1;
+    "notifications.active_monitor" = false;
+    "bar.workspaces.showAllActive" = true;
+    "bar.workspaces.workspaces" = 10;
+    "bar.workspaces.workspaceIconMap" = {
+      "1" = "";
+      "2" = "";
+      "3" = "";
+      "4" = "";
+      "5" = "";
+      "6" = "";
+      "7" = "";
+      "8" = "";
+      "9" = "";
+      "10" = "";
+    };
+
+    "menus.dashboard.shortcuts.left.shortcut1.command" = "cosmic-mode work";
+    "menus.dashboard.shortcuts.left.shortcut1.icon" = "";
+    "menus.dashboard.shortcuts.left.shortcut1.tooltip" = "Работа";
+    "menus.dashboard.shortcuts.left.shortcut2.command" = "cosmic-mode video";
+    "menus.dashboard.shortcuts.left.shortcut2.icon" = "󰕧";
+    "menus.dashboard.shortcuts.left.shortcut2.tooltip" = "Видео";
+    "menus.dashboard.shortcuts.left.shortcut3.command" = "cosmic-mode show";
+    "menus.dashboard.shortcuts.left.shortcut3.icon" = "󰍹";
+    "menus.dashboard.shortcuts.left.shortcut3.tooltip" = "Показ";
+    "menus.dashboard.shortcuts.left.shortcut4.command" = "cosmic-mode normal";
+    "menus.dashboard.shortcuts.left.shortcut4.icon" = "󰁯";
+    "menus.dashboard.shortcuts.left.shortcut4.tooltip" = "Обычный режим";
+    "menus.dashboard.shortcuts.right.shortcut1.command" = "obs";
+    "menus.dashboard.shortcuts.right.shortcut1.icon" = "󰐻";
+    "menus.dashboard.shortcuts.right.shortcut1.tooltip" = "OBS Studio";
+    "menus.dashboard.controls.enabled" = true;
+    "menus.dashboard.stats.enabled" = true;
+    "menus.dashboard.shortcuts.enabled" = true;
+    "menus.dashboard.directories.enabled" = false;
+
+    # Одинаковая панель на любом числе подключённых экранов.
+    "bar.layouts" = {
+      "*" = {
+        left = [ "custom/cosmic-center" "workspaces" "custom/cosmic-mode" ];
+        middle = [ "media" ];
+        right = [ "hypridle" "systray" "kbinput" "network" "custom/clash" "volume" "microphone" "custom/weather-krasnodar" "clock" "notifications" ];
+      };
+    };
+
+    "theme.font.name" = "JetBrainsMono Nerd Font";
+    "theme.font.size" = "0.85rem";
+    "theme.font.weight" = 600;
+
+    "theme.bar.floating" = true;
+    "theme.bar.transparent" = false;
+    "theme.bar.opacity" = 100;
+    "theme.bar.background" = "#151824";
+    "theme.bar.border.color" = "#30364c";
+    "theme.bar.margin_sides" = "0.35em";
+    "theme.bar.margin_top" = "0.35em";
+    "theme.bar.outer_spacing" = "0.35em";
+
+    "theme.bar.buttons.style" = "default";
+    "theme.bar.buttons.monochrome" = false;
+    "theme.bar.buttons.background" = "#1e2436";
+    "theme.bar.buttons.hover" = "#30364c";
+    "theme.bar.buttons.borderColor" = "rgba(205,214,244,0.08)";
+    "theme.bar.buttons.radius" = "0.5rem";
+    "theme.bar.buttons.padding_x" = "0.45rem";
+    "theme.bar.buttons.padding_y" = "0.12rem";
+    "theme.bar.buttons.y_margins" = "0.15em";
+    "theme.bar.buttons.icon" = "#cdd6f4";
+    "theme.bar.buttons.text" = "#cdd6f4";
+
+    "theme.bar.buttons.dashboard.background" = "#1e2436";
+    "theme.bar.buttons.dashboard.icon" = "#89b4fa";
+    "theme.bar.buttons.workspaces.background" = "#1e2436";
+    "theme.bar.buttons.workspaces.available" = "#6c7086";
+    "theme.bar.buttons.workspaces.occupied" = "#bac2de";
+    "theme.bar.buttons.workspaces.active" = "#f5e0dc";
+    "theme.bar.buttons.windowtitle.text" = "#ffffff";
+    "theme.bar.buttons.windowtitle.background" = "#1e2436";
+    "theme.bar.buttons.windowtitle.icon" = "#bac2de";
+    "theme.bar.buttons.network.background" = "#1e2436";
+    "theme.bar.buttons.network.icon" = "#94e2d5";
+    "theme.bar.buttons.network.text" = "#94e2d5";
+    "theme.bar.buttons.modules.kbLayout.background" = "#1e2436";
+    "theme.bar.buttons.modules.kbLayout.icon" = "#f9e2af";
+    "theme.bar.buttons.modules.kbLayout.text" = "#f9e2af";
+    "theme.bar.buttons.modules.microphone.background" = "#1e2436";
+    "theme.bar.buttons.modules.microphone.icon" = "#a6e3a1";
+    "theme.bar.buttons.modules.microphone.text" = "#a6e3a1";
+    "theme.bar.buttons.modules.hypridle.background" = "#1e2436";
+    "theme.bar.buttons.modules.hypridle.icon" = "#fab387";
+    "theme.bar.buttons.modules.hypridle.text" = "#fab387";
+    "theme.bar.buttons.bluetooth.background" = "#1e2436";
+    "theme.bar.buttons.bluetooth.icon" = "#89b4fa";
+    "theme.bar.buttons.bluetooth.text" = "#89b4fa";
+    "theme.bar.buttons.volume.background" = "#1e2436";
+    "theme.bar.buttons.volume.icon" = "#89b4fa";
+    "theme.bar.buttons.volume.text" = "#89b4fa";
+    "theme.bar.buttons.modules.cpu.background" = "#1e2436";
+    "theme.bar.buttons.modules.cpu.icon" = "#f38ba8";
+    "theme.bar.buttons.modules.cpu.text" = "#f38ba8";
+    "theme.bar.buttons.modules.ram.background" = "#1e2436";
+    "theme.bar.buttons.modules.ram.icon" = "#f9e2af";
+    "theme.bar.buttons.modules.ram.text" = "#f9e2af";
+    "theme.bar.buttons.modules.storage.background" = "#1e2436";
+    "theme.bar.buttons.modules.storage.icon" = "#a6e3a1";
+    "theme.bar.buttons.modules.storage.text" = "#a6e3a1";
+    "theme.bar.buttons.modules.netstat.background" = "#1e2436";
+    "theme.bar.buttons.modules.netstat.icon" = "#89dceb";
+    "theme.bar.buttons.modules.netstat.text" = "#89dceb";
+    "theme.bar.middle.spacing" = "0.2em";
+    "theme.bar.buttons.windowtitle.enableBorder" = false;
+    "theme.bar.buttons.windowtitle.maxWidth" = "18em";
+    "theme.bar.buttons.battery.background" = "#1e2436";
+    "theme.bar.buttons.battery.icon" = "#a6e3a1";
+    "theme.bar.buttons.battery.text" = "#a6e3a1";
+    "theme.bar.buttons.clock.background" = "#1e2436";
+    "theme.bar.buttons.clock.icon" = "#b4befe";
+    "theme.bar.buttons.clock.text" = "#b4befe";
+    "theme.bar.buttons.notifications.background" = "#1e2436";
+    "theme.bar.buttons.notifications.icon" = "#f5c2e7";
+    "theme.bar.buttons.notifications.total" = "#f5c2e7";
+    "theme.bar.buttons.systray.background" = "#1e2436";
+    "theme.bar.buttons.systray.customIcon" = "#cdd6f4";
+
+    "theme.bar.menus.opacity" = 100;
+    "theme.bar.menus.background" = "#151824";
+    "theme.bar.menus.card.color" = "#1e2436";
+    "theme.bar.menus.border.color" = "#30364c";
+    "theme.bar.menus.text" = "#cdd6f4";
+    "theme.bar.menus.label" = "#b4befe";
+    "theme.bar.menus.dimtext" = "#7f849c";
+    "theme.bar.menus.feinttext" = "#6c7086";
+    "theme.bar.menus.iconbuttons.active" = "#b4befe";
+    "theme.bar.menus.iconbuttons.passive" = "#bac2de";
+    "theme.bar.menus.icons.active" = "#b4befe";
+    "theme.bar.menus.icons.passive" = "#7f849c";
+    "theme.bar.menus.listitems.active" = "#89b4fa";
+    "theme.bar.menus.listitems.passive" = "#cdd6f4";
+    "theme.bar.menus.switch.enabled" = "#89b4fa";
+    "theme.bar.menus.switch.disabled" = "#585b70";
+    "theme.bar.menus.switch.puck" = "#cdd6f4";
+    "theme.bar.menus.progressbar.foreground" = "#89b4fa";
+    "theme.bar.menus.progressbar.background" = "#313244";
+  };
+
+  nerdFont =
+    if pkgs ? nerd-fonts.jetbrains-mono then
+      pkgs.nerd-fonts.jetbrains-mono
+    else
+      pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; };
+
+  configFile = pkgs.writeText "hyprpanel-config.json" (builtins.toJSON hyprpanelConfig);
+  modulesFile = pkgs.writeText "hyprpanel-modules.json" (builtins.toJSON customModules);
+  modulesScssFile = pkgs.writeText "hyprpanel-modules.scss" ''
+    .cmodule-crypto-price {
+      min-width: 7.8em;
+    }
+
+    .cmodule-crypto-price .module-label {
+      color: #f5c2e7;
+      font-weight: 700;
+    }
+
+    .battery .module-label {
+      min-width: 4.2em;
+    }
+
+    .cpu .module-label,
+    .ram .module-label {
+      min-width: 4.0em;
+    }
+
+    .cmodule-load-average {
+      min-width: 0;
+      padding-left: 0.2rem;
+      padding-right: 0.2rem;
+    }
+
+    .cmodule-load-average .module-label {
+      color: #fab387;
+      font-weight: 700;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .storage .module-label {
+      min-width: 4.8em;
+    }
+
+    .netstat .module-label {
+      min-width: 11.5em;
+    }
+
+    .cmodule-weather-krasnodar {
+      min-width: 5.8em;
+    }
+
+    .cmodule-weather-krasnodar .module-label {
+      color: #89dceb;
+      font-weight: 700;
+    }
+  '';
+in
+{
+  programs.waybar.enable = lib.mkForce false;
+  services.dunst.enable = lib.mkForce false;
+  services.swaync.enable = lib.mkForce false;
+
+  home.packages = [
+    hyprpanelPackage
+    nerdFont
+    restartHyprpanel
+  ];
+
+  home.activation.hyprpanelConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    $DRY_RUN_CMD mkdir -p "$HOME/.config/hyprpanel"
+    tmp_dir="$HOME/.config/hyprpanel/.hm-tmp"
+    $DRY_RUN_CMD rm -rf "$tmp_dir"
+    $DRY_RUN_CMD mkdir -p "$tmp_dir"
+    $DRY_RUN_CMD cp ${configFile} "$tmp_dir/config.json"
+    $DRY_RUN_CMD cp ${modulesFile} "$tmp_dir/modules.json"
+    $DRY_RUN_CMD cp ${modulesScssFile} "$tmp_dir/modules.scss"
+    $DRY_RUN_CMD chmod 644 "$tmp_dir/config.json"
+    $DRY_RUN_CMD chmod 644 "$tmp_dir/modules.json"
+    $DRY_RUN_CMD chmod 644 "$tmp_dir/modules.scss"
+    $DRY_RUN_CMD mv -f "$tmp_dir/config.json" "$HOME/.config/hyprpanel/config.json"
+    $DRY_RUN_CMD mv -f "$tmp_dir/modules.json" "$HOME/.config/hyprpanel/modules.json"
+    $DRY_RUN_CMD mv -f "$tmp_dir/modules.scss" "$HOME/.config/hyprpanel/modules.scss"
+    $DRY_RUN_CMD rmdir "$tmp_dir"
+  '';
+
+  systemd.user.services.hyprpanel = {
+    Unit = {
+      Description = "Hyprpanel";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+
+    Service = {
+      Type = "simple";
+      ExecStartPre = cleanupHyprpanel;
+      ExecStart = "${hyprpanelPackage}/bin/hyprpanel";
+      Restart = "always";
+      RestartSec = 2;
+      KillMode = "mixed";
+      TimeoutStopSec = 5;
+      StandardOutput = "append:%h/.cache/hyprpanel.log";
+      StandardError = "append:%h/.cache/hyprpanel.log";
+    };
+
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+}

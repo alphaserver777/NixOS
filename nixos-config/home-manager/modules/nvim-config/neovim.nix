@@ -3,15 +3,18 @@
 }: {
   programs.neovim = {
     enable = true;
+    withPython3 = true;
+    withRuby = true;
 
     extraPackages = with pkgs; [
       lua-language-server
-      python311Packages.python-lsp-server
+      python3Packages.python-lsp-server
       nixd
       vimPlugins.nvim-treesitter-parsers.hyprlang
       fd
       ripgrep
       tree-sitter
+      prettier
     ];
 
     # фиксим устаревший pynvim

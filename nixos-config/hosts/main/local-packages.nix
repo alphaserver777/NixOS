@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, antigravityCliPackage, ... }:
 
 let
   lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
@@ -7,6 +7,7 @@ in
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
+    tor-browser
     telegram-desktop
     obs-studio
     obsidian
@@ -17,7 +18,6 @@ in
     imv #pic
     mpv #video
     git
-    anydesk
     pavucontrol
 
     # Office Suites
@@ -27,8 +27,9 @@ in
     openboard
 
     # For Develop
+    ansible
     vscode
-    gemini-cli
+    antigravityCliPackage
     google-cloud-sdk
     docker
     docker-compose
@@ -50,6 +51,7 @@ in
     ntfs3g # driver for NTFS
     ripgrep # fast text search
     lazyssh-client
+    lazysql
     udisks # for USB
     ueberzugpp # pic in terminal
     w3m # web-browser in terminal

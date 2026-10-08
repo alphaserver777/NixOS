@@ -7,7 +7,8 @@
     keyMode = "vi";
     terminal = "screen-256color";
     extraConfig = ''
-            set -as terminal-features ",alacritty*:RGB"
+            set -as terminal-features ",alacritty*:RGB:extkeys"
+            set -g extended-keys on
             set-option -g focus-events on   # ✅ фикс для Neovim autoread
 
       # Автоматически переименовывать окна по активной программе

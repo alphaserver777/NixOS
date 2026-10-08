@@ -1,20 +1,30 @@
-{ pkgs, ... }: {
+{ pkgs, pkgs-unstable, opencodePackage, antigravityCliPackage, ... }:
+let
+  lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
+in
+{
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
-    telegram-desktop
+    tor-browser
     qtox
     obsidian
     syncthing
     keepassxc
     qbittorrent
     imv #pic
+    grim
+    slurp
+    ksnip
     mpv #video
     pavucontrol
+    networkmanagerapplet
+    wireshark
 
     # Office Suites
     libreoffice
     drawio
+    flameshot
 
     # For Develop
     vscode
@@ -22,15 +32,22 @@
     docker
     docker-compose
     postman
+    beekeeper-studio
     python3
+    lazyssh-client
+    sshfs
+    ansible
+
 
     # Pentest
     nmap
     smbmap
     metasploit
     traceroute
+    mtr
 
     # File manager
+    doublecmd
     pcmanfm
     nemo
     gvfs
@@ -47,6 +64,7 @@
     fd
     fzf # fast file search
     ripgrep # fast text search
+    lnav
 
     # Development & Text Editing
     gcc
@@ -59,6 +77,7 @@
     home-manager
     ntfs3g # driver for NTFS
     udisks2 # for USB and auto-mounting
+    wdisplays # Дисплей менеджер
 
     # Web & Terminal
     ueberzugpp # pic in terminal
@@ -69,14 +88,21 @@
     zip
     unzip
     p7zip
+    unrar
     # kdenlive
     # jetbrains.pycharm-professional
     # jre8
     # qemu
     # quickemu
 
-    # AI
-    gemini-cli
+  ] ++ [
+    # AI — официальная сборка Antigravity CLI; запускается командой agy.
+    antigravityCliPackage
 
+    # AI — официальный flake opencode, обновляется через `nix flake update opencode`.
+    opencodePackage
+
+    # Telegram — из nixpkgs-unstable, чтобы не отставать от stable upstream.
+    pkgs-unstable.telegram-desktop
   ];
 }

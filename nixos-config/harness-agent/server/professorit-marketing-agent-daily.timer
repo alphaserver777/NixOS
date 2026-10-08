@@ -1,0 +1,11 @@
+[Unit]
+Description=Ежедневный запуск маркетингового агента «Профессор IT»
+
+[Timer]
+OnCalendar=*-*-* 08:00:00 Europe/Moscow
+Persistent=true
+RandomizedDelaySec=10min
+Unit=professorit-marketing-agent-daily.service
+
+[Install]
+WantedBy=timers.target

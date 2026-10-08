@@ -8,36 +8,42 @@
     alacritty # Терминал
     wofi # Лаунчер
     nixpkgs-fmt
-    dunst
+    dnsutils # nslookup
+    doublecmd # аналог Total Commander
     libnotify
-    waybar
     wl-clipboard
 
     # Screenshot
     grim
     slurp
-    swappy
 
     wev
     pamixer
+    playerctl
     brightnessctl
+    btop
     tree
     ranger
+    rclone
+    sops #encrypted in nixos
     xclip
-    neofetch
+    fastfetch
     mc
     woeusb
+    xmind
     ntfs3g # для работы с флешкой
     gnupg
 
     # # Desktop apps
     # anki
     # code-cursor
+    gnome-clocks
     # imv
     # mpv
-    # obs-studio
+    obs-studio
     # obsidian
     # pavucontrol
+    super-productivity
     # teams-for-linux
     # telegram-desktop
     # vesktop
@@ -47,7 +53,7 @@
     # bottom
     # brightnessctl
     cliphist
-    # ffmpeg
+    ffmpeg
     # ffmpegthumbnailer
     # fzf
     # git-graph
@@ -57,7 +63,6 @@
     # ntfs3g
     # mediainfo
     # microfetch
-    # playerctl
     # ripgrep
     # showmethekey
     # silicon
@@ -76,7 +81,6 @@
     # python311
     #
     # # WM stuff
-    libsForQt5.xwaylandvideobridge
     xdg-desktop-portal-gtk
     xdg-desktop-portal-hyprland
     #

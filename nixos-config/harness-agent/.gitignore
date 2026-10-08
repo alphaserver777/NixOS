@@ -1,0 +1,4 @@
+# Ключи и локальное состояние DeepSeek Harness
+.env
+.dsh/
+

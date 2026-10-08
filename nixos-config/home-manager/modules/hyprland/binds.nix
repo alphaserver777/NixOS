@@ -1,4 +1,22 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+let
+  screenshot = pkgs.writeShellScript "screenshot" ''
+    set -eu
+    mkdir -p "$HOME/screens"
+    file="$HOME/screens/$(date +%Y-%m-%d_%H-%M-%S-%N).png"
+    mode="''${1:-area}"
+    ${pkgs.grimblast}/bin/grimblast --notify copysave "$mode" "$file"
+  '';
+  toggleMicrophone = pkgs.writeShellScript "toggle-microphone" ''
+    ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+
+    if ${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | ${pkgs.gnugrep}/bin/grep -q '\[MUTED\]'; then
+      ${pkgs.pipewire}/bin/pw-play ${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo/dialog-warning.oga &
+    else
+      ${pkgs.pipewire}/bin/pw-play ${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo/complete.oga &
+    fi
+  '';
+in
 {
   wayland.windowManager.hyprland.settings = {
     bind = [
@@ -7,7 +25,19 @@
       "$mainMod CTRL,  M, exit,"
       "$mainMod SHIFT, M, exec, poweroff"
       "$mainMod ALT,   M, exec, reboot"
-      "$mainMod,       R, exec, $menu --show drun"
+      "$mainMod,       R, exec, cosmic-shell launcher"
+      "$mainMod,   SPACE, exec, cosmic-shell launcher"
+      "$mainMod,       M, exec, cosmic-mode menu"
+      "$mainMod CTRL,  W, exec, cosmic-mode work"
+      "$mainMod CTRL,  V, exec, cosmic-mode video"
+      "$mainMod CTRL,  P, exec, cosmic-mode show"
+      "$mainMod CTRL, BackSpace, exec, cosmic-mode normal"
+      "$mainMod,       D, exec, cosmic-shell center"
+      "$mainMod CTRL ALT, 1, exec, cosmic-shell noctalia"
+      "$mainMod CTRL ALT, 2, exec, cosmic-shell dms"
+      "$mainMod CTRL ALT, 0, exec, cosmic-shell original"
+      "$mainMod SHIFT, D, exec, cosmic-shell dashboard"
+      "$mainMod SHIFT, I, exec, cosmic-screensaver choose"
       "$mainMod SHIFT, R, exec, $fileManager"
       "$mainMod,       E, exec, nemo"
       "$mainMod,       G, exec, google-chrome-stable --ozone-platform=wayland --disable-gpu"
@@ -15,14 +45,16 @@
       "$mainMod,       A, exec, amnezia-vpn"
       "$mainMod,       F, togglefloating,"
       "$mainMod,       P, pin,"
-      "$mainMod,       J, togglesplit,"
-      "$mainMod,     Tab, exec, hyprctl dispatch hyprexpo:expo toggle"
-      "$mainMod,       V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
-      "$mainMod,       B, exec, pkill -SIGUSR2 waybar"
-      "$mainMod SHIFT, B, exec, pkill -SIGUSR1 waybar"
+      "$mainMod,       J, layoutmsg, orientationcycle left top right bottom"
+      "$mainMod,     Tab, exec, hyprctl dispatch overview:toggle all"
+      "$mainMod,       V, exec, cosmic-shell clipboard"
       "$mainMod,       L, exec, loginctl lock-session"
-      "$mainMod,       N, exec, swaync-client -t"
-      "$mainMod,       F12, exec, sh ${../../scripts/screenshot.sh}"
+      "$mainMod,       N, exec, cosmic-shell notifications"
+      ", Print, exec, ${config.services.flameshot.package}/bin/flameshot gui"
+      "SHIFT, Print, exec, ${screenshot} output"
+      "CTRL, Print, exec, ${screenshot} screen"
+      "$mainMod, F12, exec, ${config.services.flameshot.package}/bin/flameshot gui"
+      "$mainMod SHIFT, F12, exec, obs"
 
       # Moving focus
       "$mainMod, left, movefocus, l"
@@ -83,7 +115,7 @@
       ",XF86AudioLowerVolume,  exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       ",XF86AudioMute,         exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
       ",XF86AudioMicMute,      exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-      ",KP_Multiply,          exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+      ",KP_Multiply,          exec, ${toggleMicrophone}"
       "$mainMod, bracketright, exec, brightnessctl s 10%+"
       "$mainMod, bracketleft,  exec, brightnessctl s 10%-"
     ];

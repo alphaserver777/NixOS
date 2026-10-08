@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, antigravityCliPackage, ... }: {
   # Частные программы узла
   environment.systemPackages = with pkgs; [
     google-chrome
@@ -10,13 +10,12 @@
     qbittorrent
     imv #pic
     mpv #video
-    anydesk
     drawio
     pavucontrol
 
 
     # For Develop
-    gemini-cli
+    antigravityCliPackage
     google-cloud-sdk
     docker
     docker-compose

@@ -12,7 +12,9 @@
     ./net.nix
     ./nh.nix
     ./nix.nix
+    ./nix-ld.nix
     ./ssh.nix
+    ./rsyslog-forwarding.nix
     ./timezone.nix
     ./user.nix
     ./zram.nix
@@ -23,6 +25,10 @@
     ./docker.nix
     ./udisks.nix
     ./virtualbox.nix
+    ./wireshark.nix
+    ./assistant.nix
+    ./happ.nix
+    ./clash-verge.nix
     # ./tailscale.nix
   ];
 }
