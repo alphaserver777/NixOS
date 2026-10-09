@@ -24,15 +24,19 @@ in
 
     Service = {
       Type = "simple";
-      ExecStartPre = "${pkgs.bash}/bin/bash -c \"${pkgs.fuse3}/bin/fusermount3 -uz ${gdrive-dir} >/dev/null 2>&1 || true; ${pkgs.coreutils}/bin/mkdir -p ${gdrive-dir}\"";
+      # Задача 014: rclone сам отключает FUSE при SIGTERM. Обычный
+      # fusermount3 из Nix не имеет прав привилегированной обёртки NixOS.
+      Environment = "PATH=/run/wrappers/bin:${lib.makeBinPath [ pkgs.fuse3 pkgs.coreutils ]}";
+      ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p ${gdrive-dir}";
       ExecStart = ''
         ${pkgs.rclone}/bin/rclone mount gdrive: ${gdrive-dir} \
           --config ${rclone-config} \
           --vfs-cache-mode writes
       '';
-      ExecStop = "${pkgs.fuse3}/bin/fusermount3 -u ${gdrive-dir}";
+      SuccessExitStatus = "143";
+      TimeoutStopSec = 120;
       Restart = "on-failure";
-      RestartSec = 10;
+      RestartSec = 30;
     };
 
     Install = {

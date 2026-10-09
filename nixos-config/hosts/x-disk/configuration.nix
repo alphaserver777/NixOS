@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ./local-packages.nix
+    ../../nixos/modules/log-retention.nix
     ../../nixos/modules
   ];
 

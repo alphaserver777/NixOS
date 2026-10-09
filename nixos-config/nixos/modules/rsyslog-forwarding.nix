@@ -14,6 +14,8 @@
             port="514"
             protocol="tcp"
             action.resumeRetryCount="-1"
+            action.resumeInterval="120"
+            action.resumeIntervalMax="1800"
             queue.type="linkedList"
             queue.filename="fwd-germany-ssh-success")
         }
@@ -25,6 +27,8 @@
             port="514"
             protocol="tcp"
             action.resumeRetryCount="-1"
+            action.resumeInterval="120"
+            action.resumeIntervalMax="1800"
             queue.type="linkedList"
             queue.filename="fwd-germany-auth")
         }
@@ -36,6 +40,8 @@
             port="514"
             protocol="tcp"
             action.resumeRetryCount="-1"
+            action.resumeInterval="120"
+            action.resumeIntervalMax="1800"
             queue.type="linkedList"
             queue.filename="fwd-germany-kern")
         }
@@ -47,6 +53,8 @@
             port="514"
             protocol="tcp"
             action.resumeRetryCount="-1"
+            action.resumeInterval="120"
+            action.resumeIntervalMax="1800"
             queue.type="linkedList"
             queue.filename="fwd-germany-crit")
         }
