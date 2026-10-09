@@ -147,6 +147,8 @@
       };
 
       windowrule = [
+        # Задача 012: окно выбора файлов KDE плавающее и по центру.
+        "match:class ^(org[.]freedesktop[.]impl[.]portal[.]desktop[.]kde)$, float on, size 1000 720, center on"
         "match:class (mpv|imv|showmethekey-gtk), float on"
         "match:class showmethekey-gtk, move 990 60, size 900 170, pin on, no_initial_focus on"
         "match:class google-chrome, workspace 1"
