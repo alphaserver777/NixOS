@@ -51,3 +51,25 @@ if not migration_marker.exists():
         data["smartTimerLauncher"]["enabled"] = False
     write_json(path, data)
     migration_marker.touch(mode=0o600)
+
+# Задача 009: готовый виджет календаря; звук и напоминания обслуживает dcal.
+calendar_marker = root / ".cosmic-calendar-v1"
+if not calendar_marker.exists():
+    path = root / "settings.json"
+    data = json.loads(path.read_text())
+    for bar in data.get("barConfigs", []):
+        widgets = bar.setdefault("rightWidgets", [])
+        if not any((v if isinstance(v, str) else v.get("id")) == "dankCalendarPlus" for v in widgets):
+            widgets.insert(0, {"id": "dankCalendarPlus", "enabled": True})
+    write_json(path, data)
+    path = root / "plugin_settings.json"
+    data = json.loads(path.read_text()) if path.exists() else {}
+    settings = data.setdefault("dankCalendarPlus", {})
+    for key, value in {
+        "enabled": True, "pillMaxWidth": 150,
+        "eventReminderEnabled": False, "taskOverdueReminderEnabled": False,
+        "notificationMode": "native", "aiNotificationEnabled": False,
+    }.items():
+        settings.setdefault(key, value)
+    write_json(path, data)
+    calendar_marker.touch(mode=0o600)

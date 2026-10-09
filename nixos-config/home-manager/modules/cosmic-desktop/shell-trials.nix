@@ -1,6 +1,7 @@
 { pkgs, ... }:
 let
   dmsPackage = pkgs.callPackage ../../../packages/dms-shell-1-6-2.nix { };
+  calendarPackage = pkgs.callPackage ../../../packages/dankcalendar.nix { };
   sandsSource = pkgs.fetchFromGitHub {
     owner = "lung595";
     repo = "Sands";
@@ -40,7 +41,7 @@ let
   };
   dms = pkgs.writeShellApplication {
     name = "cosmic-dms";
-    runtimeInputs = [ dmsPackage pkgs.quickshell pkgs.dgop pkgs.systemd pkgs.python3 pkgs.pipewire pkgs.libnotify pkgs.glib ];
+    runtimeInputs = [ dmsPackage calendarPackage pkgs.jq pkgs.quickshell pkgs.dgop pkgs.systemd pkgs.python3 pkgs.pipewire pkgs.libnotify pkgs.glib ];
     text = ''
       if [ "''${1:-}" = init ]; then
         settings_dir="''${XDG_CONFIG_HOME:-$HOME/.config}/DankMaterialShell"
