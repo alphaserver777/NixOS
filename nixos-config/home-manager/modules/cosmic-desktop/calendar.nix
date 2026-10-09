@@ -13,6 +13,10 @@ let
     mkdir -p "$out"
     cp -r ${source}/. "$out/"
     chmod -R u+w "$out"
+    # Задача 009: в выпуске 3.4.0 пропущен импорт Tuple для списка задач.
+    substituteInPlace "$out/core/lib/task_service.py" \
+      --replace-fail "from typing import Dict, Any, List, Optional" \
+        "from typing import Dict, Any, List, Optional, Tuple"
     patchShebangs "$out"
   '';
   setup = pkgs.writeShellApplication {
