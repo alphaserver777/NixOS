@@ -7,6 +7,7 @@
     ./env.nix
     ./home-manager.nix
     ./hyprland.nix
+    ./file-dialog.nix
     ./kernel.nix
     ./mime.nix
     ./net.nix
