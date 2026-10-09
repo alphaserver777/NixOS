@@ -16,7 +16,6 @@
       hms = "home-manager switch --flake ~/Nixos/nixos-config/#admsys";
       pkgs = "nvim ${flakeDir}/nixos/packages.nix";
 
-      r = "ranger";
       v = "nvim";
       se = "sudoedit";
       microfetch = "microfetch && echo";
