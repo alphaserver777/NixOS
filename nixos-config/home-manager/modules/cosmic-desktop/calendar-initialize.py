@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 import shutil
-import subprocess
+import socket
 import sys
 import time
 from zoneinfo import ZoneInfo
@@ -16,11 +16,26 @@ config.mkdir(parents=True, exist_ok=True)
 
 
 def call(method, **params):
-    result = subprocess.run(
-        ["dcal", "ipc", method] + [f"{k}={json.dumps(v, ensure_ascii=False) if isinstance(v, (dict, list, bool)) else v}" for k, v in params.items()],
-        check=True, capture_output=True, text=True, timeout=20,
-    )
-    return json.loads(result.stdout)
+    # CLI выпуска 1.6.1 передаёт значения строками; штатный сокет принимает
+    # массивы повторений и напоминаний в их исходном виде.
+    runtime = Path(os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}"))
+    sockets = sorted(runtime.glob("dankcal-*.sock"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not sockets:
+        raise OSError("Служба календаря ещё не запущена")
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
+        client.settimeout(20)
+        client.connect(str(sockets[0]))
+        client.sendall((json.dumps({"id": 1, "method": method, "params": params}, ensure_ascii=False) + "\n").encode())
+        with client.makefile() as stream:
+            for line in stream:
+                response = json.loads(line)
+                if response.get("id") == 1:
+                    break
+            else:
+                raise RuntimeError("Служба календаря закрыла соединение")
+    if response.get("error"):
+        raise RuntimeError(response["error"])
+    return response.get("result")
 
 
 def items(value, key):
@@ -48,7 +63,7 @@ elif sys.argv[1] == "events":
             try:
                 accounts = items(call("accounts.list"), "accounts")
                 break
-            except (subprocess.SubprocessError, json.JSONDecodeError):
+            except (OSError, RuntimeError, json.JSONDecodeError):
                 if attempt == 29:
                     raise
                 time.sleep(0.5)
@@ -62,7 +77,7 @@ elif sys.argv[1] == "events":
             account = next(a for a in accounts if a.get("kind") == "local" and a.get("displayName") == "Личные дела")
         for attempt in range(30):
             calendars = items(call("calendars.list"), "calendars")
-            calendar = next((c for c in calendars if c.get("accountId") == account["id"] and c.get("holdsEvents")), None)
+            calendar = next((c for c in calendars if c.get("accountId") == account["id"] and not c.get("readOnly")), None)
             if calendar:
                 break
             time.sleep(0.5)
