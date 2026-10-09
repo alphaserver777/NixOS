@@ -56,8 +56,7 @@ elif sys.argv[1] == "events":
         if account is None:
             directory = data / "personal"
             directory.mkdir(parents=True, exist_ok=True)
-            subprocess.run(["dcal", "account", "add", "local", str(directory), "--name", "Личные дела"],
-                           check=True, capture_output=True, text=True, timeout=20)
+            call("accounts.local.add", root=str(directory), displayName="Личные дела")
             call("accounts.refresh")
             accounts = items(call("accounts.list"), "accounts")
             account = next(a for a in accounts if a.get("kind") == "local" and a.get("displayName") == "Личные дела")
