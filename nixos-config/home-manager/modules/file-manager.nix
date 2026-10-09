@@ -5,6 +5,10 @@ let
   newer = import inputs.nixpkgs-unstable {
     system = pkgs.stdenv.hostPlatform.system;
   };
+  python = pkgs.python3.withPackages (packages: [ packages.dbus-next ]);
+  bridge = pkgs.writeShellScript "doublecmd-file-manager" ''
+    exec ${python}/bin/python3 ${./doublecmd-file-manager.py} ${newer.doublecmd}/bin/doublecmd
+  '';
 in {
   home.packages = [ newer.doublecmd ];
   # Список обработчиков остаётся изменяемым приложениями. Задаём только
@@ -26,5 +30,27 @@ in {
     categories = [ "Utility" "FileManager" ];
     mimeType = [ "inode/directory" ];
     startupNotify = true;
+  };
+  # Задача 011: браузер и портал передают полный путь, а не только папку.
+  xdg.dataFile."dbus-1/services/org.freedesktop.FileManager1.service".text = ''
+    [D-BUS Service]
+    Name=org.freedesktop.FileManager1
+    Exec=${bridge}
+    SystemdService=doublecmd-file-manager.service
+  '';
+  systemd.user.services.doublecmd-file-manager = {
+    Unit = {
+      Description = "Открытие и выделение файлов в Double Commander";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "dbus";
+      BusName = "org.freedesktop.FileManager1";
+      ExecStart = "${bridge}";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 }
