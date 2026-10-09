@@ -8,6 +8,7 @@
     ./eza.nix # красивый вывод папок и файлов
     ./flameshot.nix
     ./fzf.nix
+    ./file-manager.nix
     ./git.nix
     ./google-chrome.nix
     ./google-drive.nix
@@ -17,7 +18,6 @@
     ./lazygit.nix
     ./atuin.nix
     # ./obsidian.nix
-    ./pcmanfm.nix
     ./sshAgent.nix
     ./starship.nix
     ./stylix.nix
@@ -28,6 +28,5 @@
     ./swaync
     ./nvim-config
     ./wofi
-    ./ranger
   ];
 }

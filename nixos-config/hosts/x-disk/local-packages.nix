@@ -46,10 +46,7 @@ in
     traceroute
     mtr
 
-    # File manager
-    doublecmd
-    pcmanfm
-    nemo
+    # Подключение удалённых папок; файловый менеджер задаёт Home Manager.
     gvfs
 
     # --- CLI ---

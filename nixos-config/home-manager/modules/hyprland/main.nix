@@ -26,7 +26,7 @@
         ] else ",1920x1080@60,auto,1";
       "$mainMod" = "SUPER";
       "$terminal" = "alacritty";
-      "$fileManager" = "$terminal -e sh -c 'ranger'";
+      "$fileManager" = "doublecmd --client --no-splash";
       "$menu" = "walker";
 
       exec-once = [

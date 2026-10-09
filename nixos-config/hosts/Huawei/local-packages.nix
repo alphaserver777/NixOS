@@ -23,7 +23,6 @@
     termius
 
     # File manager
-    pcmanfm
 
     #CLI
     btop

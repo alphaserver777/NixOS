@@ -1,5 +1,5 @@
 {
   xdg.mime.defaultApplications = {
-    "inode/directory" = "nemo.desktop";
+    "inode/directory" = "doublecmd.desktop";
   };
 }

@@ -9,7 +9,6 @@
     wofi # Лаунчер
     nixpkgs-fmt
     dnsutils # nslookup
-    doublecmd # аналог Total Commander
     libnotify
     wl-clipboard
 
@@ -23,12 +22,10 @@
     brightnessctl
     btop
     tree
-    ranger
     rclone
     sops #encrypted in nixos
     xclip
     fastfetch
-    mc
     woeusb
     xmind
     ntfs3g # для работы с флешкой

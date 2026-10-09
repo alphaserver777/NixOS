@@ -39,7 +39,7 @@ in
       "$mainMod SHIFT, D, exec, cosmic-shell dashboard"
       "$mainMod SHIFT, I, exec, cosmic-screensaver choose"
       "$mainMod SHIFT, R, exec, $fileManager"
-      "$mainMod,       E, exec, nemo"
+      "$mainMod,       E, exec, $fileManager"
       "$mainMod,       G, exec, google-chrome-stable --ozone-platform=wayland --disable-gpu"
       "$mainMod,       C, exec, telegram-desktop"
       "$mainMod,       A, exec, amnezia-vpn"

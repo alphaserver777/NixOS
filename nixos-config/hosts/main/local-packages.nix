@@ -41,7 +41,6 @@ in
     python3
 
     # File manager
-    nemo
     sshfs
 
     #CLI
