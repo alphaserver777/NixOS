@@ -12,7 +12,7 @@
   };
   # Существующее оформление Stylix/Qt6ct. Qt5-параметры других приложений
   # не подменяются, KDE не становится рабочим столом или файловым менеджером.
-  systemd.user.services.xdg-desktop-portal-kde = {
+  systemd.user.services.plasma-xdg-desktop-portal-kde = {
     overrideStrategy = "asDropin";
     serviceConfig.Environment = [
       "QT_QPA_PLATFORMTHEME=qt6ct"
