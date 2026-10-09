@@ -20,4 +20,12 @@
       "LANGUAGE=ru"
     ];
   };
+  # Пользовательский сеанс ранее искал только порталы из своего профиля.
+  # Единый системный каталог содержит и Hyprland, и GTK, и новый KDE.
+  systemd.user.services.xdg-desktop-portal = {
+    overrideStrategy = "asDropin";
+    serviceConfig.Environment = [
+      "NIX_XDG_DESKTOP_PORTAL_DIR=/run/current-system/sw/share/xdg-desktop-portal/portals"
+    ];
+  };
 }
