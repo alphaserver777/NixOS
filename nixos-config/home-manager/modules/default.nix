@@ -9,6 +9,7 @@
     ./flameshot.nix
     ./fzf.nix
     ./file-manager.nix
+    ./opencode-default.nix
     ./git.nix
     ./google-chrome.nix
     ./google-drive.nix
