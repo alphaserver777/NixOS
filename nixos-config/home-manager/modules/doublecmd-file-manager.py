@@ -33,24 +33,25 @@ class FileManager(ServiceInterface):
             paths = [local_path(uri) for uri in uris]
         except ValueError as error:
             raise DBusError("org.freedesktop.DBus.Error.InvalidArgs", str(error))
-        environment = os.environ.copy()
+        # Отдельная служба приложения сохраняет окно при обновлении посредника.
+        launcher = [sys.argv[2], "--user", "--collect", "--quiet", "--service-type=exec"]
         if startup_id:
-            environment["DESKTOP_STARTUP_ID"] = startup_id
-            environment["XDG_ACTIVATION_TOKEN"] = startup_id
+            launcher += ["--setenv=DESKTOP_STARTUP_ID=" + startup_id,
+                         "--setenv=XDG_ACTIVATION_TOKEN=" + startup_id]
         for path in paths:
             # Полное имя файла ставит курсор на него. Его содержимое не открывается.
             # Абсолютный путь и отдельные аргументы исключают обработку оболочкой.
             try:
                 process = await asyncio.create_subprocess_exec(
-                    self.executable, "--client", "--no-splash", "-T", path,
-                    env=environment,
+                    *launcher, self.executable, "--client", "--no-splash", "-T", path,
                     stdout=asyncio.subprocess.DEVNULL,
                     stderr=asyncio.subprocess.DEVNULL,
                 )
             except OSError as error:
                 raise DBusError("org.freedesktop.DBus.Error.Failed", str(error))
-            # Первый запуск остаётся работать; ответ не ждёт закрытия окна.
-            asyncio.create_task(process.wait())
+            if await process.wait() != 0:
+                raise DBusError("org.freedesktop.DBus.Error.Failed",
+                                "Не удалось запустить Double Commander")
 
     @method()
     async def ShowItems(self, uris: 'as', startup_id: 's'):

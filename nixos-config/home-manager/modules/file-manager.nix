@@ -7,7 +7,7 @@ let
   };
   python = pkgs.python3.withPackages (packages: [ packages.dbus-next ]);
   bridge = pkgs.writeShellScript "doublecmd-file-manager" ''
-    exec ${python}/bin/python3 ${./doublecmd-file-manager.py} ${newer.doublecmd}/bin/doublecmd
+    exec ${python}/bin/python3 ${./doublecmd-file-manager.py} ${newer.doublecmd}/bin/doublecmd ${pkgs.systemd}/bin/systemd-run
   '';
 in {
   home.packages = [ newer.doublecmd ];
