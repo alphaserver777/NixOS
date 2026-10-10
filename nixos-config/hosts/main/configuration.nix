@@ -4,11 +4,14 @@
   imports = [
     ./hardware-configuration.nix
     ./local-packages.nix
+    ./clipboard.nix
     ../../nixos/modules
-    ../../nixos/modules/nvidia-main.nix
   ];
 
   environment.systemPackages = [ pkgs.home-manager ];
+
+  # Сохраняем свободный драйвер видеокарты, используемый на main.
+  hardware.graphics.enable = true;
 
   networking.hostName = hostname;
 

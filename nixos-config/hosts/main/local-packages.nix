@@ -2,6 +2,13 @@
 
 let
   lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
+  # Задача 018: в Poppler 26.06 getString возвращает строку, а не указатель.
+  openboard-compatible = pkgs.openboard.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      substituteInPlace src/pdf/XPDFRenderer.cpp \
+        --replace-fail 'title.getString()->c_str()' 'title.getString().c_str()'
+    '';
+  });
 in
 {
   # Частные программы узла
@@ -24,7 +31,7 @@ in
     libreoffice
     drawio
     xournalpp
-    openboard
+    openboard-compatible
 
     # For Develop
     ansible
