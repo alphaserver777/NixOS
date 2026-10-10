@@ -40,3 +40,19 @@ HDMI-A-1. Фон оставить на всех экранах. Часы зас�
 
 Источник параметра monitor: официальное описание Hyprlock,
 https://wiki.hypr.land/Hypr-Ecosystem/hyprlock/#monitor-selection.
+
+## Ход работы
+
+Изменение зафиксировано в 7bd18d1. Синтаксис Python и сценария
+проверки/применения проверен. На реальном подключении GTK и Hyprland
+сопоставление по координатам выбирает единственный GIGABYTE G27QC
+в положении 0, 0; порядок перечисления экранов не используется.
+
+Проверка, сборка и применение запущены в отдельной пользовательской
+службе nixos-main-single-screen-update. Материалы находятся в
+~/.local/state/main-single-screen-20261010: state, exit-code,
+monitors.json, eval.log, build.log, build.status, plan.log, apply.log,
+apply.status, source-revision, previous-system, result.
+Используется точная ссылка на 7bd18d1. Дополнительные службы в плане
+или смена работающего поколения останавливают автоматическое применение.
+Принудительный запуск Hyprlock не предусмотрен.
