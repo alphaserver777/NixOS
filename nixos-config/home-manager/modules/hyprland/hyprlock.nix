@@ -1,7 +1,22 @@
-{ pkgs, hostname, ... }:
+{ pkgs, config, lib, ... }:
 let
-  # Задача 019: надписи и пароль на выбранном экране main.
-  textMonitor = if hostname == "main" then "HDMI-A-1" else "";
+  # Задача 020: имя подключённого экрана определяется перед блокировкой.
+  # Без обёртки настройка остаётся допустимой: надписи на всех экранах.
+  textMonitor = "";
+  lockScripts = pkgs.runCommand "cosmic-lock-scripts" { } ''
+    mkdir -p "$out"
+    cp ${./lock_screen.py} "$out/lock_screen.py"
+    cp ${../display_selection.py} "$out/display_selection.py"
+  '';
+  lock = pkgs.writeShellApplication {
+    name = "hyprlock";
+    runtimeInputs = [ pkgs.hyprland pkgs.python3 ];
+    text = ''
+      exec ${pkgs.python3}/bin/python3 ${lockScripts}/lock_screen.py \
+        ${pkgs.hyprlock}/bin/hyprlock \
+        ${lib.escapeShellArg "${config.xdg.configHome}/hypr/hyprlock.conf"} "$@"
+    '';
+  };
   weekday = pkgs.writeShellScript "cosmic-lock-weekday" ''
     export LC_ALL=C
     name="$(${pkgs.coreutils}/bin/date +'%A' | ${pkgs.coreutils}/bin/tr '[:lower:]' '[:upper:]')"
@@ -18,6 +33,7 @@ in
 {
   programs.hyprlock = {
     enable = true;
+    package = lock;
     settings = {
       general.hide_cursor = true;
 

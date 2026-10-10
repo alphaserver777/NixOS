@@ -1,4 +1,4 @@
-{ pkgs, lib, hostname, ... }:
+{ pkgs, lib, ... }:
 let
   hyprsaver = pkgs.callPackage ../../../packages/hyprsaver.nix { };
   anurati = pkgs.callPackage ../../../packages/anurati.nix { };
@@ -21,6 +21,7 @@ let
     cp ${./screensaver.py} $out/screensaver.py
     cp ${./screensaver-control.py} $out/control.py
     cp ${./effects.py} $out/effects.py
+    cp ${../display_selection.py} $out/display_selection.py
   '';
   clock = pkgs.writeShellApplication {
     name = "cosmic-screensaver-clock";
@@ -31,7 +32,6 @@ let
       export GDK_GL=disable
       export GTK_THEME=Adwaita
       export FONTCONFIG_FILE=${clockFonts}
-      ${lib.optionalString (hostname == "main") ''export COSMIC_TEXT_MONITOR=HDMI-A-1''}
       export GI_TYPELIB_PATH="${lib.makeSearchPathOutput "out" "lib/girepository-1.0" [ pkgs.gtk3 pkgs.gtk-layer-shell pkgs.pango pkgs.gdk-pixbuf pkgs.atk pkgs.glib pkgs.cairo pkgs.harfbuzz pkgs.gobject-introspection ]}''${GI_TYPELIB_PATH:+:$GI_TYPELIB_PATH}"
       exec ${pkgs.coreutils}/bin/env \
         LC_ALL=C \

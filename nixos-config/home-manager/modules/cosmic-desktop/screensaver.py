@@ -3,13 +3,13 @@
 import datetime
 import json
 import locale
-import os
 import signal
 import subprocess
 import sys
 import time
 
 from effects import selected
+from display_selection import select_monitor
 
 import cairo
 import gi
@@ -156,18 +156,13 @@ class Screensaver:
                 window.destroy()
             monitors = [self.display.get_monitor(index)
                         for index in range(self.display.get_n_monitors())]
-            preferred = os.environ.get("COSMIC_TEXT_MONITOR", "")
-            if preferred:
-                # Порядок экранов GTK и Hyprland может различаться.
-                # Сопоставляем их по положению в общей системе координат.
-                outputs = hypr_json("monitors")
-                target = next((m for m in outputs if m["name"] == preferred), outputs[0])
-                monitor = next((m for m in monitors
-                                if (m.get_geometry().x, m.get_geometry().y)
-                                == (target["x"], target["y"])), monitors[0])
-                monitors = [monitor]
-                print(f"Часы заставки: {target['name']}", flush=True)
-            self.windows = [Clock(monitor) for monitor in monitors]
+            # Порядок экранов GTK и Hyprland может различаться.
+            target = select_monitor(hypr_json("monitors"))
+            monitor = next((m for m in monitors
+                            if (m.get_geometry().x, m.get_geometry().y)
+                            == (target["x"], target["y"])), monitors[0])
+            self.windows = [Clock(monitor)]
+            print(f"Часы заставки: {target['name']}", flush=True)
             self.ready = True
             return GLib.SOURCE_REMOVE
         except Exception as error:
