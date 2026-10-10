@@ -9,6 +9,8 @@ import time
 
 STATE = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "cosmic-desktop"
 RUNTIME = Path(os.environ["XDG_RUNTIME_DIR"])
+ACTIVE_FILE = RUNTIME / "cosmic-shell-active"
+READY_TIMEOUT = 90
 SERVICES = {"noctalia": "cosmic-noctalia.service", "dms": "cosmic-dms.service"}
 NAMES = {"original": "Прежнее оформление", "noctalia": "Noctalia", "dms": "DankMaterialShell"}
 READY = {
@@ -50,9 +52,11 @@ def fallback(failed):
 
 
 def activate(choice):
-    # Выбранная оболочка защищена от повторного запуска Hyprpanel при
-    # применении системы. При ошибке restore() сразу возвращает прежний выбор.
-    save(choice)
+    # Задача 015: временный возврат не меняет предпочтение для следующего входа.
+    # Условие запуска Hyprpanel учитывает фактически выбранную в сеансе панель.
+    temporary = ACTIVE_FILE.with_suffix(".new")
+    temporary.write_text(choice + "\n")
+    temporary.replace(ACTIVE_FILE)
     other = [service for name, service in SERVICES.items() if name != choice]
     if choice != "original":
         other.append("hyprpanel.service")
@@ -65,7 +69,7 @@ def activate(choice):
     service = SERVICES[choice]
     systemctl("reset-failed", service, check=False)
     systemctl("start", service)
-    deadline = time.monotonic() + 20
+    deadline = time.monotonic() + READY_TIMEOUT
     while time.monotonic() < deadline:
         if systemctl("is-active", "--quiet", service, check=False).returncode != 0:
             raise RuntimeError(f"{NAMES[choice]} завершилась при запуске")
@@ -88,7 +92,6 @@ def restore(choice):
     except Exception:
         choice = "original"
         activate(choice)
-    save(choice)
 
 
 def switch(choice, remember=True):
@@ -98,9 +101,10 @@ def switch(choice, remember=True):
     except Exception:
         restore(previous if previous != choice else fallback(choice))
         raise
-    if remember and previous != choice:
-        save(previous, "shell-previous")
-    save(choice)
+    if remember:
+        if previous != choice:
+            save(previous, "shell-previous")
+        save(choice)
 
 
 def main():
@@ -109,7 +113,11 @@ def main():
         print(NAMES[active_choice()])
         return
     if command == "allow-original":
-        sys.exit(0 if read_choice() == "original" else 1)
+        try:
+            choice = ACTIVE_FILE.read_text().strip()
+        except OSError:
+            choice = read_choice()
+        sys.exit(0 if choice == "original" else 1)
     if command == "lock":
         # Служба пользователя находится вне графического сеанса.
         session = subprocess.run(

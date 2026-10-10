@@ -127,6 +127,8 @@ in {
     Service = {
       Type = "oneshot";
       ExecStart = "${switcher}/bin/cosmic-shell resume";
+      # Задача 015: 90 секунд на готовность панели плюс запуск её службы.
+      TimeoutStartSec = 120;
       RemainAfterExit = true;
     };
     Install.WantedBy = [ "graphical-session.target" ];
