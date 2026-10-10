@@ -158,7 +158,7 @@ DankModal {
                 DankActionButton {
                     iconName: "lock"
                     tooltipText: "Заблокировать"
-                    onClicked: { root.close(); Quickshell.execDetached(["cosmic-shell", "lock"]); }
+                    onClicked: { root.close(); Quickshell.execDetached(["cosmic-lock"]); }
                 }
                 DankActionButton {
                     iconName: "power_settings_new"

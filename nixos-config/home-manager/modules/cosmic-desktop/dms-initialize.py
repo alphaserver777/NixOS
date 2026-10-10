@@ -1,6 +1,7 @@
 """Первоначальная настройка расширений без сброса оформления пользователя."""
 import json
 import os
+import shutil
 from pathlib import Path
 
 root = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "DankMaterialShell"
@@ -73,3 +74,24 @@ if not calendar_marker.exists():
         settings.setdefault(key, value)
     write_json(path, data)
     calendar_marker.touch(mode=0o600)
+
+# Задача 016: штатный значок микрофона и блокировка без переключателя панелей.
+dms_only_marker = root / ".cosmic-dms-only-v1"
+if not dms_only_marker.exists():
+    path = root / "settings.json"
+    backup = root / "settings.before-dms-only.json"
+    if not backup.exists():
+        shutil.copy2(path, backup)
+        backup.chmod(0o600)
+    data = json.loads(path.read_text())
+    data["customPowerActionLock"] = "cosmic-lock"
+    data["controlCenterShowMicIcon"] = True
+    data["controlCenterShowMicPercent"] = False
+    for bar in data.get("barConfigs", []):
+        for key in ("leftWidgets", "centerWidgets", "rightWidgets"):
+            for widget in bar.get(key, []):
+                if isinstance(widget, dict) and widget.get("id") == "controlCenterButton":
+                    widget["showMicIcon"] = True
+                    widget["showMicPercent"] = False
+    write_json(path, data)
+    dms_only_marker.touch(mode=0o600)

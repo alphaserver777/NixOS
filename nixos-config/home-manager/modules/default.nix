@@ -15,7 +15,6 @@
     ./google-drive.nix
     ./gpg.nix
     ./hyprland
-    ./hyprpanel.nix
     ./lazygit.nix
     ./atuin.nix
     # ./obsidian.nix
@@ -26,8 +25,6 @@
     ./zathura.nix # PDF reader
     ./zsh.nix
     ./zoxide.nix
-    ./swaync
     ./nvim-config
-    ./wofi
   ];
 }

@@ -6,7 +6,6 @@
   home.packages = with pkgs; [
     # Packages in each category are sorted alphabetically
     alacritty # Терминал
-    wofi # Лаунчер
     nixpkgs-fmt
     dnsutils # nslookup
     libnotify

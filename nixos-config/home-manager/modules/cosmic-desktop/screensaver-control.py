@@ -19,8 +19,8 @@ def main():
     if command == "choose":
         labels = list(EFFECTS.values())
         result = subprocess.run(
-            ["walker", "--dmenu", "--placeholder", "Заставка с часами"],
-            input="\n".join(labels), capture_output=True, text=True, check=False,
+            ["zenity", "--list", "--title=Заставка с часами", "--column=Заставка", *labels],
+            capture_output=True, text=True, check=False,
         )
         if result.returncode == 0 and result.stdout.strip() in labels:
             select(next(key for key, label in EFFECTS.items() if label == result.stdout.strip()))

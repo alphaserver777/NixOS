@@ -56,7 +56,7 @@ def release(state):
             if previous and previous != address:
                 dispatch("focuswindow", f"address:{previous}")
     if state.get("owned_idle"):
-        command("hyprpanel", "idleInhibit", "false")
+        command("cosmic-dms", "ipc", "inhibit", "disable")
     if state.get("layout"):
         available = {m["name"] for m in hypr("monitors")}
         for workspace in state["layout"]:
@@ -129,8 +129,8 @@ def activate(kind):
             dispatch("fullscreen", "0")
             state["owned_fullscreen"] = active["address"]
             save(state)
-        if command("hyprpanel", "isInhibiting").lower() == "false":
-            command("hyprpanel", "idleInhibit", "true")
+        if command("cosmic-dms", "ipc", "inhibit", "status").strip().lower().endswith("is disabled"):
+            command("cosmic-dms", "ipc", "inhibit", "enable")
             state["owned_idle"] = True
             save(state)
     elif kind == "show":
@@ -145,8 +145,9 @@ def main():
         print(LABELS.get(load().get("mode"), LABELS["normal"]))
         return
     if kind == "menu":
-        result = subprocess.run(["walker", "--dmenu", "--placeholder", "Режим рабочего стола"],
-                                input="\n".join(LABELS.values()), text=True, capture_output=True, timeout=120)
+        result = subprocess.run(["zenity", "--list", "--title=Режим рабочего стола",
+                                 "--column=Режим", *LABELS.values()],
+                                text=True, capture_output=True, timeout=120)
         kind = next((k for k, label in LABELS.items() if label == result.stdout.strip()), None)
         if not kind:
             return

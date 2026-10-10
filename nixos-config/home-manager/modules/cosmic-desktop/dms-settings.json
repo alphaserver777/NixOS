@@ -20,8 +20,12 @@
   "soundsEnabled": false,
   "showDock": false,
   "desktopClockEnabled": false,
-  "screenPreferences": { "wallpaper": [] },
-  "showOnLastDisplay": { "wallpaper": false },
+  "screenPreferences": {
+    "wallpaper": []
+  },
+  "showOnLastDisplay": {
+    "wallpaper": false
+  },
   "acMonitorTimeout": 0,
   "acLockTimeout": 0,
   "acSuspendTimeout": 0,
@@ -33,7 +37,7 @@
   "lockBeforeSuspend": false,
   "fadeToLockEnabled": false,
   "fadeToDpmsEnabled": false,
-  "customPowerActionLock": "cosmic-shell lock",
+  "customPowerActionLock": "cosmic-lock",
   "gtkThemingEnabled": false,
   "qtThemingEnabled": false,
   "syncModeWithPortal": false,
@@ -47,11 +51,25 @@
       "name": "Основная панель",
       "enabled": true,
       "position": 0,
-      "screenPreferences": ["all"],
+      "screenPreferences": [
+        "all"
+      ],
       "showOnLastDisplay": true,
-      "leftWidgets": ["launcherButton", "workspaceSwitcher"],
-      "centerWidgets": ["music", "clock"],
-      "rightWidgets": ["systemTray", "clipboard", "notificationButton", "controlCenterButton", "powerMenuButton"],
+      "leftWidgets": [
+        "launcherButton",
+        "workspaceSwitcher"
+      ],
+      "centerWidgets": [
+        "music",
+        "clock"
+      ],
+      "rightWidgets": [
+        "systemTray",
+        "clipboard",
+        "notificationButton",
+        "controlCenterButton",
+        "powerMenuButton"
+      ],
       "spacing": 6,
       "innerPadding": 6,
       "bottomGap": 0,
@@ -64,5 +82,7 @@
       "fontScale": 1.0,
       "iconScale": 1.0
     }
-  ]
+  ],
+  "controlCenterShowMicIcon": true,
+  "controlCenterShowMicPercent": false
 }

@@ -61,7 +61,7 @@ let
   };
   control = pkgs.writeShellApplication {
     name = "cosmic-screensaver";
-    runtimeInputs = [ pkgs.systemd pkgs.walker ];
+    runtimeInputs = [ pkgs.systemd pkgs.zenity ];
     text = ''exec ${pkgs.python3}/bin/python3 ${scripts}/control.py "$@"'';
   };
 in {

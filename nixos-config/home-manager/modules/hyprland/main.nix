@@ -27,10 +27,10 @@
       "$mainMod" = "SUPER";
       "$terminal" = "alacritty";
       "$fileManager" = "doublecmd --client --no-splash";
-      "$menu" = "walker";
+      "$menu" = "cosmic-dms ipc spotlight toggle";
 
       exec-once = [
-        # Историю текста и изображений ведёт Elephant; старый архив сохранён.
+        # Историю текста и изображений ведёт DankMaterialShell.
         # Предсоздаём рабочие столы 1..9, чтобы раскладка Expo была стабильной
         "sh -lc \"cur=$(hyprctl activeworkspace -j | jq -r .id 2>/dev/null || echo 1); for i in $(seq 1 9); do hyprctl dispatch workspace $i; done; hyprctl dispatch workspace $cur\""
       ] ++ lib.optionals (hostname == "x-disk") [
