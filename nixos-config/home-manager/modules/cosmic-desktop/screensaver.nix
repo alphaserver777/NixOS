@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, hostname, ... }:
 let
   hyprsaver = pkgs.callPackage ../../../packages/hyprsaver.nix { };
   anurati = pkgs.callPackage ../../../packages/anurati.nix { };
@@ -31,6 +31,7 @@ let
       export GDK_GL=disable
       export GTK_THEME=Adwaita
       export FONTCONFIG_FILE=${clockFonts}
+      ${lib.optionalString (hostname == "main") ''export COSMIC_TEXT_MONITOR=HDMI-A-1''}
       export GI_TYPELIB_PATH="${lib.makeSearchPathOutput "out" "lib/girepository-1.0" [ pkgs.gtk3 pkgs.gtk-layer-shell pkgs.pango pkgs.gdk-pixbuf pkgs.atk pkgs.glib pkgs.cairo pkgs.harfbuzz pkgs.gobject-introspection ]}''${GI_TYPELIB_PATH:+:$GI_TYPELIB_PATH}"
       exec ${pkgs.coreutils}/bin/env \
         LC_ALL=C \

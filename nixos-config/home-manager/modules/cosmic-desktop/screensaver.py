@@ -1,8 +1,9 @@
-"""Часы поверх заставки: отдельный прозрачный слой на каждом экране."""
+"""Часы поверх заставки: прозрачный слой на выбранных экранах."""
 
 import datetime
 import json
 import locale
+import os
 import signal
 import subprocess
 import sys
@@ -153,8 +154,20 @@ class Screensaver:
                 return GLib.SOURCE_CONTINUE
             for window in self.windows:
                 window.destroy()
-            self.windows = [Clock(self.display.get_monitor(index))
-                            for index in range(self.display.get_n_monitors())]
+            monitors = [self.display.get_monitor(index)
+                        for index in range(self.display.get_n_monitors())]
+            preferred = os.environ.get("COSMIC_TEXT_MONITOR", "")
+            if preferred:
+                # Порядок экранов GTK и Hyprland может различаться.
+                # Сопоставляем их по положению в общей системе координат.
+                outputs = hypr_json("monitors")
+                target = next((m for m in outputs if m["name"] == preferred), outputs[0])
+                monitor = next((m for m in monitors
+                                if (m.get_geometry().x, m.get_geometry().y)
+                                == (target["x"], target["y"])), monitors[0])
+                monitors = [monitor]
+                print(f"Часы заставки: {target['name']}", flush=True)
+            self.windows = [Clock(monitor) for monitor in monitors]
             self.ready = True
             return GLib.SOURCE_REMOVE
         except Exception as error:

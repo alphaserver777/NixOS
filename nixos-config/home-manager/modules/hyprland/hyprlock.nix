@@ -1,5 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, hostname, ... }:
 let
+  # Задача 019: надписи и пароль на выбранном экране main.
+  textMonitor = if hostname == "main" then "HDMI-A-1" else "";
   weekday = pkgs.writeShellScript "cosmic-lock-weekday" ''
     export LC_ALL=C
     name="$(${pkgs.coreutils}/bin/date +'%A' | ${pkgs.coreutils}/bin/tr '[:lower:]' '[:upper:]')"
@@ -33,7 +35,7 @@ in
 
       label = [
         {
-          monitor = "";
+          monitor = textMonitor;
           text = "cmd[update:60000] ${weekday}";
           color = "rgb(205, 214, 244)";
           font_size = 52;
@@ -44,7 +46,7 @@ in
           valign = "center";
         }
         {
-          monitor = "";
+          monitor = textMonitor;
           text = "<span letter_spacing=\"2048\">$TIME</span>";
           color = "rgb(205, 214, 244)";
           font_size = 96;
@@ -55,7 +57,7 @@ in
           valign = "center";
         }
         {
-          monitor = "";
+          monitor = textMonitor;
           text = "cmd[update:60000] ${date}";
           color = "rgb(186, 187, 241)";
           font_size = 24;
@@ -66,7 +68,7 @@ in
           valign = "center";
         }
         {
-          monitor = "";
+          monitor = textMonitor;
           text = "$USER · $LAYOUT";
           color = "rgb(166, 173, 200)";
           font_size = 16;
@@ -76,7 +78,7 @@ in
           valign = "center";
         }
         {
-          monitor = "";
+          monitor = textMonitor;
           text = "Сеанс заблокирован";
           color = "rgb(166, 173, 200)";
           font_size = 14;
@@ -88,7 +90,7 @@ in
       ];
 
       input-field = [{
-        monitor = "";
+        monitor = textMonitor;
         position = "0, -20";
         halign = "center";
         valign = "center";
