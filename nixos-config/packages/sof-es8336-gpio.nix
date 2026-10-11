@@ -13,10 +13,11 @@ kernel.stdenv.mkDerivation {
   unpackPhase = ''
     runHook preUnpack
     mkdir source
-    tar -xf "$src" --strip-components=5 -C source \
+    tar -xf "$src" --strip-components=1 -C source \
       linux-${kernel.version}/sound/soc/intel/boards/sof_es8336.c \
-      linux-${kernel.version}/sound/soc/intel/boards/hda_dsp_common.h
-    sourceRoot=source
+      linux-${kernel.version}/sound/soc/intel/boards/hda_dsp_common.h \
+      linux-${kernel.version}/sound/soc/codecs/hdac_hda.h
+    sourceRoot=source/sound/soc/intel/boards
     runHook postUnpack
   '';
 
