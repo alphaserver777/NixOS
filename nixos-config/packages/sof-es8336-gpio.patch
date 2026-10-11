@@ -1,0 +1,38 @@
+--- a/sof_es8336.c
++++ b/sof_es8336.c
+@@ -751,7 +751,7 @@
+ 	if (IS_ERR(priv->gpio_headphone)) {
+ 		ret = dev_err_probe(dev, PTR_ERR(priv->gpio_headphone),
+ 				    "could not get headphone-enable GPIO\n");
+-		goto err_put_codec;
++		goto err_put_speakers;
+ 	}
+ 
+ 	INIT_LIST_HEAD(&priv->hdmi_pcm_list);
+@@ -767,13 +767,16 @@
+ 
+ 	ret = devm_snd_soc_register_card(dev, card);
+ 	if (ret) {
+-		gpiod_put(priv->gpio_speakers);
+ 		dev_err(dev, "snd_soc_register_card failed: %d\n", ret);
+-		goto err_put_codec;
++		goto err_put_gpios;
+ 	}
+ 	platform_set_drvdata(pdev, &sof_es8336_card);
+ 	return 0;
+ 
++err_put_gpios:
++	gpiod_put(priv->gpio_headphone);
++err_put_speakers:
++	gpiod_put(priv->gpio_speakers);
+ err_put_codec:
+ 	device_remove_software_node(priv->codec_dev);
+ 	put_device(codec_dev);
+@@ -786,6 +789,7 @@
+ 	struct sof_es8336_private *priv = snd_soc_card_get_drvdata(card);
+ 
+ 	cancel_delayed_work_sync(&priv->pcm_pop_work);
++	gpiod_put(priv->gpio_headphone);
+ 	gpiod_put(priv->gpio_speakers);
+ 	device_remove_software_node(priv->codec_dev);
+ 	put_device(priv->codec_dev);

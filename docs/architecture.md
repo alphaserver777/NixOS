@@ -35,7 +35,10 @@
 - **Desktop:** Hyprland (Wayland)
 - **Модули:** `nixos/modules/default.nix` (полный desktop-набор)
 - **Особенности:**
-  - ALSA-патч для аудио (`snd-intel-dspcfg.dsp_driver=1`)
+  - BOD-WXX9, ES8336: настройки звука в `hosts/Huawei/audio.nix`.
+    SOF (`snd_intel_dspcfg.dsp_driver=3`), quirk=160, ветка ядра
+    6.18 LTS и исправление освобождения GPIO в модуле ES8336
+    (задача 021). HDA-only отключает встроенные динамики и микрофон.
   - Samba-шара на `/home/admsys`
   - Те же WiFi-параметры: power_save=0, PCIE ASPM off
 - **Конфиг:** `hosts/Huawei/configuration.nix`
