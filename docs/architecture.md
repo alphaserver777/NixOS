@@ -152,6 +152,12 @@ nixos-config/
 
 ## Custom-пакеты
 
+- OpenCode из официального flake доступен на всех хостах (задача 022).
+  Общий `home-manager/home-packages.nix` устанавливает его в домашних
+  окружениях; `nixos/modules/opencode.nix`, подключённый через `makeSystem`,
+  добавляет пользовательский пакет на хостах без Home Manager.
+  Версия закреплена в `flake.lock`, обновление: `nix flake update opencode`.
+
 - `nixos-config/packages/lazyssh.nix` — LazySSH (Go-инструмент для SSH).
   Сборка: `pkgs.callPackage ../../packages/lazyssh.nix {}`. Используется на: `x-disk`.
 - `nixos-config/packages/assistant.nix` — «Ассистент» (ГК САФИБ), remote access.

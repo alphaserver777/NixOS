@@ -1,9 +1,12 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }: {
   nixpkgs.config.allowUnfree = true;
 
   #Общие программы - будут установлены для всех hosts
 
-  home.packages = with pkgs; [
+  home.packages = [
+    # Задача 022: одна официальная версия для всех домашних окружений.
+    inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
+  ] ++ (with pkgs; [
     # Packages in each category are sorted alphabetically
     alacritty # Терминал
     nixpkgs-fmt
@@ -83,5 +86,5 @@
     # # Other
     # bemoji
     # nix-prefetch-scripts
-  ];
+  ]);
 }

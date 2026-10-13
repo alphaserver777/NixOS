@@ -59,6 +59,7 @@
     };
 
     modules = [
+      ./nixos/modules/opencode.nix
       ./hosts/${hostname}/configuration.nix
     ];
   };

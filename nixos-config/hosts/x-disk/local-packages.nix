@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, opencodePackage, antigravityCliPackage, ... }:
+{ pkgs, pkgs-unstable, antigravityCliPackage, ... }:
 let
   lazyssh-client = pkgs.callPackage ../../packages/lazyssh.nix { };
 in
@@ -95,9 +95,6 @@ in
   ] ++ [
     # AI — официальная сборка Antigravity CLI; запускается командой agy.
     antigravityCliPackage
-
-    # AI — официальный flake opencode, обновляется через `nix flake update opencode`.
-    opencodePackage
 
     # Telegram — из nixpkgs-unstable, чтобы не отставать от stable upstream.
     pkgs-unstable.telegram-desktop
