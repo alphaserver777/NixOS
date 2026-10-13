@@ -48,10 +48,27 @@ replace_once(widget, '    popoutHeight: 560', '    popoutHeight: 650')
 # Прямой запуск интервала из окна песочных часов. Новый интервал заменяет
 # показанный таймер, остальные независимо созданные таймеры сохраняются.
 panel = root / "components/TimerPanelContent.qml"
-replace_once(panel, '    // --- Hourglass ---', '''    function startPreset(minutes, label) {
-        if (!pop.d) return;
-        if (pop.t) pop.d.remove(pop.t.id);
-        pop.selectedId = pop.d.start(minutes * 60000, label, "duration", 0, true);
+replace_once(panel, '    // --- Hourglass ---', '''    // Задача 028: проверяем длительность до изменения текущего таймера.
+    readonly property real customMs: /^[0-9]+([.,][0-9]+)?$/.test(durationInput.text.trim())
+        ? Math.round(Number(durationInput.text.trim().replace(",", ".")) * 60000) : 0
+    readonly property bool customValid: customMs >= 1000 && customMs <= TP.MAX_MS
+
+    function startInterval(ms, label) {
+        if (!pop.d || !isFinite(ms) || ms < 1000 || ms > TP.MAX_MS) return;
+        const previousId = pop.t ? pop.t.id : -1;
+        const startedId = pop.d.start(ms, label, "duration", 0, true);
+        if (startedId < 0) return;
+        if (previousId >= 0) pop.d.remove(previousId);
+        pop.selectedId = startedId;
+        pop.forceActiveFocus();
+    }
+
+    function startPreset(minutes, label) {
+        pop.startInterval(minutes * 60000, label);
+    }
+
+    function startCustom() {
+        if (customValid) pop.startInterval(customMs, "Таймер");
     }
 
     Row {
@@ -71,9 +88,32 @@ replace_once(panel, '    // --- Hourglass ---', '''    function startPreset(minu
         }
     }
 
+    Row {
+        width: parent.width
+        spacing: Theme.spacingS
+        DankTextField {
+            id: durationInput
+            width: parent.width - customStart.width - parent.spacing
+            labelText: "Минуты"
+            placeholderText: "Например, 40"
+            maximumLength: 12
+            onAccepted: pop.startCustom()
+        }
+        DankButton {
+            id: customStart
+            width: 96
+            anchors.verticalCenter: durationInput.verticalCenter
+            text: "Начать"
+            enabled: !!pop.d && pop.customValid
+            onClicked: pop.startCustom()
+        }
+    }
+
     // --- Hourglass ---''')
+replace_once(panel, '        enabled: pop.shown && !!pop.t && !!pop.d',
+             '        enabled: pop.shown && !!pop.t && !!pop.d && !durationInput.getActiveFocus()')
 replace_once(panel, '                text: pop.d ? pop.d.displayLabel(pop.t) : ""',
-             '                text: pop.t && pop.d ? pop.d.displayLabel(pop.t) : "Выбери интервал выше"')
+             '                text: pop.t && pop.d ? pop.d.displayLabel(pop.t) : "Выбери интервал или введи минуты"')
 replace_once(panel, '                text: TP.formatClock(pop.rem)',
              '                text: pop.t ? TP.formatClock(pop.rem) : "25:00"')
 replace_once(panel, '''    // --- Adjustments ---
