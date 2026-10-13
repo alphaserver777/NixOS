@@ -43,6 +43,8 @@ let
       fi
       export DMS_DISABLE_POLKIT=1
       export DMS_DISABLE_MATUGEN=1
+      # Задача 029: новые исходники Sands получают свой каталог QML.
+      export QML_DISK_CACHE_PATH="''${XDG_CACHE_HOME:-$HOME/.cache}/cosmic-dms/${builtins.baseNameOf "${sands}"}"
       # Сохраняем команды горячих клавиш после изменения CLI.
       if [ "''${1:-}" = ipc ] && [ -n "''${2:-}" ] && [ "''${2:-}" != call ] && [ "''${2:-}" != --help ] && [ "''${2:-}" != -h ]; then
         shift

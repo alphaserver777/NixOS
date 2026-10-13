@@ -52,6 +52,11 @@ replace_once(panel, '    // --- Hourglass ---', '''    // Задача 028: пр
     readonly property real customMs: /^[0-9]+([.,][0-9]+)?$/.test(durationInput.text.trim())
         ? Math.round(Number(durationInput.text.trim().replace(",", ".")) * 60000) : 0
     readonly property bool customValid: customMs >= 1000 && customMs <= TP.MAX_MS
+    property bool editingDuration: !pop.t
+    onTChanged: {
+        if (!pop.t) pop.editingDuration = true;
+        else if (!durationInput.activeFocus) pop.editingDuration = false;
+    }
 
     function startInterval(ms, label) {
         if (!pop.d || !isFinite(ms) || ms < 1000 || ms > TP.MAX_MS) return;
@@ -60,6 +65,7 @@ replace_once(panel, '    // --- Hourglass ---', '''    // Задача 028: пр
         if (startedId < 0) return;
         if (previousId >= 0) pop.d.remove(previousId);
         pop.selectedId = startedId;
+        pop.editingDuration = false;
         pop.forceActiveFocus();
     }
 
@@ -88,42 +94,98 @@ replace_once(panel, '    // --- Hourglass ---', '''    // Задача 028: пр
         }
     }
 
-    Row {
-        width: parent.width
+    // --- Hourglass ---''')
+replace_once(panel, '        enabled: pop.shown && !!pop.t && !!pop.d',
+             '        enabled: pop.shown && !!pop.t && !!pop.d && !pop.editingDuration')
+replace_once(panel, '                text: pop.d ? pop.d.displayLabel(pop.t) : ""',
+             '                text: pop.editingDuration ? "Своя длительность" : (pop.t && pop.d ? pop.d.displayLabel(pop.t) : "Таймер")')
+replace_once(panel, '                text: TP.formatClock(pop.rem)',
+             '                text: pop.t ? TP.formatClock(pop.rem) : "25:00"')
+replace_once(panel, '                id: bigTime', '''                id: bigTime
+                visible: !pop.editingDuration
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        durationInput.text = String(Math.max(1, Math.ceil(pop.rem / 60000)));
+                        pop.editingDuration = true;
+                        durationInput.forceActiveFocus();
+                        durationInput.selectAll();
+                    }
+                }''')
+replace_once(panel, '''            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 4''', '''            Row {
+                visible: pop.editingDuration
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: Theme.spacingS
+                TextInput {
+                    id: durationInput
+                    text: "25"
+                    width: Math.max(72, Math.min(220, implicitWidth + 12))
+                    font: bigTime.font
+                    color: activeFocus ? Theme.primary : Theme.surfaceText
+                    selectionColor: Theme.primaryContainer
+                    selectedTextColor: Theme.primary
+                    horizontalAlignment: TextInput.AlignHCenter
+                    selectByMouse: true
+                    activeFocusOnTab: true
+                    maximumLength: 12
+                    clip: true
+                    onAccepted: pop.startCustom()
+                    Keys.onEscapePressed: event => {
+                        if (pop.t) {
+                            pop.editingDuration = false;
+                            pop.forceActiveFocus();
+                            event.accepted = true;
+                        } else event.accepted = false;
+                    }
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        width: parent.width
+                        height: 1
+                        color: Theme.primary
+                        opacity: durationInput.activeFocus ? 0.7 : 0.2
+                    }
+                }
+                StyledText {
+                    anchors.verticalCenter: durationInput.verticalCenter
+                    text: "мин"
+                    font.pixelSize: Theme.fontSizeMedium
+                    color: Theme.surfaceVariantText
+                }
+            }
+
+            Row {
+                visible: !pop.editingDuration
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 4''')
+replace_once(panel, '''    // --- Adjustments ---
+    Row {''', '''    Row {
+        visible: pop.editingDuration
+        anchors.horizontalCenter: parent.horizontalCenter
         spacing: Theme.spacingS
-        DankTextField {
-            id: durationInput
-            width: parent.width - customStart.width - parent.spacing
-            labelText: "Минуты"
-            placeholderText: "Например, 40"
-            maximumLength: 12
-            onAccepted: pop.startCustom()
-        }
         DankButton {
-            id: customStart
-            width: 96
-            anchors.verticalCenter: durationInput.verticalCenter
+            width: 140
             text: "Начать"
             enabled: !!pop.d && pop.customValid
             onClicked: pop.startCustom()
         }
+        RoundButton {
+            visible: !!pop.t
+            iconName: "close"
+            tooltip: "Вернуться к таймеру"
+            onClicked: { pop.editingDuration = false; pop.forceActiveFocus(); }
+        }
     }
 
-    // --- Hourglass ---''')
-replace_once(panel, '        enabled: pop.shown && !!pop.t && !!pop.d',
-             '        enabled: pop.shown && !!pop.t && !!pop.d && !durationInput.getActiveFocus()')
-replace_once(panel, '                text: pop.d ? pop.d.displayLabel(pop.t) : ""',
-             '                text: pop.t && pop.d ? pop.d.displayLabel(pop.t) : "Выбери интервал или введи минуты"')
-replace_once(panel, '                text: TP.formatClock(pop.rem)',
-             '                text: pop.t ? TP.formatClock(pop.rem) : "25:00"')
-replace_once(panel, '''    // --- Adjustments ---
-    Row {''', '''    // --- Adjustments ---
+    // --- Adjustments ---
     Row {
-        visible: !!pop.t''')
+        visible: !!pop.t && !pop.editingDuration''')
 replace_once(panel, '''    // --- Controls ---
     Item {''', '''    // --- Controls ---
     Item {
-        visible: !!pop.t''')
+        visible: !!pop.t && !pop.editingDuration''')
 
 for name in ("TimerDaemon.qml", "TimerSettings.qml"):
     path = root / name
