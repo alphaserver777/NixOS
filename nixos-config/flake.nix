@@ -49,7 +49,10 @@
     config.allowUnfree = true;
   };
 
-  opencodePackage = opencode.packages.${system}.default;
+  opencodePackage = import ./packages/opencode.nix {
+    pkgs = nixpkgs.legacyPackages.${system};
+    upstream = opencode.packages.${system}.default;
+  };
   antigravityCliPackage = pkgs-unstable.callPackage ./packages/antigravity-cli.nix { };
 
   makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {

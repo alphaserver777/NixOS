@@ -1,4 +1,4 @@
-"""Задача 013: однократная смена модели без замены личных подключений."""
+"""Задачи 013/023: однократный выбор модели без замены личных подключений."""
 
 import json
 import os
@@ -20,7 +20,7 @@ def initialize(config_home, state_home):
         raise RuntimeError("Настройки OpenCode должны оставаться изменяемыми")
     settings = json.loads(path.read_text()) if path.exists() else {}
     model = settings.get("model", "")
-    if model and not model.startswith("a6api/"):
+    if model:
         marker.write_text("Сохранён текущий выбор пользователя\n")
         return
     backup = state / "config-before.json"
