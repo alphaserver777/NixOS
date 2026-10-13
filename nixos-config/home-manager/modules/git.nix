@@ -1,9 +1,11 @@
 {
   programs.git = {
     enable = true;
-    userName = "crypto_mrx";
-    userEmail = "maksim.ilonov@yandex.ru";
-    extraConfig = {
+    settings = {
+      user = {
+        name = "crypto_mrx";
+        email = "maksim.ilonov@yandex.ru";
+      };
       url."git@github.com:".insteadOf = "https://github.com/";
       url."git@gitlab.com:".insteadOf = "https://gitlab.com/";
       url."git@gitflic.ru:".insteadOf = "https://gitflic.ru/";
