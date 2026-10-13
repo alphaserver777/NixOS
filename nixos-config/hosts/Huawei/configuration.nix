@@ -1,4 +1,4 @@
-{ pkgs, stateVersion, hostname, ... }:
+{ lib, pkgs, stateVersion, hostname, ... }:
 
 {
   imports = [
@@ -9,6 +9,8 @@
   ];
 
   hardware.enableAllFirmware = true;
+  # Задача 025: общий модуль оставляет адаптер выключенным после загрузки.
+  hardware.bluetooth.powerOnBoot = lib.mkForce true;
 
   environment.systemPackages = [ pkgs.home-manager pkgs.qemu pkgs.alsa-utils ];
 
