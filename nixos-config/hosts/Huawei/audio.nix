@@ -60,7 +60,8 @@
       ${pkgs.alsa-utils}/bin/amixer -c sofessx8336 cset name='Left Headphone Mixer Left DAC Switch' on
       ${pkgs.alsa-utils}/bin/amixer -c sofessx8336 cset name='Right Headphone Mixer Right DAC Switch' on
       ${pkgs.alsa-utils}/bin/amixer -c sofessx8336 cset name='Headphone Switch' on
-      ${pkgs.alsa-utils}/bin/amixer -c sofessx8336 cset name='Headphone Playback Volume' 80%
+      # Задача 024: 80% округляется до -12 dB; 100% даёт штатные 0 dB.
+      ${pkgs.alsa-utils}/bin/amixer -c sofessx8336 cset name='Headphone Playback Volume' 100%
       ${pkgs.alsa-utils}/bin/amixer -c sofessx8336 cset name='Speaker Switch' on
     '';
     serviceConfig.Type = "oneshot";
