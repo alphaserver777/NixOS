@@ -3,7 +3,8 @@ let
   # Задача 030: приложения рабочего стола могут не получить SSH_AUTH_SOCK.
   # Существующий адрес, в том числе переданный по SSH, имеет приоритет.
   clientConfig = pkgs.writeText "ssh-agent-client.conf" ''
-    Match exec "test -z \"$SSH_AUTH_SOCK\" && test -S /run/user/%i/ssh-agent"
+    # Проверяем окружение самого SSH: zsh при запуске добавляет переменную.
+    Match exec "test -S /run/user/%i/ssh-agent && ! ${pkgs.gnugrep}/bin/grep -zq '^SSH_AUTH_SOCK=.' /proc/$PPID/environ"
       IdentityAgent /run/user/%i/ssh-agent
     Match all
   '';
