@@ -1,7 +1,6 @@
 { stdenv, lib, fetchurl, dpkg, buildFHSEnv, writeShellScript
 , glib, gtk2, libv4l, alsa-lib, libpulseaudio, libGL, pipewire
 , libxkbcommon, fontconfig, freetype, dbus, openssl, curl
-, xorg
 }:
 
 let
@@ -48,10 +47,10 @@ buildFHSEnv {
     libxkbcommon fontconfig freetype dbus openssl curl sqlite zlib
     libjpeg libpng libtiff libxml2 libxslt
     nss nspr expat efivar
-    xorg.libX11 xorg.libxcb xorg.libXext xorg.libXrandr xorg.libXrender
-    xorg.libXfixes xorg.libXi xorg.libXtst xorg.libXcomposite xorg.libXdamage
-    xorg.libXScrnSaver xorg.libXcursor xorg.libXft xorg.libxshmfence
-    xorg.libXinerama  # libastrct.so (Remote Control runtime)
+    libx11 libxcb libxext libxrandr libxrender
+    libxfixes libxi libxtst libxcomposite libxdamage
+    libxscrnsaver libxcursor libxft libxshmfence
+    libxinerama  # libastrct.so (Remote Control runtime)
     util-linux.lib    # libuuid для libusbast.so
     stdenv.cc.cc.lib
   ];

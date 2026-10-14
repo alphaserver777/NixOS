@@ -2,7 +2,11 @@
 , openssl, glib, alsa-lib, libpulseaudio, libGL, libxkbcommon
 , fontconfig, freetype, dbus, libdrm, mesa
 , libgpg-error, libkrb5, e2fsprogs, qt6
-, xorg
+, libx11, libxcb, libxext, libxrandr, libxrender
+, libxfixes, libxi, libxtst, libxcomposite, libxdamage
+, libxcursor, libxkbfile
+, libxcb-util, libxcb-image, libxcb-keysyms
+, libxcb-render-util, libxcb-wm, libxcb-cursor
 }:
 
 stdenv.mkDerivation rec {
@@ -20,11 +24,11 @@ stdenv.mkDerivation rec {
     openssl glib alsa-lib libpulseaudio libGL libxkbcommon
     fontconfig freetype dbus libdrm mesa stdenv.cc.cc.lib
     libgpg-error libkrb5 e2fsprogs qt6.qtwayland
-    xorg.libX11 xorg.libxcb xorg.libXext xorg.libXrandr xorg.libXrender
-    xorg.libXfixes xorg.libXi xorg.libXtst xorg.libXcomposite xorg.libXdamage
-    xorg.libXcursor xorg.libxkbfile
-    xorg.xcbutil xorg.xcbutilimage xorg.xcbutilkeysyms
-    xorg.xcbutilrenderutil xorg.xcbutilwm xorg.xcbutilcursor
+    libx11 libxcb libxext libxrandr libxrender
+    libxfixes libxi libxtst libxcomposite libxdamage
+    libxcursor libxkbfile
+    libxcb-util libxcb-image libxcb-keysyms
+    libxcb-render-util libxcb-wm libxcb-cursor
   ];
 
   appendRunpaths = [ "${placeholder "out"}/opt/happ/lib" ];
