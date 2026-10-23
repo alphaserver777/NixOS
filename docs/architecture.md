@@ -152,6 +152,11 @@ nixos-config/
 
 ## Custom-пакеты
 
+- `nixos-config/packages/doublecmd.nix` — готовый Double Commander из
+  закреплённого nixpkgs-unstable с libssh2 в области поиска библиотек
+  самой программы для SFTP/SCP. Общий модуль файлового менеджера использует
+  его для запуска из меню, терминала и службы открытия файлов (задача 032).
+
 - OpenCode из официального flake доступен на всех хостах (задача 022).
   Общий `home-manager/home-packages.nix` устанавливает его в домашних
   окружениях; `nixos/modules/opencode.nix`, подключённый через `makeSystem`,
