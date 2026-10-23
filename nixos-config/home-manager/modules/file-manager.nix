@@ -5,12 +5,13 @@ let
   newer = import inputs.nixpkgs-unstable {
     system = pkgs.stdenv.hostPlatform.system;
   };
+  doublecmd = newer.callPackage ../../packages/doublecmd.nix { };
   python = pkgs.python3.withPackages (packages: [ packages.dbus-next ]);
   bridge = pkgs.writeShellScript "doublecmd-file-manager" ''
-    exec ${python}/bin/python3 ${./doublecmd-file-manager.py} ${newer.doublecmd}/bin/doublecmd ${pkgs.systemd}/bin/systemd-run
+    exec ${python}/bin/python3 ${./doublecmd-file-manager.py} ${doublecmd}/bin/doublecmd ${pkgs.systemd}/bin/systemd-run
   '';
 in {
-  home.packages = [ newer.doublecmd ];
+  home.packages = [ doublecmd ];
   # Список обработчиков остаётся изменяемым приложениями. Задаём только
   # папки, сохраняя выбранный браузер, просмотр изображений и другие записи.
   home.activation.doubleCommanderDefault = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
@@ -24,7 +25,7 @@ in {
   xdg.desktopEntries.doublecmd = {
     name = "Double Commander";
     genericName = "Файловый менеджер";
-    exec = "${newer.doublecmd}/bin/doublecmd --client --no-splash %F";
+    exec = "${doublecmd}/bin/doublecmd --client --no-splash %F";
     icon = "doublecmd";
     terminal = false;
     categories = [ "Utility" "FileManager" ];
