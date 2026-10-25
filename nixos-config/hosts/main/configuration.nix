@@ -5,7 +5,6 @@
     ./hardware-configuration.nix
     ./local-packages.nix
     ./clipboard.nix
-    ./display.nix
     ../../nixos/modules
   ];
 

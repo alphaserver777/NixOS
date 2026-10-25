@@ -62,6 +62,7 @@
     };
 
     modules = [
+      ./nixos/modules/font-rendering.nix
       ./nixos/modules/opencode.nix
       ./hosts/${hostname}/configuration.nix
     ];

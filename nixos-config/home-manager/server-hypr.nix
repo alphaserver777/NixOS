@@ -21,9 +21,6 @@
   home = {
     username = user;
     homeDirectory = "/home/${user}";
-    sessionVariables = {
-      QT_SCREEN_SCALE_FACTORS = "1;1";
-    };
     packages = with pkgs; [
       brightnessctl
       cliphist
