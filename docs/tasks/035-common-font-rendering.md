@@ -44,10 +44,10 @@ hinting.style="full", subpixel.rgba="none". Серое сглаживание н
 
 ## Проверка
 
-- [ ] Модуль общий, отдельного hosts/main/display.nix и импорта нет.
-- [ ] Настройки Fontconfig одинаковы во всех шести NixOS-конфигурациях;
+- [x] Модуль общий, отдельного hosts/main/display.nix и импорта нет.
+- [x] Настройки Fontconfig одинаковы во всех шести NixOS-конфигурациях;
       версии состояния, драйверы и параметры мониторов не изменились.
-- [ ] В обоих входах Home Manager отсутствует список масштабов Qt.
+- [x] В обоих входах Home Manager отсутствует список масштабов Qt.
 - [ ] Вычисление конфигураций и пробная сборка main проходят без
       изменения flake.lock; вычисление пакетов Fontconfig остальных
       машин позволяет проверить общий результат без установки там.
@@ -79,3 +79,19 @@ hinting.style="full", subpixel.rgba="none". Серое сглаживание н
 - [Qt: масштаб и системные значения DPI](https://doc.qt.io/qt-6/highdpi.html).
 - Закреплённый nixpkgs, nixos/modules/config/fonts/fontconfig.nix:
   описание hinting.style и subpixel.rgba; Fontconfig включён по умолчанию.
+
+## Ход выполнения
+
+Исходники зафиксированы в f43c6be. Вычислены реальные конфигурации всех
+шести машин, включая отдельные homeConfigurations; проверены одинаковые
+параметры Fontconfig, отсутствие QT_SCREEN_SCALE_FACTORS, неизменность
+stateVersion, boot.kernelParams, videoDrivers, включения X11/Hyprland и
+правил мониторов относительно 580ec6d. Результат:
+~/.local/state/common-font-rendering-20261025/verification.json.
+
+Сборка и применение на main выполняются службой
+nixos-common-font-rendering-update.service. Она проверяет план служб,
+ядро и настройки модулей драйверов, затем fc-match и состояние панели.
+Журналы, исходное поколение, результат и код завершения находятся в
+~/.local/state/common-font-rendering-20261025. До проверки результата
+применение не считается подтверждённым. Удалённые машины не обновлялись.
