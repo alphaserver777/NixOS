@@ -247,7 +247,8 @@
       },
       "original": {
         "type": "git",
-        "url": "https://github.com/anomalyco/opencode"
+        "url": "https://github.com/anomalyco/opencode",
+        "ref": "dev"
       }
     },
     "root": {
