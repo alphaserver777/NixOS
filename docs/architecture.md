@@ -204,9 +204,14 @@ mimeapps.list остаётся изменяемым; остальные назн
   dontAutoPatchelf`), снаружи FHS-обёртка с GTK2 runtime в `targetPkgs`.
   Подключается shared-модулем `nixos/modules/assistant.nix` на все desktop-хосты.
   Подробности и причина отказа от autoPatchelf — в task spec 002.
-- `nixos-config/packages/happ.nix` — Happ, proxy-клиент на базе Xray.
-  Тот же паттерн `autoPatchelfHook + dpkg + dontWrapQtApps`. Bundled Qt6 в
-  `/opt/happ/lib/`. Подключается через `nixos/modules/happ.nix`.
+- `nixos-config/packages/happ.nix` — Happ 4.6.1, клиент на базе Xray.
+  Пакет производителя закреплён контрольной суммой, библиотеки Qt6 включены
+  в пакет. `nixos/modules/happ.nix` устанавливает приложение и службу
+  `happd`, необходимую для управления системным туннелем (задача 044).
+  Установщик Debian не запускается, соединение автоматически не включается.
+  Служба использует штатный сокет `/tmp/happd.sock` и состояние
+  `/var/lib/happd`. Включено на Huawei, main, x-disk и srv-home;
+  применено только на main. Подписки остаются в пользовательском хранилище.
 
 ---
 
