@@ -3,6 +3,11 @@
 let
   cfg = config.services.mantaray;
   package = pkgs.callPackage ../../packages/mantaray.nix { };
+  networkTools = pkgs.buildEnv {
+    name = "mantaray-network-tools";
+    paths = [ pkgs.iproute2 pkgs.nftables pkgs.systemd ];
+    pathsToLink = [ "/bin" ];
+  };
 in
 {
   options.services.mantaray.enable = lib.mkEnableOption "MantaRay VPN";
@@ -40,6 +45,13 @@ in
           AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_RAW" "CAP_SYS_PTRACE" "CAP_DAC_READ_SEARCH" ];
           PrivateTmp = true;
           ProtectSystem = "strict";
+          # Задача 043: ядро MantaRay ищет команды по фиксированным путям.
+          # Совместимые пути видны только службе, основная система не меняется.
+          TemporaryFileSystem = [ "/usr:ro" ];
+          BindReadOnlyPaths = [
+            "${networkTools}/bin:/usr/bin"
+            "${networkTools}/bin:/usr/sbin"
+          ];
           ProtectHome = "read-only";
           ProtectKernelTunables = true;
           ProtectKernelModules = true;
