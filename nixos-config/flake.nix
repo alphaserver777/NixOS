@@ -66,6 +66,7 @@
 
     modules = [
       ./nixos/modules/font-rendering.nix
+      ./nixos/modules/mantaray.nix
       ./nixos/modules/opencode.nix
       ./hosts/${hostname}/configuration.nix
     ];
