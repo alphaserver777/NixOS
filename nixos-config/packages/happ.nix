@@ -11,11 +11,11 @@
 
 stdenv.mkDerivation rec {
   pname = "happ";
-  version = "2.17.1";
+  version = "4.6.1";
 
   src = fetchurl {
     url = "https://github.com/Happ-proxy/happ-desktop/releases/download/${version}/Happ.linux.x64.deb";
-    sha256 = "1gm1zjjvfvnmqcsp03x05i9kkidr9i6ccsih4m2zzinlshlybfg5";
+    sha256 = "362538fabd97b6b77798a74f3e63a30a693a3300bcc05a2beca7d679948edbd5";
   };
 
   nativeBuildInputs = [ dpkg autoPatchelfHook makeWrapper ];
@@ -56,6 +56,11 @@ stdenv.mkDerivation rec {
       --set QT_STYLE_OVERRIDE Fusion \
       --set QT_QUICK_CONTROLS_STYLE Fusion
 
+    # Задача 044: служба запускается NixOS, установщик Debian не выполняется.
+    makeWrapper $out/opt/happ/bin/happd $out/bin/happd \
+      --chdir $out/opt/happ/bin \
+      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl ]}
+
     install -Dm644 usr/share/applications/Happ.desktop \
       $out/share/applications/Happ.desktop
     substituteInPlace $out/share/applications/Happ.desktop \
@@ -75,5 +80,6 @@ stdenv.mkDerivation rec {
     homepage = "https://www.happ.su/";
     license = licenses.unfree;
     platforms = [ "x86_64-linux" ];
+    mainProgram = "happ";
   };
 }
