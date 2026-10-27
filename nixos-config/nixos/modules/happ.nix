@@ -1,9 +1,13 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
   package = pkgs.callPackage ../../packages/happ.nix { };
 in {
   environment.systemPackages = [ package ];
+
+  # Задача 045: Happ меняет основной маршрут на туннель, а ответы сервера
+  # приходят по физическому интерфейсу. Строгая проверка их отбрасывает.
+  networking.firewall.checkReversePath = lib.mkDefault "loose";
 
   # Задача 044: аналог службы производителя, без запуска установщика Debian.
   # Запуск службы сам по себе не включает соединение.
