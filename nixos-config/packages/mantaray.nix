@@ -57,7 +57,7 @@ stdenv.mkDerivation rec {
     makeWrapper "$out/opt/mantaray/mantaray" "$out/libexec/mantaray-gui" \
       "''${gappsWrapperArgs[@]}" \
       --prefix PATH : ${lib.makeBinPath [ coreutils bash getent ]} \
-      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ libGL libayatana-appindicator libsecret ]}
+      --prefix LD_LIBRARY_PATH : "$out/opt/mantaray/lib:${lib.makeLibraryPath [ libGL libayatana-appindicator libsecret ]}"
     wrapProgram "$out/bin/mantaray" \
       --prefix PATH : ${lib.makeBinPath [ coreutils bash getent ]}
   '';
