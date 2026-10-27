@@ -4,6 +4,8 @@ let
   # уже закреплённого набора пакетов; остальная система не обновляется.
   newer = import inputs.nixpkgs-unstable {
     system = pkgs.stdenv.hostPlatform.system;
+    # Задача 038: UnRAR имеет собственную несвободную лицензию.
+    config.allowUnfree = true;
   };
   doublecmd = newer.callPackage ../../packages/doublecmd.nix { };
   python = pkgs.python3.withPackages (packages: [ packages.dbus-next ]);

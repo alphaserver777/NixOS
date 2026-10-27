@@ -13,7 +13,6 @@
     sessionVariables = {
       # Идентификатор проекта Google Cloud для Antigravity CLI.
       GOOGLE_CLOUD_PROJECT = "nixos-ai-001";
-      QT_SCREEN_SCALE_FACTORS = "1;1";
     };
   };
 

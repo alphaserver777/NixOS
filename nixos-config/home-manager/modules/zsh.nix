@@ -48,6 +48,13 @@
         # Стандартное редактирование командной строки, как в Bash.
         # Этот блок должен быть последним: дополнения Zsh меняют назначения клавиш.
         bindkey -e
+        # Задача 036: Delete из Alacritty, VS Code, Tmux и консоли Linux.
+        bindkey '^[[3~' delete-char
+        zmodload zsh/terminfo
+        if (( $+terminfo[kdch1] )); then
+          bindkey "$terminfo[kdch1]" delete-char
+        fi
+        bindkey '^U' backward-kill-line
         bindkey '^[[1;5D' backward-word
         bindkey '^[[1;5C' forward-word
         bindkey '^[[5D' backward-word
