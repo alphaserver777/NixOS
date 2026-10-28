@@ -50,3 +50,12 @@ https://persistent.oaistatic.com/codex-app-prod/linux/deb/dists/stable/main/bina
 
 SHA256 официального .deb:
 4484dc2b54fc0978beb23b8d8d717494e4e0b4fbeab0a876739105e50b44de5a.
+
+## Подготовка пакета
+
+Штатная команда из .deb запускает usr/lib/chatgpt/codex-launcher;
+используется этот запуск, а не прямой вызов Electron. В комплекте есть
+libqt5_shim.so и libqt6_shim.so, им предоставлены библиотеки обеих версий
+Qt. Соседние варианты модулей HID/serialport для musl сохраняются,
+но отсутствие libc.musl-x86_64.so.1 для них допускается: на NixOS
+выбираются варианты glibc. Другие отсутствующие зависимости не игнорируются.

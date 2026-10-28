@@ -4,6 +4,7 @@
 , libusb1, libx11, libxcb, libxcomposite, libxdamage, libxext, libxfixes
 , libxkbcommon, libxrandr, libsecret, zlib, bubblewrap, git, ripgrep
 , xdg-utils, openssh
+, qt6, libsForQt5
 }:
 
 # Задача 047: официальный выпуск Linux с Codex в приложении ChatGPT.
@@ -22,10 +23,15 @@ stdenv.mkDerivation rec {
     libgbm libGL libnotify nspr nss pango openssl tpm2-tss systemd
     libusb1 libx11 libxcb libxcomposite libxdamage libxext libxfixes
     libxkbcommon libxrandr libsecret zlib stdenv.cc.cc.lib
+    qt6.qtbase libsForQt5.qtbase
   ];
   # Эти библиотеки Chromium может загружать по имени во время работы.
   runtimeDependencies = [ libGL libgbm libsecret (lib.getLib systemd) ];
+  # В комплекте есть альтернативные сборки модулей для Alpine/musl.
+  # NixOS использует соседние варианты glibc; musl-файлы не запускаются.
+  autoPatchelfIgnoreMissingDeps = [ "libc.musl-x86_64.so.1" ];
   dontWrapGApps = true;
+  dontWrapQtApps = true;
   dontStrip = true;
 
   unpackPhase = ''
