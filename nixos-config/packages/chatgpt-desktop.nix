@@ -49,7 +49,7 @@ stdenv.mkDerivation rec {
   '';
 
   postFixup = ''
-    makeWrapper "$out/lib/chatgpt/ChatGPT" "$out/bin/chatgpt" \
+    makeWrapper "$out/lib/chatgpt/codex-launcher" "$out/bin/chatgpt" \
       "''${gappsWrapperArgs[@]}" \
       --prefix PATH : ${lib.makeBinPath [ bubblewrap git ripgrep xdg-utils openssh ]}
   '';
