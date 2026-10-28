@@ -10,6 +10,7 @@
     ./fzf.nix
     ./file-manager.nix
     ./document-openers.nix
+    ./codex-desktop.nix
     ./opencode-default.nix
     ./git.nix
     ./google-chrome.nix
