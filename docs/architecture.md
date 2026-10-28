@@ -164,6 +164,13 @@ mimeapps.list остаётся изменяемым; остальные назн
 
 ## Custom-пакеты
 
+- Приложение ChatGPT с Codex устанавливается модулем
+  `home-manager/modules/codex-desktop.nix` на Huawei, main и x-disk.
+  Готовый пакет взят из отдельного закрепления `nixpkgs-chatgpt`, чтобы
+  получить поддержку Linux без обновления остальных программ. Используется
+  комплектный CLI приложения; расширение VS Code остаётся независимым
+  (задача 047).
+
 - `nixos-config/packages/doublecmd.nix` — готовый Double Commander из
   закреплённого nixpkgs-unstable с libssh2 для SFTP/SCP и libunrar
   для RAR в области поиска библиотек самой программы. Существующий
