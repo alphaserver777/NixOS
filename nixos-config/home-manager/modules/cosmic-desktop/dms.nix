@@ -27,6 +27,12 @@ let
     cp -r ${./flags} "$out/assets/flags"
     cp ${./ClipboardDetail.qml} "$out/Modals/Clipboard/ClipboardDetail.qml"
     python3 ${./dms-center-patch.py} "$out"
+    python3 ${./dms-appearance-patch.py} "$out"
+  '';
+  dmsInitializer = pkgs.runCommand "dms-initializer" { } ''
+    mkdir -p "$out"
+    cp ${./dms-initialize.py} "$out/dms-initialize.py"
+    cp ${./appearance-settings.json} "$out/appearance-settings.json"
   '';
   dms = pkgs.writeShellApplication {
     name = "cosmic-dms";
@@ -38,13 +44,13 @@ let
         if [ ! -e "$settings_dir/settings.json" ]; then
           install -m 600 ${./dms-settings.json} "$settings_dir/settings.json"
         fi
-        python3 ${./dms-initialize.py}
+        python3 ${dmsInitializer}/dms-initialize.py
         exit 0
       fi
       export DMS_DISABLE_POLKIT=1
       export DMS_DISABLE_MATUGEN=1
       # Задача 029: новые исходники Sands получают свой каталог QML.
-      export QML_DISK_CACHE_PATH="''${XDG_CACHE_HOME:-$HOME/.cache}/cosmic-dms/${builtins.baseNameOf "${sands}"}"
+      export QML_DISK_CACHE_PATH="''${XDG_CACHE_HOME:-$HOME/.cache}/cosmic-dms/${builtins.baseNameOf "${sands}"}-${builtins.baseNameOf "${dmsCenter}"}"
       # Сохраняем команды горячих клавиш после изменения CLI.
       if [ "''${1:-}" = ipc ] && [ -n "''${2:-}" ] && [ "''${2:-}" != call ] && [ "''${2:-}" != --help ] && [ "''${2:-}" != -h ]; then
         shift
@@ -68,6 +74,7 @@ let
 in {
   home.packages = [ dms lock ];
   xdg.configFile."DankMaterialShell/plugins/Sands".source = sands;
+  xdg.configFile."DankMaterialShell/themes/cosmic.json".text = builtins.readFile ./cosmic-theme.json;
 
   # Задача 016: выбранная панель запускается напрямую при каждом входе.
   # Готовность интерфейса не ограничивается коротким ожиданием переключателя.

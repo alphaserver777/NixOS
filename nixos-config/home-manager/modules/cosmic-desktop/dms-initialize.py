@@ -95,3 +95,18 @@ if not dms_only_marker.exists():
                     widget["showMicPercent"] = False
     write_json(path, data)
     dms_only_marker.touch(mode=0o600)
+
+# Задача 050: согласованная палитра и уведомления, без сброса личных настроек.
+appearance_marker = root / ".cosmic-appearance-v1"
+if not appearance_marker.exists():
+    path = root / "settings.json"
+    backup = root / "settings.before-cosmic-appearance.json"
+    if not backup.exists():
+        shutil.copy2(path, backup)
+        backup.chmod(0o600)
+    data = json.loads(path.read_text())
+    appearance = json.loads(Path(__file__).with_name("appearance-settings.json").read_text())
+    data.update(appearance)
+    data["customThemeFile"] = str(root / "themes/cosmic.json")
+    write_json(path, data)
+    appearance_marker.touch(mode=0o600)
