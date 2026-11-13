@@ -17,6 +17,8 @@ in
     enableFishIntegration = false;
     settings = {
       client.tealdeer = true;
+      # Задача 053: подтверждать даже единственное совпадение.
+      finder.overrides = "--no-select-1";
       cheats.paths = [
         "${config.xdg.configHome}/navi/cheats"
         "${tldrCatalog}/pages/linux"
@@ -52,7 +54,10 @@ in
       fi
     }
     if [[ $options[zle] = on ]]; then
-      eval "$(${pkgs.navi}/bin/navi widget zsh)"
+      # Задача 053: штатный --best-match пропускает окно при непустой строке.
+      local navi_widget_source="$(${pkgs.navi}/bin/navi widget zsh)"
+      eval "''${navi_widget_source//--best-match /}"
+      unset navi_widget_source
     fi
   '';
 
