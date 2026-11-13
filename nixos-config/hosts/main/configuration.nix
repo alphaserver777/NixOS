@@ -4,7 +4,6 @@
   imports = [
     ./hardware-configuration.nix
     ./local-packages.nix
-    ./clipboard.nix
     ../../nixos/modules
   ];
 

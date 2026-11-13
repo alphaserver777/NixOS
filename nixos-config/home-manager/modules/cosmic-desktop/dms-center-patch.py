@@ -98,8 +98,6 @@ replace("Modals/Clipboard/ClipboardEntry.qml", """        onClicked: {
         onClicked: {
             ClipboardService.selectedIndex = root.itemIndex;
             ClipboardService.keyboardNavigationActive = true;
-        }
-        onDoubleClicked: {
             if (SettingsData.clipboardClickToPaste) pasteRequested();
             else copyRequested();
         }""")
