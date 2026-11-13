@@ -27,6 +27,7 @@
     ./tmux.nix
     ./zathura.nix # PDF reader
     ./zsh.nix
+    ./zsh-vim.nix
     ./zoxide.nix
     ./nvim-config
   ];

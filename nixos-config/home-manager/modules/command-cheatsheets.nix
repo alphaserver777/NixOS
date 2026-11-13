@@ -11,7 +11,7 @@ in
 {
   programs.navi = {
     enable = true;
-    # Задача 051: подключаем после завершающего bindkey -e в zsh.nix.
+    # Задача 051: подключаем после основных сочетаний в zsh.nix.
     enableZshIntegration = false;
     enableBashIntegration = false;
     enableFishIntegration = false;
