@@ -32,5 +32,7 @@
     fi
   '';
 
-  xdg.configFile."navi/cheats".source = ./command-cheats;
+  xdg.configFile."navi/cheats".source = pkgs.runCommand "navi-russian-cheats" { } ''
+    cp -r ${./command-cheats} "$out"
+  '';
 }
