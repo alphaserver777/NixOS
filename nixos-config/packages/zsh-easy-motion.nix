@@ -1,7 +1,7 @@
 { lib, stdenvNoCC, fetchFromGitHub, python3 }:
 stdenvNoCC.mkDerivation {
   pname = "zsh-easy-motion";
-  version = "0-unstable-2026-11-13";
+  version = "0-unstable-61f4705";
   src = fetchFromGitHub {
     owner = "IngoMeyer441";
     repo = "zsh-easy-motion";
