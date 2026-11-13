@@ -24,9 +24,19 @@
     };
   };
 
-  # Обычный выбор печатает команду; Ctrl+G вставляет её без выполнения.
-  programs.zsh.shellAliases.navi = "${pkgs.navi}/bin/navi --print";
+  # Обычный вызов и Ctrl+G подставляют команду без её выполнения.
   programs.zsh.initContent = lib.mkOrder 1600 ''
+    navi() {
+      if (( $# )); then
+        ${pkgs.navi}/bin/navi "$@"
+        return
+      fi
+      local selected
+      selected="$(${pkgs.navi}/bin/navi --print)" || return
+      if [[ -n "$selected" ]]; then
+        print -z -- "$selected"
+      fi
+    }
     if [[ $options[zle] = on ]]; then
       eval "$(${pkgs.navi}/bin/navi widget zsh)"
     fi
