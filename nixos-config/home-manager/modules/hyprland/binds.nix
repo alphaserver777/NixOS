@@ -43,7 +43,7 @@ in
       "$mainMod,       F, togglefloating,"
       "$mainMod,       P, pin,"
       "$mainMod,       J, layoutmsg, orientationcycle left top right bottom"
-      # Задача 048: тот же обзор DMS, что по правой кнопке на рабочих столах.
+      # Задача 049: тот же обзор DMS, что по правой кнопке на рабочих столах.
       "$mainMod,     Tab, exec, cosmic-dms ipc hypr toggleOverview"
       "$mainMod,       V, exec, cosmic-dms ipc clipboard toggle"
       "$mainMod,       L, exec, loginctl lock-session"
