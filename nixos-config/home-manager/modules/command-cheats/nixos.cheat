@@ -1,0 +1,31 @@
+% nixos, система, службы
+
+# Показать версию NixOS
+nixos-version
+
+# Показать неисправные системные службы
+systemctl --failed
+
+# Показать неисправные пользовательские службы
+systemctl --user --failed
+
+# Показать последние сообщения системной службы
+journalctl -u "<unit>" -n 100 --no-pager
+
+# Показать последние сообщения пользовательской службы
+journalctl --user -u "<unit>" -n 100 --no-pager
+
+# Показать поколения системы для возврата
+nixos-rebuild list-generations
+
+# Проверить план сборки текущего компьютера
+nix build --dry-run "$HOME/Nixos/nixos-config#nixosConfigurations.$(hostname).config.system.build.toplevel"
+
+# Собрать систему без применения
+nixos-rebuild build --flake "$HOME/Nixos/nixos-config#$(hostname)"
+
+# Применить конфигурацию текущего компьютера
+sudo nixos-rebuild switch --flake "$HOME/Nixos/nixos-config#$(hostname)"
+
+# Вернуть предыдущее поколение системы
+sudo nixos-rebuild switch --rollback

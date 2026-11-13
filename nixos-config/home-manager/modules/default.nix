@@ -19,6 +19,7 @@
     ./hyprland
     ./lazygit.nix
     ./atuin.nix
+    ./command-cheatsheets.nix
     # ./obsidian.nix
     ./sshAgent.nix
     ./starship.nix

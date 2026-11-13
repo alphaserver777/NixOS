@@ -1,0 +1,19 @@
+% docker, контейнеры
+
+# Показать все контейнеры Docker
+docker ps -a
+
+# Показать использование ресурсов контейнерами
+docker stats --no-stream
+
+# Показать последние сообщения контейнера
+docker logs --tail 100 "<container>"
+
+# Открыть командную оболочку контейнера
+docker exec -it "<container>" sh
+
+# Показать службы проекта Docker Compose
+docker compose ps
+
+# Показать последние сообщения проекта Docker Compose
+docker compose logs --tail 100
