@@ -1,4 +1,13 @@
 { config, lib, pkgs, ... }:
+let
+  # Задача 052: общий готовый справочник доступен без загрузки при поиске.
+  tldrCatalog = pkgs.fetchFromGitHub {
+    owner = "denisidoro";
+    repo = "navi-tldr-pages";
+    rev = "636c02e165683986f5e15bb14b66b8bc0df478a1";
+    hash = "sha256-lsJsHnu7v33lg6Jacy5mf6cdDFy4Y1VYnHlnK46gLG8=";
+  };
+in
 {
   programs.navi = {
     enable = true;
@@ -6,10 +15,15 @@
     enableZshIntegration = false;
     enableBashIntegration = false;
     enableFishIntegration = false;
-    settings.cheats.paths = [
-      "${config.xdg.configHome}/navi/cheats"
-      "${config.xdg.dataHome}/navi/cheats"
-    ];
+    settings = {
+      client.tealdeer = true;
+      cheats.paths = [
+        "${config.xdg.configHome}/navi/cheats"
+        "${tldrCatalog}/pages/linux"
+        "${tldrCatalog}/pages/common"
+        "${config.xdg.dataHome}/navi/cheats"
+      ];
+    };
   };
 
   programs.tealdeer = {
