@@ -2,7 +2,8 @@
 pkgs.testers.runNixOSTest {
   name = "plymouth-personal";
   globalTimeout = 180;
-  nodes.machine = { lib, ... }: {
+  extraPythonPackages = p: [ p.pillow ];
+  nodes.machine = { ... }: {
     boot.initrd.systemd.enable = true;
     boot.initrd.kernelModules = [ "virtio_gpu" ];
     boot.kernelParams = [ "quiet" "plymouth.ignore-serial-consoles" ];
@@ -23,6 +24,7 @@ pkgs.testers.runNixOSTest {
     };
   };
   testScript = ''
+    import os
     import time
     from PIL import Image, ImageChops
 
@@ -32,7 +34,8 @@ pkgs.testers.runNixOSTest {
     # Два полных цикла: сохраняем реальные снимки видеовыхода машины.
     samples = []
     for index in range(16):
-        path = machine.screenshot(f"signature-{index:02d}")
+        path = os.path.join(machine.out_dir, f"signature-{index:02d}.png")
+        machine.screenshot(path)
         samples.append(Image.open(path).convert("RGB"))
         time.sleep(0.8)
     width, height = samples[0].size
