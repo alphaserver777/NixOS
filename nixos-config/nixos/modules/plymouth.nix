@@ -4,11 +4,10 @@
   config = lib.mkIf (config.programs.hyprland.enable || config.services.xserver.enable) {
     boot.plymouth = {
       enable = true;
-      theme = "hud_space";
+      theme = "black_hud";
       themePackages = [
-        (pkgs.adi1090x-plymouth-themes.override {
-          selected_themes = [ "hud_space" ];
-        })
+        # Задача 057: только выбранная тема с плавно появляющейся подписью.
+        (pkgs.callPackage ../../packages/plymouth-personal.nix { })
       ];
     };
 
