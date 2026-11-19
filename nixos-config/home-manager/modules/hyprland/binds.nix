@@ -7,13 +7,40 @@ let
     mode="''${1:-area}"
     ${pkgs.grimblast}/bin/grimblast --notify copysave "$mode" "$file"
   '';
+  microphoneSounds = pkgs.runCommand "microphone-state-sounds" {
+    nativeBuildInputs = [ pkgs.python3 ];
+  } ''
+    mkdir -p "$out"
+    python3 - "$out" <<'PYTHON'
+    import math
+    import struct
+    import sys
+    import wave
+    from pathlib import Path
+
+    rate = 48000
+    duration = 0.085
+    fade = 0.012
+    for name, frequencies in (("on", (660, 880)), ("off", (880, 660))):
+        samples = []
+        for frequency in frequencies:
+            for i in range(round(rate * duration)):
+                t = i / rate
+                envelope = min(1, t / fade, (duration - t) / fade)
+                samples.append(round(0.18 * 32767 * envelope * math.sin(2 * math.pi * frequency * t)))
+            samples.extend([0] * round(rate * 0.015))
+        with wave.open(str(Path(sys.argv[1]) / (name + ".wav")), "wb") as sound:
+            sound.setparams((1, 2, rate, 0, "NONE", "not compressed"))
+            sound.writeframes(struct.pack("<" + "h" * len(samples), *samples))
+    PYTHON
+  '';
   toggleMicrophone = pkgs.writeShellScript "toggle-microphone" ''
-    ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+    ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle || exit $?
 
     if ${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | ${pkgs.gnugrep}/bin/grep -q '\[MUTED\]'; then
-      ${pkgs.pipewire}/bin/pw-play ${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo/dialog-warning.oga &
+      ${pkgs.pipewire}/bin/pw-play ${microphoneSounds}/off.wav &
     else
-      ${pkgs.pipewire}/bin/pw-play ${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo/complete.oga &
+      ${pkgs.pipewire}/bin/pw-play ${microphoneSounds}/on.wav &
     fi
   '';
 in
