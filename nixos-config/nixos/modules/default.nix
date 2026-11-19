@@ -3,6 +3,7 @@
     ./audio.nix
     ./bluetooth.nix
     ./boot.nix
+    ./plymouth.nix
     ./cron.nix
     ./env.nix
     ./home-manager.nix
