@@ -1,0 +1,29 @@
+// Задача 057: отдельная подпись; исходные кадры и запросы Plymouth сохранены.
+signature.source = Image("signature.png");
+signature.scale = Math.Min(0.5, screen.w * 0.82 / signature.source.GetWidth());
+signature.image = signature.source.Scale(
+    Math.Int(signature.source.GetWidth() * signature.scale),
+    Math.Int(signature.source.GetHeight() * signature.scale));
+signature.sprite = Sprite(signature.image);
+signature.sprite.SetX(Window.GetX() + (screen.w - signature.image.GetWidth()) / 2);
+signature.sprite.SetY(Window.GetY() + Math.Min(
+    screen.half.h + flyingman_image[0].GetHeight() / 2 + 24,
+    screen.h - signature.image.GetHeight() - 24));
+signature.sprite.SetZ(10);
+signature.sprite.SetOpacity(0);
+
+fun signature_refresh(frame) {
+    // 164 кадра по два обновления: тот же цикл, что у Black HUD.
+    // 20% появление, 45% показ, 25% исчезновение, 10% пауза.
+    phase = (Math.Int(frame / 2) % 164) / 164;
+    opacity = 1;
+    if (phase < 0.20)
+        opacity = phase / 0.20;
+    if (phase > 0.65)
+        opacity = Math.Max(0, (0.90 - phase) / 0.25);
+    opacity = opacity * opacity * (3 - 2 * opacity);
+    // Освобождаем место для пароля и прочих вопросов.
+    if (state.status != "play" || question != null)
+        opacity = 0;
+    signature.sprite.SetOpacity(opacity);
+}
