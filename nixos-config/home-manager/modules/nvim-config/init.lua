@@ -38,7 +38,10 @@ vim.g.autoformat_formatprg_markdown = 'prettier --parser markdown'
 -- Flash.nvim
 require("flash").setup({
     jump = { autojump = true },
-    modes = { search = { enabled = true } },
+    modes = {
+      search = { enabled = true },
+      char = { jump_labels = true },
+    },
     })
 vim.keymap.set({"n","x","o"}, "<leader>s", function()
     require("flash").jump()
