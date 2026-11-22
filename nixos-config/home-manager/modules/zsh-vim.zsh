@@ -40,6 +40,8 @@ _cosmic_vi_bindings() {
   done
   bindkey -M viins '^?' backward-delete-char
   bindkey -M vicmd '^R' redo
+  # Без отдельного действия Пробел ждёт продолжения независимо от KEYTIMEOUT.
+  bindkey -M vicmd -r ' '
   bindkey -M vicmd ' f' zce
 }
 
