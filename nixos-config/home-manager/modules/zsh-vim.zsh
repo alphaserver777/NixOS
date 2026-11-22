@@ -44,16 +44,14 @@ _cosmic_vi_bindings() {
 
 # Подсказки истории показываются только при вводе.
 typeset -g -i _cosmic_vi_restore_suggestions=0
-typeset -g _COSMIC_VI_PROMPT='%F{green} ВВОД %f '
 _cosmic_vi_mode() {
-  local label color
+  local label
   case "$ZVM_MODE" in
-    n) label=ОБЫЧНЫЙ; color=magenta ;;
-    v|vl) label=ВЫДЕЛЕНИЕ; color=yellow ;;
-    r) label=ЗАМЕНА; color=red ;;
-    *) label=ВВОД; color=green ;;
+    n) label=ОБЫЧНЫЙ ;;
+    v|vl) label=ВЫДЕЛЕНИЕ ;;
+    r) label=ЗАМЕНА ;;
+    *) label=ВВОД ;;
   esac
-  _COSMIC_VI_PROMPT="%F{$color} $label %f "
   if [[ "$ZVM_MODE" == i ]]; then
     if (( _cosmic_vi_restore_suggestions )); then
       _cosmic_vi_restore_suggestions=0
@@ -84,6 +82,3 @@ autoload -Uz add-zle-hook-widget
 add-zle-hook-widget line-init _cosmic_vi_mode
 add-zle-hook-widget line-finish _cosmic_vi_finish
 source '@viMode@'
-
-# Приглашение обновляет само дополнение при каждом изменении режима.
-PROMPT+='${_COSMIC_VI_PROMPT}'

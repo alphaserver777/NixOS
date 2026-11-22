@@ -13,6 +13,11 @@ in
       source ${vimSetup}
     fi
   '';
-  # Режим берётся из zsh-vi-mode, включая выделение и замену.
-  programs.starship.settings.character.disabled = true;
+  # Название режима показывается только в tmux.
+  programs.starship.settings.character = {
+    vimcmd_symbol = "[ & ](bold green)";
+    vimcmd_visual_symbol = "[ & ](bold green)";
+    vimcmd_replace_symbol = "[ & ](bold green)";
+    vimcmd_replace_one_symbol = "[ & ](bold green)";
+  };
 }
