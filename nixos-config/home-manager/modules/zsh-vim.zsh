@@ -40,6 +40,7 @@ _cosmic_vi_bindings() {
   done
   bindkey -M viins '^?' backward-delete-char
   bindkey -M vicmd '^R' redo
+  bindkey -M vicmd ' f' zce
 }
 
 # Подсказки истории показываются только при вводе.
@@ -81,4 +82,12 @@ zvm_after_select_vi_mode_commands+=(_cosmic_vi_mode)
 autoload -Uz add-zle-hook-widget
 add-zle-hook-widget line-init _cosmic_vi_mode
 add-zle-hook-widget line-finish _cosmic_vi_finish
+# Готовое дополнение: символ → буквенная метка, по Пробел+f.
+source '@zce@'
+zstyle ':zce:*' keys asdfghjklqwertyuiopzxcvbnm
+zstyle ':zce:*' fg 'fg=#f5c2e7,bold,underline'
+zstyle ':zce:*' bg 'fg=#6c7086'
+zstyle ':zce:*' prompt-char 'Символ (Esc — отмена): '
+zstyle ':zce:*' prompt-key 'Метка (Esc — отмена): '
+zstyle ':zce:*' search-case default
 source '@viMode@'

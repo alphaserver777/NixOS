@@ -1,7 +1,9 @@
 { lib, pkgs, ... }:
 let
+  zce = pkgs.callPackage ../../packages/zsh-zce.nix { };
   vimSetup = pkgs.replaceVars ./zsh-vim.zsh {
     viMode = "${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+    zce = "${zce}/share/zsh-zce/zce.zsh";
     nvim = "${pkgs.neovim}/bin/nvim";
     tmux = "${pkgs.tmux}/bin/tmux";
   };

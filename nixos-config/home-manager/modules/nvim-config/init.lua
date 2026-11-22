@@ -43,9 +43,10 @@ require("flash").setup({
       char = { jump_labels = true },
     },
     })
-vim.keymap.set({"n","x","o"}, "<leader>s", function()
-    require("flash").jump()
-    end, { desc = "Flash jump" })
+vim.keymap.set({"n","x","o"}, "<leader>f", function()
+    -- Один символ поиска, затем буквенная метка.
+    require("flash").jump({ search = { max_length = 1 } })
+    end, { desc = "Переход по буквенной метке" })
 
 -- Telescope
 require("telescope").setup({
@@ -58,11 +59,12 @@ require("telescope").setup({
     },
     },
     })
+-- Пробел+f запускает переход по меткам; поиск файлов находится в группе Пробел+p.
 local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Live grep" })
-vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffers" })
-vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Help tags" })
+vim.keymap.set("n", "<leader>pf", builtin.find_files, { desc = "Find files" })
+vim.keymap.set("n", "<leader>pg", builtin.live_grep, { desc = "Live grep" })
+vim.keymap.set("n", "<leader>pb", builtin.buffers, { desc = "Find buffers" })
+vim.keymap.set("n", "<leader>ph", builtin.help_tags, { desc = "Help tags" })
 
 -- Lualine
 require("lualine").setup({
