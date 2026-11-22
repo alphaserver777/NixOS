@@ -30,8 +30,9 @@
             bind-key -T copy-mode-vi 'C-v' send-keys -X rectangle-toggle
             bind-key -T copy-mode-vi 'y' send-keys -X copy-pipe-and-cancel # Работает с tmux-yank
 
-      # Индикатор режима в строке состояния (справа)
-            set -g status-right "#[fg=black,bg=#{?pane_in_mode,yellow,green}] #{?pane_in_mode, COPY , NORMAL } #[default]| %a %d-%m-%Y | %H:%M "
+      # Режим активной Zsh; при запуске программы — ТЕРМИНАЛ.
+            set -g status-right-length 64
+            set -g status-right "#[fg=black,bg=#{?pane_in_mode,yellow,green}] #{?pane_in_mode, КОПИРОВАНИЕ , #{?@zsh_mode,#{@zsh_mode},ТЕРМИНАЛ} } #[default]| %a %d-%m-%Y | %H:%M "
       # --- Конец секции VI ---
 
             bind -n M-r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
