@@ -1,7 +1,17 @@
-{ config, pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 
+let
+  netwatch = pkgs.callPackage ../../packages/netwatch-nixos.nix {
+    upstream = pkgs-unstable.netwatch;
+  };
+in
 {
   networking.networkmanager.enable = true;
+  environment.systemPackages = [
+    pkgs.trippy
+    pkgs.rustnet
+    netwatch
+  ];
   networking.networkmanager.dispatcherScripts = [{
     source = pkgs.writeText "add-static-route" ''
       #!/bin/sh
