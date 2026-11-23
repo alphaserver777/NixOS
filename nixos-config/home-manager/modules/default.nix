@@ -30,5 +30,6 @@
     ./zsh-vim.nix
     ./zoxide.nix
     ./nvim-config
+    ./nix-gc.nix
   ];
 }
