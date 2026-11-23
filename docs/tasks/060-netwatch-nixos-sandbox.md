@@ -12,7 +12,7 @@
 
 ## Status
 
-`in progress`
+`done` (применено на `x-disk`: `sudo nixos-rebuild switch --flake .#x-disk`)
 
 ## Контекст
 
@@ -94,7 +94,7 @@
 - [x] `netwatch` без ручных флагов показывает ненулевое число соединений.
 - [x] `netwatch --version` остаётся `netwatch 0.30.0`.
 - [x] `nixos-rebuild dry-build` проходит для всех шести хостов.
-- [ ] `sudo nixos-rebuild switch --flake .#x-disk` применён и повторная проверка UI пройдена.
+- [x] `sudo nixos-rebuild switch --flake .#x-disk` применён и повторная проверка UI пройдена.
 
 ## Verification
 
@@ -147,3 +147,8 @@ tmux kill-session -t nwverify
   `netwatch 0.30.0`; вкладка connections показала 252 соединения от
   пользователя и 260 под `sudo`, включая `xray`, `nmbd`, `sshd`, `chrome`,
   `.dcal-wrapped` и `syncthing`.
+- После deploy из чистого дерева: новое поколение
+  `/nix/store/cira2p4i7jzkgjfyrbiqngax8gms60x0-nixos-system-x-disk-26.05.20261006.b253099`;
+  `netwatch` → `/run/current-system/sw/bin/netwatch`, версия `0.30.0`, вкладка
+  connections показывает 236 соединений; пользовательский `nix-gc-user.timer`
+  активен, следующий запуск 2026-12-01.
