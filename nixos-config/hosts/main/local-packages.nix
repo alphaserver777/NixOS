@@ -26,6 +26,7 @@ in
     mpv #video
     git
     pavucontrol
+    discord
 
     # Office Suites
     libreoffice

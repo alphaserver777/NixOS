@@ -23,7 +23,9 @@
       gs = "git status";
       ga = "git add";
       gc = "git commit";
-      gp = "git push";
+      gP = "git push";
+      gf = "git fetch";
+      gp = "git pull";
 
       ".." = "cd ..";
     };
